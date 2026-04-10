@@ -188,7 +188,12 @@
   <div id="main-app" class="hidden">
     <header>
       <h1>Portfolio <span>Dashboard</span></h1>
-      <div class="updated" id="last-updated">Last updated: --</div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <button id="btn-refresh-fmp" onclick="manualRefreshFmp()" style="padding:6px 14px;background:var(--surface2);border:1px solid var(--accent);border-radius:8px;color:var(--accent);font-family:inherit;font-size:0.72rem;cursor:pointer;font-weight:600;" title="Fetch live prices from FMP (US stocks + FX)">Refresh Prices</button>
+        <button id="btn-bbg-enrich" onclick="triggerBloombergEnrich()" style="padding:6px 14px;background:var(--surface2);border:1px solid var(--amber);border-radius:8px;color:var(--amber);font-family:inherit;font-size:0.72rem;cursor:pointer;font-weight:600;" title="Trigger Bloomberg enrichment via GitHub Actions (needs self-hosted runner + BBG)">Bloomberg Enrich</button>
+        <div class="updated" id="last-updated">Last updated: --</div>
+        <div id="fmp-budget" style="font-size:0.65rem;color:var(--text-dim);"></div>
+      </div>
     </header>
 
     <nav class="top-nav">
@@ -393,40 +398,48 @@ async function saveTrades() {
   tradesSha = await ghPut('portfolio_trades.json', allTrades, tradesSha);
 }
 
-// ==================== FMP API ====================
+// ==================== FMP API (stable endpoints) ====================
 async function fetchFmpData(tickers) {
   if (!FMP_KEY || tickers.length === 0) return;
   try {
-    // Fetch stock quotes
-    const fmpTickers = [...new Set(tickers.map(t => {
-      const m = tickerMap[t]; return m ? m.fmp : t;
-    }))];
-    console.log('[FMP] Fetching quotes for:', fmpTickers.join(','));
-    const qr = await fetch(`https://financialmodelingprep.com/api/v3/quote/${fmpTickers.join(',')}?apikey=${FMP_KEY}`);
-    if (qr.ok) {
-      const qa = await qr.json();
-      console.log('[FMP] Quotes response:', qa.length, 'results', qa.map(q => q.symbol));
-      fmpQuotes = {};
-      qa.forEach(q => { fmpQuotes[q.symbol] = q; });
-    } else {
-      console.warn('[FMP] Quotes failed:', qr.status, await qr.text());
-    }
-    // Fetch FX rates - FMP uses format GBPUSD (no =X suffix)
+    // Fetch stock quotes individually (free tier: no batch, no intl tickers)
+    const seen = new Set();
+    const fmpEntries = tickers.map(t => {
+      const m = tickerMap[t]; const fmp = m ? m.fmp : t;
+      return { ticker: t, fmp };
+    }).filter(e => { if (seen.has(e.fmp)) return false; seen.add(e.fmp); return true; });
+
+    console.log('[FMP] Fetching quotes for:', fmpEntries.map(e => e.fmp).join(','));
+    fmpQuotes = {};
+    const quotePromises = fmpEntries.map(async ({ ticker, fmp }) => {
+      try {
+        const r = await fetch(`https://financialmodelingprep.com/stable/quote?symbol=${encodeURIComponent(fmp)}&apikey=${FMP_KEY}`);
+        if (r.ok) {
+          const arr = await r.json();
+          if (arr && arr.length > 0) { fmpQuotes[fmp] = arr[0]; }
+        } else if (r.status === 402) {
+          console.log(`[FMP] ${fmp}: paid plan needed (intl ticker), skipping`);
+        }
+      } catch (e) { console.warn(`[FMP] ${fmp} error:`, e); }
+    });
+    await Promise.all(quotePromises);
+    console.log('[FMP] Got quotes for:', Object.keys(fmpQuotes).join(','));
+
+    // Fetch FX rates
     const ccys = [...new Set(tickers.map(t => tickerMap[t]?.ccy).filter(c => c && c !== 'USD'))];
     if (ccys.length > 0) {
-      const fxSymbols = ccys.map(c => c + 'USD').join(',');
-      console.log('[FMP] Fetching FX:', fxSymbols);
-      const fr = await fetch(`https://financialmodelingprep.com/api/v3/quote/${fxSymbols}?apikey=${FMP_KEY}`);
-      if (fr.ok) {
-        const fa = await fr.json();
-        console.log('[FMP] FX response:', fa);
-        fmpFxRates = {};
-        fa.forEach(f => {
-          fmpFxRates[f.symbol] = f.price;
-        });
-      } else {
-        console.warn('[FMP] FX failed:', fr.status, await fr.text());
-      }
+      fmpFxRates = {};
+      const fxPromises = ccys.map(async ccy => {
+        try {
+          const r = await fetch(`https://financialmodelingprep.com/stable/quote?symbol=${ccy}USD&apikey=${FMP_KEY}`);
+          if (r.ok) {
+            const arr = await r.json();
+            if (arr && arr.length > 0) { fmpFxRates[ccy + 'USD'] = arr[0].price; }
+          }
+        } catch (e) { console.warn(`[FMP] FX ${ccy}USD error:`, e); }
+      });
+      await Promise.all(fxPromises);
+      console.log('[FMP] FX rates:', fmpFxRates);
     }
     document.getElementById('last-updated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
   } catch (e) { console.warn('FMP fetch error:', e); }
@@ -622,25 +635,103 @@ function parseEquityTrade(text) {
   return { side, qty, ticker, price, isClose: false };
 }
 
+// ==================== FMP TICKER LOOKUP ====================
+async function fmpLookupTicker(ticker) {
+  if (!FMP_KEY) return null;
+  // Try direct quote first
+  try {
+    const r = await fetch(`https://financialmodelingprep.com/stable/quote?symbol=${encodeURIComponent(ticker)}&apikey=${FMP_KEY}`);
+    if (r.ok) {
+      const arr = await r.json();
+      if (arr && arr.length > 0) {
+        fmpQuotes[ticker] = arr[0];
+        return arr[0];
+      }
+    }
+  } catch (e) {}
+  // Try search if direct quote fails
+  try {
+    const r = await fetch(`https://financialmodelingprep.com/stable/search?query=${encodeURIComponent(ticker)}&limit=1&apikey=${FMP_KEY}`);
+    if (r.ok) {
+      const arr = await r.json();
+      if (arr && arr.length > 0) {
+        const sym = arr[0].symbol;
+        // Fetch quote for the found symbol
+        const qr = await fetch(`https://financialmodelingprep.com/stable/quote?symbol=${encodeURIComponent(sym)}&apikey=${FMP_KEY}`);
+        if (qr.ok) {
+          const qa = await qr.json();
+          if (qa && qa.length > 0) {
+            fmpQuotes[sym] = qa[0];
+            return qa[0];
+          }
+        }
+        return { symbol: sym, name: arr[0].name, currency: arr[0].currency, exchange: arr[0].stockExchange || arr[0].exchangeShortName };
+      }
+    }
+  } catch (e) {}
+  return null;
+}
+
+function exchangeToGeo(exchange) {
+  if (!exchange) return '--';
+  const e = exchange.toUpperCase();
+  if (['NASDAQ','NYSE','AMEX','BATS','CBOE','OTC'].some(x => e.includes(x))) return 'US';
+  if (e.includes('LSE') || e.includes('LONDON')) return 'UK';
+  if (e.includes('TSE') || e.includes('TOKYO') || e.includes('JPX')) return 'Asia';
+  if (e.includes('XETRA') || e.includes('FRA') || e.includes('FRANKFURT')) return 'Europe';
+  if (e.includes('SIX') || e.includes('SWISS') || e.includes('ZURICH')) return 'Europe';
+  if (e.includes('EURONEXT') || e.includes('PARIS') || e.includes('AMSTERDAM')) return 'Europe';
+  if (e.includes('TWO') || e.includes('TWSE') || e.includes('TAIPEI')) return 'Asia';
+  if (e.includes('KRX') || e.includes('KOREA')) return 'Asia';
+  if (e.includes('HKEX') || e.includes('HONG KONG')) return 'Asia';
+  if (e.includes('SGX') || e.includes('SINGAPORE')) return 'Asia';
+  if (e.includes('ASX') || e.includes('AUSTRALIA')) return 'Asia';
+  return '--';
+}
+
 // ==================== BLOTTER UI ====================
-document.getElementById('trade-preview').addEventListener('click', () => {
+document.getElementById('trade-preview').addEventListener('click', async () => {
   const text = document.getElementById('trade-input').value;
   const parsed = parseEquityTrade(text);
   if (!parsed) { alert('Could not parse trade. Check format.'); return; }
-  showConfirmation(parsed);
+
+  // Show loading state
+  document.getElementById('trade-preview').textContent = 'Looking up...';
+  document.getElementById('trade-preview').disabled = true;
+
+  await showConfirmation(parsed);
+
+  document.getElementById('trade-preview').textContent = 'Preview';
+  document.getElementById('trade-preview').disabled = false;
 });
 document.getElementById('trade-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('trade-preview').click();
 });
 
-function showConfirmation(trade) {
+async function showConfirmation(trade) {
   pendingTrade = trade;
   const meta = tickerMap[trade.ticker] || {};
-  const quote = getFmpQuote(trade.ticker);
-  const name = quote ? quote.name : (meta.name || trade.ticker);
-  const ccy = meta.ccy || (quote ? quote.currency : 'USD') || 'USD';
-  const cls = meta.class || 'Equity';
-  const geo = meta.geo || '--';
+  let quote = getFmpQuote(trade.ticker);
+
+  // If no quote and no tickerMap entry, try FMP lookup
+  if (!quote && !meta.fmp && FMP_KEY) {
+    quote = await fmpLookupTicker(trade.ticker);
+    // Also try with common suffixes for international tickers
+    if (!quote) {
+      for (const suffix of ['.L', '.T', '.SW', '.DE', '.TW', '.PA', '.AS', '.HK']) {
+        quote = await fmpLookupTicker(trade.ticker + suffix);
+        if (quote) break;
+      }
+    }
+  }
+
+  const name = quote?.name || meta.name || trade.ticker;
+  const ccy = meta.ccy || quote?.currency || 'USD';
+  const exchange = quote?.exchange || '';
+  const cls = meta.class || (ccy === 'USD' && !exchange ? 'Equity' : 'Equity');
+  const geo = meta.geo || exchangeToGeo(exchange);
+  const sector = meta.sector || '--';
+  const fmpTicker = quote?.symbol || meta.fmp || trade.ticker;
 
   const fields = [
     { label: 'Ticker', value: trade.ticker, editable: false },
@@ -648,23 +739,25 @@ function showConfirmation(trade) {
     { label: 'Side', value: trade.side.toUpperCase(), editable: false },
     { label: 'Qty', value: trade.qty, editable: false },
     { label: 'Price', value: trade.price, editable: true, id: 'cf-price' },
-    { label: 'Currency', value: ccy, editable: false },
-    { label: 'Asset Class', value: cls, editable: false },
-    { label: 'Geography', value: geo, editable: false },
+    { label: 'Currency', value: ccy, editable: true, id: 'cf-ccy' },
+    { label: 'Asset Class', value: cls, editable: true, id: 'cf-class' },
+    { label: 'Geography', value: geo, editable: true, id: 'cf-geo' },
   ];
 
   document.getElementById('confirm-grid').innerHTML = fields.map(f =>
     `<div class="confirm-field"><div class="cf-label">${f.label}</div>${
       f.editable
-        ? `<input id="${f.id}" value="${f.value}" />`
+        ? `<input id="${f.id}" value="${f.value}" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:4px 8px;color:var(--text);font-family:inherit;font-size:0.8rem;" />`
         : `<div class="cf-value">${f.value}</div>`
     }</div>`
-  ).join('');
+  ).join('') + (exchange ? `<div class="confirm-field"><div class="cf-label">Exchange</div><div class="cf-value" style="color:var(--text-dim)">${exchange}</div></div>` : '');
 
   pendingTrade._name = name;
   pendingTrade._ccy = ccy;
   pendingTrade._class = cls;
   pendingTrade._geo = geo;
+  pendingTrade._fmpTicker = fmpTicker;
+  pendingTrade._sector = sector;
 
   document.getElementById('confirm-panel').style.display = 'block';
 }
@@ -676,32 +769,34 @@ document.getElementById('btn-cancel').addEventListener('click', () => {
 
 document.getElementById('btn-book').addEventListener('click', async () => {
   if (!pendingTrade) return;
-  const priceInput = document.getElementById('cf-price');
-  const finalPrice = priceInput ? parseFloat(priceInput.value) : pendingTrade.price;
+  const val = id => { const el = document.getElementById(id); return el ? el.value.trim() : null; };
+  const finalPrice = parseFloat(val('cf-price')) || pendingTrade.price;
+  const finalCcy = val('cf-ccy') || pendingTrade._ccy;
+  const finalClass = val('cf-class') || pendingTrade._class;
+  const finalGeo = val('cf-geo') || pendingTrade._geo;
 
   const trade = {
     id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
     date: new Date().toISOString().slice(0, 10),
     time: new Date().toISOString().slice(11, 19),
     ticker: pendingTrade.ticker,
+    fmp_ticker: pendingTrade._fmpTicker || pendingTrade.ticker,
     name: pendingTrade._name,
     side: pendingTrade.side,
     qty: pendingTrade.qty,
     price: finalPrice,
-    ccy: pendingTrade._ccy,
-    class: pendingTrade._class,
-    geo: pendingTrade._geo,
-    sector: tickerMap[pendingTrade.ticker]?.sector || '--'
+    ccy: finalCcy,
+    class: finalClass,
+    geo: finalGeo,
+    sector: pendingTrade._sector || '--'
   };
 
-  // Auto-register in tickerMap if new
-  if (!tickerMap[trade.ticker]) {
-    const quote = getFmpQuote(trade.ticker);
-    tickerMap[trade.ticker] = {
-      fmp: quote ? quote.symbol : trade.ticker,
-      ccy: trade.ccy, geo: trade.geo, class: trade.class, sector: trade.sector
-    };
-  }
+  // Auto-register in tickerMap if new or update
+  tickerMap[trade.ticker] = {
+    fmp: trade.fmp_ticker,
+    ccy: trade.ccy, geo: trade.geo, class: trade.class, sector: trade.sector,
+    name: trade.name
+  };
 
   allTrades.push(trade);
   try {
@@ -901,6 +996,104 @@ async function loadNavHistory() {
   } catch (e) { navHistory = { snapshots: [] }; }
 }
 
+// ==================== FMP BUDGET TRACKER ====================
+const FMP_DAILY_LIMIT = 250;
+function getFmpBudget() {
+  const today = new Date().toISOString().slice(0, 10);
+  const stored = JSON.parse(localStorage.getItem('fmp_budget') || '{}');
+  if (stored.date !== today) return { date: today, used: 0 };
+  return stored;
+}
+function recordFmpCalls(n) {
+  const b = getFmpBudget();
+  b.used += n;
+  localStorage.setItem('fmp_budget', JSON.stringify(b));
+  updateBudgetDisplay();
+}
+function updateBudgetDisplay() {
+  const b = getFmpBudget();
+  const el = document.getElementById('fmp-budget');
+  if (el) el.textContent = `FMP: ${b.used}/${FMP_DAILY_LIMIT} calls today`;
+}
+
+// Wrap fetchFmpData to track budget
+const _origFetchFmp = fetchFmpData;
+fetchFmpData = async function(tickers) {
+  const b = getFmpBudget();
+  const estimatedCalls = tickers.length + 5; // tickers + FX pairs
+  if (b.used + estimatedCalls > FMP_DAILY_LIMIT) {
+    console.warn(`[FMP] Budget exceeded (${b.used}/${FMP_DAILY_LIMIT}), skipping refresh`);
+    document.getElementById('fmp-budget').textContent = `FMP: ${b.used}/${FMP_DAILY_LIMIT} (limit reached)`;
+    return;
+  }
+  await _origFetchFmp(tickers);
+  recordFmpCalls(estimatedCalls);
+};
+
+// ==================== MANUAL REFRESH ====================
+async function manualRefreshFmp() {
+  const btn = document.getElementById('btn-refresh-fmp');
+  btn.textContent = 'Refreshing...';
+  btn.disabled = true;
+  try {
+    const uniqueTickers = [...new Set(allTrades.map(t => t.ticker))];
+    if (FMP_KEY && uniqueTickers.length > 0) {
+      await fetchFmpData(uniqueTickers);
+    }
+    computePositions();
+    renderKPIs();
+    const activeFilter = document.querySelector('#pos-filter .filter-btn.active')?.dataset.filter || 'open';
+    renderPositionsTable(activeFilter);
+    renderAllocationCharts();
+    renderWinnersLosers();
+  } catch (e) { console.warn('Refresh error:', e); }
+  btn.textContent = 'Refresh Prices';
+  btn.disabled = false;
+}
+
+// ==================== BLOOMBERG ENRICHMENT ====================
+async function triggerBloombergEnrich() {
+  const btn = document.getElementById('btn-bbg-enrich');
+  btn.textContent = 'Triggering...';
+  btn.disabled = true;
+  try {
+    const r = await fetch('https://api.github.com/repos/aggasuk/portfolio-dash/actions/workflows/update_prices.yml/dispatches', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + GH_TOKEN,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ ref: 'main' })
+    });
+    if (r.ok || r.status === 204) {
+      btn.textContent = 'Triggered!';
+      btn.style.borderColor = 'var(--green)';
+      btn.style.color = 'var(--green)';
+      setTimeout(() => {
+        btn.textContent = 'Bloomberg Enrich';
+        btn.style.borderColor = 'var(--amber)';
+        btn.style.color = 'var(--amber)';
+        btn.disabled = false;
+      }, 5000);
+    } else {
+      const body = await r.text();
+      console.warn('BBG trigger failed:', r.status, body);
+      btn.textContent = r.status === 404 ? 'No workflow found' : 'Failed (' + r.status + ')';
+      btn.style.color = 'var(--red)';
+      setTimeout(() => {
+        btn.textContent = 'Bloomberg Enrich';
+        btn.style.borderColor = 'var(--amber)';
+        btn.style.color = 'var(--amber)';
+        btn.disabled = false;
+      }, 3000);
+    }
+  } catch (e) {
+    btn.textContent = 'Error';
+    btn.disabled = false;
+    console.warn('BBG trigger error:', e);
+  }
+}
+
 // ==================== REFRESH / INIT ====================
 async function refreshAll() {
   const uniqueTickers = [...new Set(allTrades.map(t => t.ticker))];
@@ -913,6 +1106,7 @@ async function refreshAll() {
   renderAllocationCharts();
   renderRecentTrades();
   renderAnalysis();
+  updateBudgetDisplay();
 
   // Reset filter to open
   document.querySelectorAll('#pos-filter .filter-btn').forEach(b => b.classList.remove('active'));
@@ -930,21 +1124,12 @@ async function init() {
 
   await refreshAll();
 
-  // Auto-refresh FMP every 5 min
+  // Auto-refresh every 30 min (budget-friendly: ~8 refreshes/day = ~120 calls)
   if (FMP_KEY) {
     if (fmpRefreshInterval) clearInterval(fmpRefreshInterval);
     fmpRefreshInterval = setInterval(async () => {
-      const uniqueTickers = [...new Set(allTrades.map(t => t.ticker))];
-      if (uniqueTickers.length > 0) {
-        await fetchFmpData(uniqueTickers);
-        computePositions();
-        renderKPIs();
-        const activeFilter = document.querySelector('#pos-filter .filter-btn.active')?.dataset.filter || 'open';
-        renderPositionsTable(activeFilter);
-        renderAllocationCharts();
-        renderWinnersLosers();
-      }
-    }, 5 * 60 * 1000);
+      await manualRefreshFmp();
+    }, 30 * 60 * 1000);
   }
 }
 
