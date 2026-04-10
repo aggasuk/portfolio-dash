@@ -401,24 +401,31 @@ async function fetchFmpData(tickers) {
     const fmpTickers = [...new Set(tickers.map(t => {
       const m = tickerMap[t]; return m ? m.fmp : t;
     }))];
+    console.log('[FMP] Fetching quotes for:', fmpTickers.join(','));
     const qr = await fetch(`https://financialmodelingprep.com/api/v3/quote/${fmpTickers.join(',')}?apikey=${FMP_KEY}`);
     if (qr.ok) {
       const qa = await qr.json();
+      console.log('[FMP] Quotes response:', qa.length, 'results', qa.map(q => q.symbol));
       fmpQuotes = {};
       qa.forEach(q => { fmpQuotes[q.symbol] = q; });
+    } else {
+      console.warn('[FMP] Quotes failed:', qr.status, await qr.text());
     }
-    // Fetch FX rates
+    // Fetch FX rates - FMP uses format GBPUSD (no =X suffix)
     const ccys = [...new Set(tickers.map(t => tickerMap[t]?.ccy).filter(c => c && c !== 'USD'))];
     if (ccys.length > 0) {
-      const fxSymbols = ccys.map(c => c + 'USD=X').join(',');
+      const fxSymbols = ccys.map(c => c + 'USD').join(',');
+      console.log('[FMP] Fetching FX:', fxSymbols);
       const fr = await fetch(`https://financialmodelingprep.com/api/v3/quote/${fxSymbols}?apikey=${FMP_KEY}`);
       if (fr.ok) {
         const fa = await fr.json();
+        console.log('[FMP] FX response:', fa);
         fmpFxRates = {};
         fa.forEach(f => {
-          const pair = f.symbol.replace('=X', '');
-          fmpFxRates[pair] = f.price;
+          fmpFxRates[f.symbol] = f.price;
         });
+      } else {
+        console.warn('[FMP] FX failed:', fr.status, await fr.text());
       }
     }
     document.getElementById('last-updated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
