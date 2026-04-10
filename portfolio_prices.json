@@ -1,1 +1,251 @@
-{"last_updated": null, "prices": {}, "fx_rates": {}}
+{
+  "last_updated": "2026-04-11T00:00:02",
+  "prices": {
+    "1615": {
+      "bbg_ticker": "1615 JT Equity",
+      "px_last": 626.8,
+      "prev_close": 623.9,
+      "chg_pct_1d": 0.4648181,
+      "chg_pct_ytd": 18.66717,
+      "name": "NEXT FUNDS TOPIX BANKS ETF",
+      "currency": "JPY",
+      "sector": "nan",
+      "country": "JP"
+    },
+    "CPER": {
+      "bbg_ticker": "CPER US Equity",
+      "px_last": 35.98,
+      "prev_close": 35.21,
+      "chg_pct_1d": 2.186879,
+      "chg_pct_ytd": 2.917623,
+      "name": "UNITED STATES COPPER INDEX",
+      "currency": "USD",
+      "sector": "nan",
+      "country": "US"
+    },
+    "EMLC": {
+      "bbg_ticker": "EMLC US Equity",
+      "px_last": 25.785,
+      "prev_close": 25.75,
+      "chg_pct_1d": 0.1359223,
+      "chg_pct_ytd": -0.1355527,
+      "name": "VANECK JPM EM LOCAL CURR BND",
+      "currency": "USD",
+      "sector": "nan",
+      "country": "US"
+    },
+    "IAU": {
+      "bbg_ticker": "IAU US Equity",
+      "px_last": 89.68,
+      "prev_close": 89.72,
+      "chg_pct_1d": -0.04458315,
+      "chg_pct_ytd": 10.48417,
+      "name": "ISHARES GOLD TRUST",
+      "currency": "USD",
+      "sector": "nan",
+      "country": "US"
+    },
+    "QQQ": {
+      "bbg_ticker": "QQQ US Equity",
+      "px_last": 611.54,
+      "prev_close": 610.19,
+      "chg_pct_1d": 0.2212426,
+      "chg_pct_ytd": -0.450912,
+      "name": "INVESCO QQQ TRUST SERIES 1",
+      "currency": "USD",
+      "sector": "nan",
+      "country": "US"
+    },
+    "REMX": {
+      "bbg_ticker": "REMX US Equity",
+      "px_last": 94.925,
+      "prev_close": 93.2,
+      "chg_pct_1d": 1.850858,
+      "chg_pct_ytd": 28.41586,
+      "name": "VANECK RAR EARTH ND STG-USDI",
+      "currency": "USD",
+      "sector": "nan",
+      "country": "US"
+    },
+    "SNOW": {
+      "bbg_ticker": "SNOW US Equity",
+      "px_last": 121.945,
+      "prev_close": 132.24,
+      "chg_pct_1d": -7.785088,
+      "chg_pct_ytd": -44.40873,
+      "name": "SNOWFLAKE INC",
+      "currency": "USD",
+      "sector": "Information Technology",
+      "country": "US"
+    },
+    "USO": {
+      "bbg_ticker": "USO US Equity",
+      "px_last": 127.17,
+      "prev_close": 126.96,
+      "chg_pct_1d": 0.1654064,
+      "chg_pct_ytd": 83.87795,
+      "name": "UNITED STATES OIL FUND LP",
+      "currency": "USD",
+      "sector": "nan",
+      "country": "US"
+    },
+    "VOO": {
+      "bbg_ticker": "VOO US Equity",
+      "px_last": 625.57,
+      "prev_close": 625.02,
+      "chg_pct_1d": 0.08799718,
+      "chg_pct_ytd": -0.248753,
+      "name": "VANGUARD S&P 500 ETF",
+      "currency": "USD",
+      "sector": "nan",
+      "country": "US"
+    },
+    "XOM": {
+      "bbg_ticker": "XOM US Equity",
+      "px_last": 153.365,
+      "prev_close": 155.04,
+      "chg_pct_1d": -1.080366,
+      "chg_pct_ytd": 27.44308,
+      "name": "EXXON MOBIL CORP",
+      "currency": "USD",
+      "sector": "Energy",
+      "country": "US"
+    },
+    "EWY": {
+      "bbg_ticker": "EWY US Equity",
+      "px_last": 138.36,
+      "prev_close": 139.29,
+      "chg_pct_1d": -0.6676718,
+      "chg_pct_ytd": 42.31639,
+      "name": "ISHARES MSCI SOUTH KOREA ETF",
+      "currency": "USD",
+      "sector": "nan",
+      "country": "US"
+    },
+    "AZN": {
+      "bbg_ticker": "AZN LN Equity",
+      "px_last": 152.3,
+      "prev_close": 152.76,
+      "chg_pct_1d": -0.3011259,
+      "chg_pct_ytd": 10.44235,
+      "name": "ASTRAZENECA PLC",
+      "currency": "GBP",
+      "sector": "Health Care",
+      "country": "GB"
+    },
+    "IGV": {
+      "bbg_ticker": "IGV US Equity",
+      "px_last": 74.435,
+      "prev_close": 76.64,
+      "chg_pct_1d": -2.877088,
+      "chg_pct_ytd": -29.57234,
+      "name": "ISHARES EXPANDED TECH-SOFTWA",
+      "currency": "USD",
+      "sector": "nan",
+      "country": "US"
+    },
+    "AMZN": {
+      "bbg_ticker": "AMZN US Equity",
+      "px_last": 238.34,
+      "prev_close": 233.65,
+      "chg_pct_1d": 2.007276,
+      "chg_pct_ytd": 3.257947,
+      "name": "AMAZON.COM INC",
+      "currency": "USD",
+      "sector": "Consumer Discretionary",
+      "country": "US"
+    },
+    "NVDA": {
+      "bbg_ticker": "NVDA US Equity",
+      "px_last": 188.845,
+      "prev_close": 183.91,
+      "chg_pct_1d": 2.683378,
+      "chg_pct_ytd": 1.257373,
+      "name": "NVIDIA CORP",
+      "currency": "USD",
+      "sector": "Information Technology",
+      "country": "US"
+    },
+    "INDA": {
+      "bbg_ticker": "INDA US Equity",
+      "px_last": 49.34,
+      "prev_close": 49.07,
+      "chg_pct_1d": 0.5502344,
+      "chg_pct_ytd": -8.714152,
+      "name": "ISHARES MSCI INDIA ETF",
+      "currency": "USD",
+      "sector": "nan",
+      "country": "US"
+    },
+    "KWEB": {
+      "bbg_ticker": "KWEB US Equity",
+      "px_last": 28.795,
+      "prev_close": 28.79,
+      "chg_pct_1d": 0.01736714,
+      "chg_pct_ytd": -15.43318,
+      "name": "KRANESH CSI CHINA INTERNET",
+      "currency": "USD",
+      "sector": "nan",
+      "country": "US"
+    },
+    "EWZ": {
+      "bbg_ticker": "EWZ US Equity",
+      "px_last": 41.12,
+      "prev_close": 40.54,
+      "chg_pct_1d": 1.430686,
+      "chg_pct_ytd": 29.43028,
+      "name": "ISHARES MSCI BRAZIL ETF",
+      "currency": "USD",
+      "sector": "nan",
+      "country": "US"
+    },
+    "MUFG": {
+      "bbg_ticker": "MUFG US Equity",
+      "px_last": 18.035,
+      "prev_close": 18.15,
+      "chg_pct_1d": -0.6336088,
+      "chg_pct_ytd": 13.71375,
+      "name": "MITSUBISHI UFJ FINL-SPON ADR",
+      "currency": "USD",
+      "sector": "Financials",
+      "country": "JP"
+    },
+    "UST2Y": {
+      "bbg_ticker": "91282CME@BGN Govt",
+      "px_last": 100.3828125,
+      "prev_close": 100.40234375,
+      "chg_pct_1d": 0.0077833125778331,
+      "chg_pct_ytd": -0.3200309616891315,
+      "name": "US TREASURY N/B",
+      "currency": "USD",
+      "sector": "nan",
+      "country": "US"
+    },
+    "1306": {
+      "bbg_ticker": "1306 JT Equity",
+      "px_last": 396.5,
+      "prev_close": 396.7,
+      "chg_pct_1d": -0.05041593,
+      "chg_pct_ytd": 10.78514,
+      "name": "NEXT FUNDS TOPIX ETF",
+      "currency": "JPY",
+      "sector": "nan",
+      "country": "JP"
+    },
+    "BNO": {
+      "bbg_ticker": "BNO US Equity",
+      "px_last": 48.37,
+      "prev_close": 48.52,
+      "chg_pct_1d": -0.3091509,
+      "chg_pct_ytd": 70.79802,
+      "name": "UNITED STATES BRENT OIL FUND",
+      "currency": "USD",
+      "sector": "nan",
+      "country": "US"
+    }
+  },
+  "fx_rates": {
+    "JPYUSD": 0.00628,
+    "GBPUSD": 1.3458
+  }
+}

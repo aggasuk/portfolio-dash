@@ -246,6 +246,12 @@ def main():
     currencies = set()
     for tk, p in prices.items():
         ccy = p.get("currency", "USD")
+        # Handle GBp (pence) -> convert to GBP
+        if ccy == "GBp":
+            p["currency"] = "GBP"
+            p["px_last"] = p["px_last"] / 100.0
+            p["prev_close"] = p["prev_close"] / 100.0
+            ccy = "GBP"
         if ccy != "USD":
             currencies.add(ccy)
     # Also add from ticker_map
