@@ -594,7 +594,38 @@ async function loadAllPositions() {
   }
 
   const manualPositions = computeManualPositions(manualTrades, bbgPrices);
-  allPositions = [...ibkrPositions, ...manualPositions];
+
+  // Merge positions by ticker (combine IBKR + manual into one row per ticker)
+  const merged = {};
+  [...ibkrPositions, ...manualPositions].forEach(p => {
+    const tk = p.ticker;
+    if (!merged[tk]) {
+      merged[tk] = { ...p, sources: [p.source] };
+    } else {
+      const m = merged[tk];
+      // Combine quantities and values
+      const totalQty = m.qty + p.qty;
+      if (totalQty > 0) {
+        // Weighted average cost
+        const mCost = m.cost_basis_usd || (m.avg_cost * m.qty);
+        const pCost = p.cost_basis_usd || (p.avg_cost * p.qty);
+        m.cost_basis_usd = mCost + pCost;
+        m.avg_cost = m.cost_basis_usd / totalQty;
+      }
+      m.qty = totalQty;
+      m.mkt_value_usd = (m.mkt_value_usd || 0) + (p.mkt_value_usd || 0);
+      m.unrealised_pnl_usd = (m.unrealised_pnl_usd || 0) + (p.unrealised_pnl_usd || 0);
+      m.unrealised_pnl_pct = m.cost_basis_usd > 0
+        ? (m.mkt_value_usd - m.cost_basis_usd) / m.cost_basis_usd
+        : 0;
+      if (!m.sources.includes(p.source)) m.sources.push(p.source);
+      // Prefer IBKR mkt_price over manual
+      if (p.source === 'ibkr' && p.mkt_price) m.mkt_price = p.mkt_price;
+      // Merge name (prefer longer/better name)
+      if (p.name && p.name.length > (m.name || '').length) m.name = p.name;
+    }
+  });
+  allPositions = Object.values(merged);
 }
 
 // ==================== RENDER ====================
@@ -630,8 +661,8 @@ function renderKPIs() {
   const totalCost = openPositions.reduce((s, p) => s + (p.cost_basis_usd || 0), 0);
   const totalUnreal = openPositions.reduce((s, p) => s + (p.unrealised_pnl_usd || 0), 0);
   const unrealPct = totalCost > 0 ? totalUnreal / totalCost : 0;
-  const ibkrCount = openPositions.filter(p => p.source === 'ibkr').length;
-  const manualCount = openPositions.filter(p => p.source === 'manual').length;
+  const ibkrCount = openPositions.filter(p => (p.sources || []).includes('ibkr')).length;
+  const manualCount = openPositions.filter(p => (p.sources || []).includes('manual')).length;
 
   // Daily P&L: sum realised_pnl if available
   const dailyPnl = openPositions.reduce((s, p) => s + (p.realised_pnl || 0), 0);
@@ -660,22 +691,23 @@ function renderPositionsTable() {
 
   const hdr = `<table class="vol-table">
     <thead><tr>
-      <th>Source</th><th>Ticker</th><th>Name</th><th>Type</th><th>Country</th><th>Ccy</th>
+      <th>Ticker</th><th>Name</th><th>Broker</th><th>Type</th><th>Ccy</th>
       <th>Qty</th><th>Avg Cost</th><th>Last</th><th>Mkt Val (USD)</th>
       <th>Unreal P&L</th><th>Unreal %</th>
     </tr></thead><tbody>`;
 
   const rows = positions.map(p => {
-    const badge = p.source === 'ibkr'
+    const sources = p.sources || [p.source || 'manual'];
+    const badges = sources.map(s => s === 'ibkr'
       ? '<span class="badge badge-ib">IB</span>'
-      : '<span class="badge badge-manual">' + (p.broker || 'Manual') + '</span>';
+      : '<span class="badge badge-manual">' + (p.broker || 'UBS') + '</span>'
+    ).join(' ');
     const unrealPct = p.unrealised_pnl_pct != null ? fmtPct(p.unrealised_pnl_pct) : '--';
     return `<tr>
-      <td style="text-align:left">${badge}</td>
       <td style="text-align:left; font-weight:600;">${p.ticker}</td>
       <td style="text-align:left; color:var(--text-dim); max-width:200px; overflow:hidden; text-overflow:ellipsis;">${p.name || ''}</td>
-      <td>${p.type || ''}</td>
-      <td>${p.country || ''}</td>
+      <td style="text-align:left">${badges}</td>
+      <td>${p.type || p.asset_class || ''}</td>
       <td>${p.currency || ''}</td>
       <td>${fmtNum(p.qty, 0)}</td>
       <td>${fmtNum(p.avg_cost, 2)}</td>
@@ -724,9 +756,17 @@ function renderAllocationCharts() {
   open.forEach(p => { const k = p.currency || 'USD'; byCcy[k] = (byCcy[k] || 0) + (p.mkt_value_usd || 0); });
   makeDonut('chart-currency', byCcy);
 
-  // By source
+  // By broker
   const bySource = {};
-  open.forEach(p => { const k = p.source === 'ibkr' ? 'IBKR' : (p.broker || 'Manual'); bySource[k] = (bySource[k] || 0) + (p.mkt_value_usd || 0); });
+  open.forEach(p => {
+    const sources = p.sources || [p.source || 'manual'];
+    // Split value proportionally if held at multiple brokers (approximate: equal split)
+    const val = (p.mkt_value_usd || 0) / sources.length;
+    sources.forEach(s => {
+      const k = s === 'ibkr' ? 'IBKR' : (p.broker || 'UBS');
+      bySource[k] = (bySource[k] || 0) + val;
+    });
+  });
   makeDonut('chart-source', bySource);
 }
 
