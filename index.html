@@ -233,7 +233,6 @@
 
       <div class="filter-row" id="pos-filter">
         <button class="filter-btn active" onclick="setPositionFilter('open',this)">Open</button>
-        <button class="filter-btn" onclick="setPositionFilter('all',this)">All</button>
       </div>
 
       <div class="chart-wrap">
@@ -477,7 +476,14 @@ async function loadTickerMap() {
 }
 
 async function loadBbgPrices() {
-  try { const d = await ghGet(GH_PRICES_PATH); bbgPrices = d.content || {}; } catch (e) { bbgPrices = {}; }
+  try {
+    const d = await ghGet(GH_PRICES_PATH);
+    const raw = d.content || {};
+    // Flatten: store prices[ticker] directly, attach fx_rates as _fx_rates
+    bbgPrices = raw.prices || {};
+    bbgPrices._fx_rates = raw.fx_rates || {};
+    bbgPrices._last_updated = raw.last_updated || null;
+  } catch (e) { bbgPrices = {}; }
 }
 
 async function loadNavHistory() {
@@ -488,144 +494,165 @@ async function loadManualTrades() {
   try { const d = await ghGet(GH_TRADES_PATH); manualTrades = d.content || []; } catch (e) { manualTrades = []; }
 }
 
-function computeManualPositions(trades, prices) {
-  // Group by ticker, compute net qty and avg cost
-  const byTicker = {};
-  for (const t of trades) {
-    const tk = t.ticker;
-    if (!byTicker[tk]) byTicker[tk] = { ticker: tk, buys: [], sells: [], broker: t.broker || 'Manual', currency: t.currency || 'USD', name: tickerMap[tk] || tk };
-    if (t.side === 'buy') byTicker[tk].buys.push(t);
-    else if (t.side === 'sell') byTicker[tk].sells.push(t);
-    else if (t.side === 'close') byTicker[tk].sells.push({ ...t, qty: 1e9 }); // force close
-    if (t.broker) byTicker[tk].broker = t.broker;
+// ==================== PRICE LOOKUP ====================
+// Build a unified price table from IBKR (primary) + BBG (fallback)
+function buildPriceTable() {
+  // priceTable[ticker] = { last, prevClose, ccy, name, country, sector, type }
+  const pt = {};
+
+  // 1. BBG prices as base layer
+  for (const [tk, p] of Object.entries(bbgPrices)) {
+    if (tk.startsWith('_')) continue; // skip _fx_rates etc
+    pt[tk] = {
+      last: p.px_last || 0,
+      prevClose: p.prev_close || p.px_last || 0,
+      ccy: p.currency || 'USD',
+      name: p.name || tk,
+      country: p.country || '',
+      sector: p.sector || '',
+      type: p.asset_class || '',
+    };
   }
 
-  const positions = [];
-  for (const [tk, data] of Object.entries(byTicker)) {
-    let netQty = 0, totalCost = 0;
-    for (const b of data.buys) { netQty += b.qty; totalCost += b.qty * b.price; }
-    for (const s of data.sells) {
-      const sellQty = Math.min(s.qty, netQty);
-      netQty -= sellQty;
-      totalCost -= sellQty * (totalCost / (netQty + sellQty) || 0);
+  // 2. IBKR positions overwrite with live prices
+  if (ibkrData && ibkrData.positions) {
+    for (const p of ibkrData.positions) {
+      const tk = p.ticker;
+      if (!tk) continue;
+      pt[tk] = {
+        last: p.mkt_price || pt[tk]?.last || 0,
+        prevClose: pt[tk]?.prevClose || p.mkt_price || 0,  // IBKR doesn't give prevClose directly
+        ccy: p.currency || pt[tk]?.ccy || 'USD',
+        name: p.name || pt[tk]?.name || tk,
+        country: p.country || pt[tk]?.country || '',
+        sector: p.sector || pt[tk]?.sector || '',
+        type: p.type || pt[tk]?.type || 'STK',
+      };
     }
-    if (netQty < 0) netQty = 0;
-    const avgCost = netQty > 0 ? totalCost / netQty : 0;
-    const lastPrice = (prices[tk] && prices[tk].price) || avgCost;
-    const mktVal = netQty * lastPrice;
-    const unrealPnl = netQty * (lastPrice - avgCost);
-    const unrealPct = avgCost > 0 ? (lastPrice - avgCost) / avgCost : 0;
-
-    positions.push({
-      ticker: tk,
-      name: data.name,
-      qty: netQty,
-      avg_cost: avgCost,
-      mkt_price: lastPrice,
-      mkt_value: mktVal,
-      mkt_value_usd: mktVal, // manual positions assumed USD unless we add fx
-      cost_basis_usd: totalCost,
-      unrealised_pnl: unrealPnl,
-      unrealised_pnl_usd: unrealPnl,
-      unrealised_pnl_pct: unrealPct,
-      currency: data.currency,
-      country: (prices[tk] && prices[tk].country) || '',
-      type: (prices[tk] && prices[tk].type) || 'STK',
-      source: 'manual',
-      broker: data.broker,
-      closed: netQty === 0,
-    });
   }
-  return positions;
+
+  return pt;
 }
 
+function getFxToUsd(ccy) {
+  if (ccy === 'USD') return 1;
+  // Try BBG fx_rates first (JPYUSD = 0.00628 etc)
+  const bbgFx = bbgPrices._fx_rates || {};
+  if (bbgFx[ccy + 'USD']) return bbgFx[ccy + 'USD'];
+  // Try IBKR fx_rates (these are vs SGD base: JPY=0.008, USD=1.27)
+  if (ibkrFxRates[ccy] && ibkrFxRates.USD) return ibkrFxRates[ccy] / ibkrFxRates.USD;
+  return 1;
+}
+
+// ==================== POSITION ENGINE ====================
 async function loadAllPositions() {
-  let ibkrPositions = [];
   ibkrConnected = false;
   ibkrData = null;
 
+  // Load IBKR data (live or cached)
   try {
     const r = await fetch(IBKR_URL + '/portfolio', { signal: AbortSignal.timeout(5000) });
     if (r.ok) {
-      const data = await r.json();
-      ibkrData = data;
-      ibkrConnected = data.authenticated === true;
-      ibkrFxRates = data.fx_rates || {};
-      const usdRate = ibkrFxRates.USD || 1.27;
-
-      ibkrPositions = (data.positions || []).map(p => {
-        const costBasisUsd = (p.base_avg_cost * p.qty) / usdRate;
-        const mktValUsd = p.base_mkt_value / usdRate;
-        const unrealUsd = p.base_unrealised_pnl / usdRate;
-        const unrealPct = (p.avg_cost && p.avg_cost > 0) ? (p.mkt_price - p.avg_cost) / p.avg_cost : 0;
-        return {
-          ...p,
-          mkt_value_usd: mktValUsd,
-          cost_basis_usd: costBasisUsd,
-          unrealised_pnl_usd: unrealUsd,
-          unrealised_pnl_pct: unrealPct,
-          source: 'ibkr',
-          closed: false,
-        };
-      });
-
-      // Cache IBKR data
-      try { localStorage.setItem('ibkr_cache', JSON.stringify(data)); } catch (e) {}
+      ibkrData = await r.json();
+      ibkrConnected = ibkrData.authenticated === true;
+      ibkrFxRates = ibkrData.fx_rates || {};
+      try { localStorage.setItem('ibkr_cache', JSON.stringify(ibkrData)); } catch (e) {}
     }
   } catch (e) {
-    // Try cache
     try {
       const cached = JSON.parse(localStorage.getItem('ibkr_cache'));
       if (cached && cached.positions) {
         ibkrData = cached;
         ibkrFxRates = cached.fx_rates || {};
-        const usdRate = ibkrFxRates.USD || 1.27;
-        ibkrPositions = cached.positions.map(p => ({
-          ...p,
-          mkt_value_usd: p.base_mkt_value / usdRate,
-          cost_basis_usd: (p.base_avg_cost * p.qty) / usdRate,
-          unrealised_pnl_usd: p.base_unrealised_pnl / usdRate,
-          unrealised_pnl_pct: (p.avg_cost && p.avg_cost > 0) ? (p.mkt_price - p.avg_cost) / p.avg_cost : 0,
-          source: 'ibkr',
-          closed: false,
-        }));
       }
     } catch (e2) {}
   }
 
-  const manualPositions = computeManualPositions(manualTrades, bbgPrices);
+  // Build unified price table
+  const prices = buildPriceTable();
 
-  // Merge positions by ticker (combine IBKR + manual into one row per ticker)
-  const merged = {};
-  [...ibkrPositions, ...manualPositions].forEach(p => {
-    const tk = p.ticker;
-    if (!merged[tk]) {
-      merged[tk] = { ...p, sources: [p.source] };
-    } else {
-      const m = merged[tk];
-      // Combine quantities and values
-      const totalQty = m.qty + p.qty;
-      if (totalQty > 0) {
-        // Weighted average cost
-        const mCost = m.cost_basis_usd || (m.avg_cost * m.qty);
-        const pCost = p.cost_basis_usd || (p.avg_cost * p.qty);
-        m.cost_basis_usd = mCost + pCost;
-        m.avg_cost = m.cost_basis_usd / totalQty;
-      }
-      m.qty = totalQty;
-      m.mkt_value_usd = (m.mkt_value_usd || 0) + (p.mkt_value_usd || 0);
-      m.unrealised_pnl_usd = (m.unrealised_pnl_usd || 0) + (p.unrealised_pnl_usd || 0);
-      m.unrealised_pnl_pct = m.cost_basis_usd > 0
-        ? (m.mkt_value_usd - m.cost_basis_usd) / m.cost_basis_usd
-        : 0;
-      if (!m.sources.includes(p.source)) m.sources.push(p.source);
-      // Prefer IBKR mkt_price over manual
-      if (p.source === 'ibkr' && p.mkt_price) m.mkt_price = p.mkt_price;
-      // Merge name (prefer longer/better name)
-      if (p.name && p.name.length > (m.name || '').length) m.name = p.name;
+  // Step 1: Collect all holdings by ticker (IBKR qty + manual qty)
+  const holdings = {}; // ticker -> { ibkrQty, ibkrAvgCost, manualQty, manualAvgCost, ccy, broker }
+
+  // IBKR positions
+  if (ibkrData && ibkrData.positions) {
+    for (const p of ibkrData.positions) {
+      const tk = p.ticker;
+      if (!tk) continue;
+      holdings[tk] = holdings[tk] || { ibkrQty: 0, ibkrCost: 0, manualQty: 0, manualCost: 0, ccy: p.currency || 'USD', broker: 'IBKR' };
+      holdings[tk].ibkrQty += p.qty || 0;
+      holdings[tk].ibkrCost += (p.avg_cost || 0) * (p.qty || 0);
     }
-  });
-  allPositions = Object.values(merged);
+  }
+
+  // Manual trades
+  for (const t of manualTrades) {
+    const tk = t.ticker;
+    if (!holdings[tk]) holdings[tk] = { ibkrQty: 0, ibkrCost: 0, manualQty: 0, manualCost: 0, ccy: t.currency || 'USD', broker: t.broker || 'UBS' };
+    const qty = parseFloat(t.qty) || 0;
+    const px = parseFloat(t.price) || 0;
+    if (t.side === 'buy') {
+      holdings[tk].manualQty += qty;
+      holdings[tk].manualCost += qty * px;
+    } else {
+      // Sell reduces manual position
+      const avgCost = holdings[tk].manualQty > 0 ? holdings[tk].manualCost / holdings[tk].manualQty : px;
+      holdings[tk].manualQty -= qty;
+      holdings[tk].manualCost = holdings[tk].manualQty > 0 ? avgCost * holdings[tk].manualQty : 0;
+    }
+    if (t.broker) holdings[tk].broker = t.broker;
+  }
+
+  // Step 2: For each ticker, compute one merged position row
+  allPositions = [];
+  for (const [tk, h] of Object.entries(holdings)) {
+    const totalQty = h.ibkrQty + Math.max(0, h.manualQty);
+    if (totalQty <= 0) continue;
+
+    const totalCostLocal = h.ibkrCost + Math.max(0, h.manualCost);
+    const avgCost = totalCostLocal / totalQty;
+    const p = prices[tk] || {};
+    const last = p.last || avgCost;
+    const prevClose = p.prevClose || last;
+    const ccy = h.ccy;
+    const fx = getFxToUsd(ccy);
+
+    const mktValUsd = totalQty * last * fx;
+    const costUsd = totalCostLocal * fx;
+    const unrealPnl = mktValUsd - costUsd;
+    const unrealPct = costUsd > 0 ? unrealPnl / costUsd : 0;
+    const dailyPnl = totalQty * (last - prevClose) * fx;
+    const dailyPct = prevClose > 0 ? (last - prevClose) / prevClose : 0;
+
+    // Sources
+    const sources = [];
+    if (h.ibkrQty > 0) sources.push('IBKR');
+    if (h.manualQty > 0) sources.push(h.broker || 'UBS');
+
+    allPositions.push({
+      ticker: tk,
+      name: p.name || tk,
+      qty: totalQty,
+      avg_cost: avgCost,
+      mkt_price: last,
+      prev_close: prevClose,
+      mkt_value_usd: mktValUsd,
+      cost_basis_usd: costUsd,
+      unrealised_pnl_usd: unrealPnl,
+      unrealised_pnl_pct: unrealPct,
+      daily_pnl_usd: dailyPnl,
+      daily_pnl_pct: dailyPct,
+      currency: ccy,
+      country: p.country || '',
+      sector: (p.sector && p.sector !== 'nan') ? p.sector : '',
+      type: p.type || '',
+      sources: sources,
+      closed: false,
+    });
+  }
+
+  // Sort by mkt value descending
+  allPositions.sort((a, b) => (b.mkt_value_usd || 0) - (a.mkt_value_usd || 0));
 }
 
 // ==================== RENDER ====================
@@ -661,19 +688,19 @@ function renderKPIs() {
   const totalCost = openPositions.reduce((s, p) => s + (p.cost_basis_usd || 0), 0);
   const totalUnreal = openPositions.reduce((s, p) => s + (p.unrealised_pnl_usd || 0), 0);
   const unrealPct = totalCost > 0 ? totalUnreal / totalCost : 0;
-  const ibkrCount = openPositions.filter(p => (p.sources || []).includes('ibkr')).length;
-  const manualCount = openPositions.filter(p => (p.sources || []).includes('manual')).length;
+  const ibkrCount = openPositions.filter(p => (p.sources || []).some(s => s === 'IBKR')).length;
+  const manualCount = openPositions.filter(p => (p.sources || []).some(s => s !== 'IBKR')).length;
 
-  // Daily P&L: sum realised_pnl if available
-  const dailyPnl = openPositions.reduce((s, p) => s + (p.realised_pnl || 0), 0);
+  const dailyPnl = openPositions.reduce((s, p) => s + (p.daily_pnl_usd || 0), 0);
+  const dailyPct = totalNav > 0 ? dailyPnl / (totalNav - dailyPnl) : 0;
 
   const cards = [
     { label: 'Total NAV (USD)', value: fmt$(totalNav) },
     { label: 'Cost Basis (USD)', value: fmt$(totalCost) },
+    { label: 'Daily P&L', value: fmt$(dailyPnl), cls: pnlClass(dailyPnl) },
+    { label: 'Daily P&L %', value: fmtPct(dailyPct), cls: pnlClass(dailyPct) },
     { label: 'Unrealised P&L', value: fmt$(totalUnreal), cls: pnlClass(totalUnreal) },
-    { label: 'Unreal P&L %', value: fmtPct(unrealPct), cls: pnlClass(unrealPct) },
-    { label: 'Daily P&L', value: dailyPnl !== 0 ? fmt$(dailyPnl) : '--', cls: pnlClass(dailyPnl) },
-    { label: 'Positions', value: `${openPositions.length} (${ibkrCount} IB + ${manualCount} Manual)` },
+    { label: 'Unreal %', value: fmtPct(unrealPct), cls: pnlClass(unrealPct) },
   ];
 
   document.getElementById('kpi-row').innerHTML = cards.map(c =>
@@ -691,30 +718,24 @@ function renderPositionsTable() {
 
   const hdr = `<table class="vol-table">
     <thead><tr>
-      <th>Ticker</th><th>Name</th><th>Broker</th><th>Type</th><th>Ccy</th>
+      <th style="text-align:left">Ticker</th><th style="text-align:left">Name</th><th>Ccy</th>
       <th>Qty</th><th>Avg Cost</th><th>Last</th><th>Mkt Val (USD)</th>
-      <th>Unreal P&L</th><th>Unreal %</th>
+      <th>Daily P&L</th><th>Daily %</th><th>Unreal P&L</th><th>Unreal %</th>
     </tr></thead><tbody>`;
 
   const rows = positions.map(p => {
-    const sources = p.sources || [p.source || 'manual'];
-    const badges = sources.map(s => s === 'ibkr'
-      ? '<span class="badge badge-ib">IB</span>'
-      : '<span class="badge badge-manual">' + (p.broker || 'UBS') + '</span>'
-    ).join(' ');
-    const unrealPct = p.unrealised_pnl_pct != null ? fmtPct(p.unrealised_pnl_pct) : '--';
     return `<tr>
       <td style="text-align:left; font-weight:600;">${p.ticker}</td>
-      <td style="text-align:left; color:var(--text-dim); max-width:200px; overflow:hidden; text-overflow:ellipsis;">${p.name || ''}</td>
-      <td style="text-align:left">${badges}</td>
-      <td>${p.type || p.asset_class || ''}</td>
+      <td style="text-align:left; color:var(--text-dim); max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${p.name || ''}</td>
       <td>${p.currency || ''}</td>
       <td>${fmtNum(p.qty, 0)}</td>
       <td>${fmtNum(p.avg_cost, 2)}</td>
       <td>${fmtNum(p.mkt_price, 2)}</td>
       <td>${fmt$(p.mkt_value_usd)}</td>
+      <td class="${pnlClass(p.daily_pnl_usd)}">${fmt$(p.daily_pnl_usd)}</td>
+      <td class="${pnlClass(p.daily_pnl_pct)}">${fmtPct(p.daily_pnl_pct)}</td>
       <td class="${pnlClass(p.unrealised_pnl_usd)}">${fmt$(p.unrealised_pnl_usd)}</td>
-      <td class="${pnlClass(p.unrealised_pnl_pct)}">${unrealPct}</td>
+      <td class="${pnlClass(p.unrealised_pnl_pct)}">${fmtPct(p.unrealised_pnl_pct)}</td>
     </tr>`;
   }).join('');
 
@@ -1088,19 +1109,20 @@ async function doRefresh() {
 
 async function triggerBloombergEnrich() {
   try {
-    const r = await fetch(`https://api.github.com/repos/${GH_REPO}/dispatches`, {
+    const r = await fetch(`https://api.github.com/repos/${GH_REPO}/actions/workflows/update_prices.yml/dispatches`, {
       method: 'POST',
       headers: {
         'Authorization': 'token ' + ghToken,
         'Accept': 'application/vnd.github.v3+json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ event_type: 'enrich-portfolio' }),
+      body: JSON.stringify({ ref: 'main' }),
     });
     if (r.ok || r.status === 204) {
-      alert('Bloomberg enrichment triggered. Data will update in a few minutes.');
+      alert('Bloomberg enrichment triggered! Prices will update in ~1 min (needs BBG + self-hosted runner).');
     } else {
-      alert('Failed to trigger workflow: ' + r.status);
+      const txt = await r.text();
+      alert('Failed: ' + r.status + ' — ' + txt.slice(0, 100));
     }
   } catch (e) {
     alert('Error: ' + e.message);
