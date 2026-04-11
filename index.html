@@ -721,7 +721,7 @@ function renderPositionsTable() {
 
   const hdr = `<table class="vol-table">
     <thead><tr>
-      <th style="text-align:left">Ticker</th><th style="text-align:left">Name</th><th>Ccy</th>
+      <th style="text-align:left">Ticker</th><th style="text-align:left">Name</th>
       <th>Qty</th><th>Avg Cost</th><th>Last</th><th>Mkt Val (USD)</th>
       <th>Daily P&L</th><th>Unrealised P&L</th>
     </tr></thead><tbody>`;
@@ -732,7 +732,6 @@ function renderPositionsTable() {
     return `<tr>
       <td style="text-align:left; font-weight:600;">${p.ticker}</td>
       <td style="text-align:left; color:var(--text-dim); max-width:250px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${p.name || ''}</td>
-      <td>${p.currency || ''}</td>
       <td>${fmtNum(p.qty, 0)}</td>
       <td>${fmtNum(p.avg_cost, 2)}</td>
       <td>${fmtNum(p.mkt_price, 2)}</td>
