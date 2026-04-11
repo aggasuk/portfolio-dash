@@ -702,10 +702,8 @@ function renderKPIs() {
   const cards = [
     { label: 'Total NAV (USD)', value: fmt$(totalNav) },
     { label: 'Cost Basis (USD)', value: fmt$(totalCost) },
-    { label: 'Daily P&L', value: fmt$(dailyPnl), cls: pnlClass(dailyPnl) },
-    { label: 'Daily P&L %', value: fmtPct(dailyPct), cls: pnlClass(dailyPct) },
-    { label: 'Unrealised P&L', value: fmt$(totalUnreal), cls: pnlClass(totalUnreal) },
-    { label: 'Unreal %', value: fmtPct(unrealPct), cls: pnlClass(unrealPct) },
+    { label: 'Daily P&L', value: `${fmt$(dailyPnl)} (${fmtPct(dailyPct)})`, cls: pnlClass(dailyPnl) },
+    { label: 'Unrealised P&L', value: `${fmt$(totalUnreal)} (${fmtPct(unrealPct)})`, cls: pnlClass(totalUnreal) },
   ];
 
   document.getElementById('kpi-row').innerHTML = cards.map(c =>
