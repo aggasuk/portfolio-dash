@@ -731,11 +731,11 @@ function renderPositionsTable() {
     const unrealStr = `<span class="${pnlClass(p.unrealised_pnl_usd)}">${fmt$(p.unrealised_pnl_usd)}</span> <span class="${pnlClass(p.unrealised_pnl_pct)}" style="opacity:0.7">(${fmtPct(p.unrealised_pnl_pct)})</span>`;
     return `<tr>
       <td style="text-align:left; font-weight:600;">${p.ticker}</td>
-      <td style="text-align:left; color:var(--text-dim); max-width:250px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${p.name || ''}</td>
+      <td style="text-align:left; color:var(--text-dim); max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${p.name || ''}">${p.name || ''}</td>
       <td>${fmtNum(p.qty, 0)}</td>
       <td>${fmtNum(p.avg_cost, 2)}</td>
       <td>${fmtNum(p.mkt_price, 2)}</td>
-      <td>${fmt$(p.mkt_value_usd)}</td>
+      <td>${fmtNum(p.mkt_value_usd/1000, 1)}k</td>
       <td>${dailyStr}</td>
       <td>${unrealStr}</td>
     </tr>`;
