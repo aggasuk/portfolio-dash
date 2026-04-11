@@ -82,11 +82,13 @@
   .vol-table th:first-child, .vol-table td:first-child { text-align: left; }
   .vol-table th:nth-child(2), .vol-table td:nth-child(2) { text-align: left; }
   .vol-table td {
-    padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--border);
-    white-space: nowrap;
+    padding: 5px 8px; text-align: right; border-bottom: 1px solid var(--border);
+    white-space: nowrap; font-size: 0.75rem;
   }
   .vol-table tr:hover { background: var(--surface2); }
   .table-scroll { overflow-x: auto; max-height: 600px; overflow-y: auto; }
+  .kpi-row { flex-wrap: nowrap; overflow-x: auto; }
+  .snap-card { min-width: 140px; flex-shrink: 0; }
   .pnl-pos { color: var(--green); } .pnl-neg { color: var(--red); }
 
   /* Source badges */
