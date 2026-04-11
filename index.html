@@ -518,20 +518,19 @@ function buildPriceTable() {
     };
   }
 
-  // 2. IBKR positions overwrite with live prices
+  // 2. IBKR positions: overwrite ONLY the live price, keep BBG metadata
   if (ibkrData && ibkrData.positions) {
     for (const p of ibkrData.positions) {
       const tk = p.ticker;
       if (!tk) continue;
-      pt[tk] = {
-        last: p.mkt_price || pt[tk]?.last || 0,
-        prevClose: pt[tk]?.prevClose || p.mkt_price || 0,  // IBKR doesn't give prevClose directly
-        ccy: p.currency || pt[tk]?.ccy || 'USD',
-        name: p.name || pt[tk]?.name || tk,
-        country: p.country || pt[tk]?.country || '',
-        sector: p.sector || pt[tk]?.sector || '',
-        type: p.type || pt[tk]?.type || 'STK',
-      };
+      if (!pt[tk]) pt[tk] = { last: 0, prevClose: 0, ccy: 'USD', name: tk, country: '', sector: '', type: '' };
+      // Only update price from IBKR (it's more recent), keep BBG name/country/sector
+      if (p.mkt_price) pt[tk].last = p.mkt_price;
+      if (!pt[tk].ccy || pt[tk].ccy === 'USD') pt[tk].ccy = p.currency || 'USD';
+      // Only use IBKR name/country if BBG doesn't have it
+      if (!pt[tk].name || pt[tk].name === tk) pt[tk].name = p.name || tk;
+      if (!pt[tk].country) pt[tk].country = p.country || '';
+      if (!pt[tk].type) pt[tk].type = p.type || '';
     }
   }
 
