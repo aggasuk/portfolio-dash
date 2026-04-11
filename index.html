@@ -536,6 +536,17 @@ function buildPriceTable() {
     }
   }
 
+  // 3. Enrich with ticker_map metadata (class, sector, country, name)
+  for (const [tk, info] of Object.entries(tickerMap)) {
+    if (!pt[tk]) continue;
+    if (!pt[tk].type || pt[tk].type === 'nan') pt[tk].type = info.class || '';
+    if (!pt[tk].sector || pt[tk].sector === 'nan') pt[tk].sector = info.sector || '';
+    if (!pt[tk].country) pt[tk].country = info.geo || '';
+    if (!pt[tk].name || pt[tk].name === tk) pt[tk].name = info.name || tk;
+    // Mark bonds (Govt/Corp) — prices quoted per 100 face value
+    if (info.bbg && /\b(Govt|Corp)\b/i.test(info.bbg)) pt[tk].isBond = true;
+  }
+
   return pt;
 }
 
@@ -621,12 +632,14 @@ async function loadAllPositions() {
     const prevClose = p.prevClose || last;
     const ccy = h.ccy;
     const fx = getFxToUsd(ccy);
+    // Bonds (Govt/Corp) quote price per 100 face — divide by 100
+    const priceFactor = p.isBond ? 0.01 : 1;
 
-    const mktValUsd = totalQty * last * fx;
-    const costUsd = totalCostLocal * fx;
+    const mktValUsd = totalQty * last * priceFactor * fx;
+    const costUsd = totalCostLocal * priceFactor * fx;
     const unrealPnl = mktValUsd - costUsd;
     const unrealPct = costUsd > 0 ? unrealPnl / costUsd : 0;
-    const dailyPnl = totalQty * (last - prevClose) * fx;
+    const dailyPnl = totalQty * (last - prevClose) * priceFactor * fx;
     const dailyPct = prevClose > 0 ? (last - prevClose) / prevClose : 0;
 
     // Sources
