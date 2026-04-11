@@ -473,22 +473,25 @@ async function ghPut(repo, path, content, sha, msg) {
 
 // ==================== DATA LOADING ====================
 async function loadTickerMap() {
-  try { const d = await ghGet(GH_DASH_REPO, GH_TICKER_PATH); tickerMap = d.content || {}; } catch (e) { tickerMap = {}; }
+  try { const r = await fetch('ticker_map.json'); if (r.ok) tickerMap = await r.json(); } catch (e) { tickerMap = {}; }
 }
 
 async function loadBbgPrices() {
   try {
-    const d = await ghGet(GH_DASH_REPO, GH_PRICES_PATH);
-    const raw = d.content || {};
-    // Flatten: store prices[ticker] directly, attach fx_rates as _fx_rates
-    bbgPrices = raw.prices || {};
-    bbgPrices._fx_rates = raw.fx_rates || {};
-    bbgPrices._last_updated = raw.last_updated || null;
-  } catch (e) { bbgPrices = {}; }
+    // Load directly from Netlify (static file, no auth needed)
+    const r = await fetch('portfolio_prices.json?t=' + Date.now());
+    if (r.ok) {
+      const raw = await r.json();
+      bbgPrices = raw.prices || {};
+      bbgPrices._fx_rates = raw.fx_rates || {};
+      bbgPrices._last_updated = raw.last_updated || null;
+      console.log('[BBG] Loaded prices for', Object.keys(bbgPrices).filter(k => !k.startsWith('_')).length, 'tickers');
+    }
+  } catch (e) { console.warn('[BBG] Failed to load prices:', e); bbgPrices = {}; }
 }
 
 async function loadNavHistory() {
-  try { const d = await ghGet(GH_DASH_REPO, GH_NAV_PATH); navHistory = d.content || []; } catch (e) { navHistory = []; }
+  try { const r = await fetch('nav_history.json'); if (r.ok) navHistory = await r.json(); } catch (e) { navHistory = []; }
 }
 
 async function loadManualTrades() {
