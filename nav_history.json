@@ -6,80 +6,169 @@
       "cost": 2300553.72,
       "daily_pnl": 9025.49,
       "positions": {
+        "1306": {
+          "qty": 2000,
+          "mkt_val_usd": 4980.04
+        },
         "1615": {
-          "qty": 13500.0,
+          "qty": 13500,
           "mkt_val_usd": 53140.1
         },
         "CPER": {
-          "qty": 1400.0,
-          "mkt_val_usd": 50372.0
+          "qty": 1400,
+          "mkt_val_usd": 50372
         },
         "EMLC": {
-          "qty": 1000.0,
-          "mkt_val_usd": 25785.0
+          "qty": 1000,
+          "mkt_val_usd": 25785
         },
         "IAU": {
-          "qty": 4637.0,
+          "qty": 4637,
           "mkt_val_usd": 415846.16
         },
         "QQQ": {
-          "qty": 310.0,
+          "qty": 310,
           "mkt_val_usd": 189599.1
         },
         "REMX": {
-          "qty": 400.0,
-          "mkt_val_usd": 37996.0
+          "qty": 400,
+          "mkt_val_usd": 37996
         },
         "VOO": {
-          "qty": 330.0,
-          "mkt_val_usd": 206448.0
+          "qty": 330,
+          "mkt_val_usd": 206448
         },
         "AZN": {
-          "qty": 2.0,
+          "qty": 2,
           "mkt_val_usd": 40993.07
         },
         "IGV": {
-          "qty": 252.0,
+          "qty": 252,
           "mkt_val_usd": 18757.62
         },
         "AMZN": {
-          "qty": 1000.0,
-          "mkt_val_usd": 238390.0
+          "qty": 1000,
+          "mkt_val_usd": 238390
         },
         "NVDA": {
-          "qty": 459.0,
+          "qty": 459,
           "mkt_val_usd": 86693.62
         },
         "INDA": {
-          "qty": 1418.0,
+          "qty": 1418,
           "mkt_val_usd": 69949.94
         },
         "KWEB": {
-          "qty": 6700.0,
-          "mkt_val_usd": 192893.0
+          "qty": 6700,
+          "mkt_val_usd": 192893
         },
         "EWZ": {
-          "qty": 1500.0,
-          "mkt_val_usd": 61680.0
+          "qty": 1500,
+          "mkt_val_usd": 61680
         },
         "MUFG": {
-          "qty": 7400.0,
-          "mkt_val_usd": 133459.0
+          "qty": 7400,
+          "mkt_val_usd": 133459
         },
         "UST2Y": {
-          "qty": 5280.0,
+          "qty": 5280,
           "mkt_val_usd": 530021.25
         },
-        "1306": {
-          "qty": 2000.0,
-          "mkt_val_usd": 4980.04
-        },
         "BNO": {
-          "qty": 1300.0,
-          "mkt_val_usd": 62959.0
+          "qty": 1300,
+          "mkt_val_usd": 62959
         }
       },
       "spx_close": 6828.58
+    },
+    {
+      "date": "2026-04-12",
+      "nav": 2557680.58,
+      "cost": 2518366.08,
+      "daily_pnl": 2696.71,
+      "positions": {
+        "1306": {
+          "qty": 20000,
+          "mkt_val_usd": 49776.61
+        },
+        "1615": {
+          "qty": 7000,
+          "mkt_val_usd": 27540.97
+        },
+        "UST2Y": {
+          "qty": 528000,
+          "mkt_val_usd": 529980
+        },
+        "IAU": {
+          "qty": 4637,
+          "mkt_val_usd": 414570.98
+        },
+        "AMZN": {
+          "qty": 1000,
+          "mkt_val_usd": 237625
+        },
+        "VOO": {
+          "qty": 330,
+          "mkt_val_usd": 206368.8
+        },
+        "KWEB": {
+          "qty": 6700,
+          "mkt_val_usd": 192792.5
+        },
+        "QQQ": {
+          "qty": 310,
+          "mkt_val_usd": 189847.09
+        },
+        "MUFG": {
+          "qty": 7400,
+          "mkt_val_usd": 133311
+        },
+        "NVDA": {
+          "qty": 459,
+          "mkt_val_usd": 86583.51
+        },
+        "CPER": {
+          "qty": 2000,
+          "mkt_val_usd": 71791
+        },
+        "BNO": {
+          "qty": 1500,
+          "mkt_val_usd": 70683.15
+        },
+        "WEAT": {
+          "qty": 3200,
+          "mkt_val_usd": 69568.64
+        },
+        "EWZ": {
+          "qty": 1500,
+          "mkt_val_usd": 61515
+        },
+        "CORN": {
+          "qty": 2800,
+          "mkt_val_usd": 49896
+        },
+        "CANE": {
+          "qty": 4800,
+          "mkt_val_usd": 44783.95
+        },
+        "AZN": {
+          "qty": 188,
+          "mkt_val_usd": 38527.76
+        },
+        "REMX": {
+          "qty": 400,
+          "mkt_val_usd": 37876.68
+        },
+        "EMLC": {
+          "qty": 1000,
+          "mkt_val_usd": 25812.5
+        },
+        "IGV": {
+          "qty": 252,
+          "mkt_val_usd": 18829.44
+        }
+      },
+      "spx_close": 0
     }
   ]
 }
