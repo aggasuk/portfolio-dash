@@ -223,22 +223,43 @@ def compute_nav(tickers_info, prices, fx_rates, ibkr_data):
     daily_pnl = 0
     positions = {}
 
-    # IBKR positions (use IBKR's own values, converted to USD)
+    # IBKR positions — use qty * mkt_price with FX conversion
     if ibkr_data and ibkr_data.get("positions"):
-        usd_rate = ibkr_data.get("fx_rates", {}).get("USD", 1.27)
+        ibkr_fx = ibkr_data.get("fx_rates", {})
+        usd_rate = ibkr_fx.get("USD", 1.27)  # SGD per USD
         for p in ibkr_data["positions"]:
             tk = p.get("ticker", "")
-            base_val = p.get("base_mkt_value", 0)
-            mkt_val_usd = base_val / usd_rate if usd_rate else 0
-            base_cost = p.get("base_avg_cost", 0) * p.get("qty", 0)
-            cost_usd = base_cost / usd_rate if usd_rate else 0
-            unreal_usd = p.get("base_unrealised_pnl", 0) / usd_rate if usd_rate else 0
+            qty = p.get("qty", 0)
+            mkt_price = p.get("mkt_price", 0)
+            avg_cost_px = p.get("avg_cost", 0)
+            ccy = p.get("currency", "USD")
+
+            # Bond price factor (price per 100 face)
+            price_factor = 1.0
+            if tk in (tickers or {}):
+                bbg_tk = tickers[tk].get("bbg", "")
+                if "Govt" in bbg_tk or "Corp" in bbg_tk:
+                    price_factor = 0.01
+
+            # FX to USD
+            if ccy == "USD":
+                fx = 1.0
+            else:
+                fx_key = ccy + "USD"
+                fx = fx_rates.get(fx_key, 1.0) if fx_rates else 1.0
+                # Fallback: derive from IBKR SGD-based rates
+                if fx == 1.0 and ccy != "USD" and ccy in ibkr_fx:
+                    fx = ibkr_fx[ccy] / usd_rate if usd_rate else 1.0
+
+            mkt_val_usd = qty * mkt_price * price_factor * fx
+            cost_usd = qty * avg_cost_px * price_factor * fx
+            unreal_usd = mkt_val_usd - cost_usd
 
             nav += mkt_val_usd
             cost += cost_usd
-            daily_pnl += unreal_usd  # approximate
+            daily_pnl += unreal_usd
             if tk:
-                positions[tk] = {"qty": p.get("qty", 0), "mkt_val_usd": round(mkt_val_usd, 2)}
+                positions[tk] = {"qty": qty, "mkt_val_usd": round(mkt_val_usd, 2)}
 
     # Manual positions (from prices)
     for tk, info in tickers_info.items():

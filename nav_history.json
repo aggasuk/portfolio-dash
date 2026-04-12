@@ -80,55 +80,6 @@
         }
       },
       "spx_close": 6828.58
-    },
-    {
-      "date": "2026-04-11",
-      "nav": 0.0,
-      "cost": 0.0,
-      "daily_pnl": 0.0,
-      "positions": {
-        "CORN": {
-          "qty": 2800.0,
-          "mkt_val_usd": 0.0
-        },
-        "VOO": {
-          "qty": 330.0,
-          "mkt_val_usd": 0.0
-        },
-        "QQQ": {
-          "qty": 310.0,
-          "mkt_val_usd": 0.0
-        },
-        "CANE": {
-          "qty": 4800.0,
-          "mkt_val_usd": 0.0
-        },
-        "BNO": {
-          "qty": 1500.0,
-          "mkt_val_usd": 0.0
-        },
-        "CPER": {
-          "qty": 2000.0,
-          "mkt_val_usd": 0.0
-        },
-        "REMX": {
-          "qty": 400.0,
-          "mkt_val_usd": 0.0
-        },
-        "EMLC": {
-          "qty": 1000.0,
-          "mkt_val_usd": 0.0
-        },
-        "WEAT": {
-          "qty": 3200.0,
-          "mkt_val_usd": 0.0
-        },
-        "IAU": {
-          "qty": 500.0,
-          "mkt_val_usd": 0.0
-        }
-      },
-      "spx_close": 6820.22
     }
   ]
 }

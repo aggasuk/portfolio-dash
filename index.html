@@ -56,11 +56,12 @@
   /* KPI snap cards */
   .kpi-row { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
   .snap-card {
-    flex: 1; min-width: 140px; background: var(--surface); border: 1px solid var(--border);
+    flex: 1; min-width: 130px; background: var(--surface); border: 1px solid var(--border);
     border-radius: 12px; padding: 14px 16px;
   }
   .snap-card .label { font-size: 0.68rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
   .snap-card .value { font-size: 1.05rem; font-weight: 700; }
+  .snap-card { min-width: 140px; flex: 1 1 15%; }
 
   /* Chart wrap */
   .chart-wrap {
@@ -81,6 +82,9 @@
   }
   .vol-table th:first-child, .vol-table td:first-child { text-align: left; }
   .vol-table th:nth-child(2), .vol-table td:nth-child(2) { text-align: left; }
+  .vol-table th.sortable { cursor: pointer; user-select: none; }
+  .vol-table th.sortable:hover { color: var(--text); }
+  .sort-arrow { margin-left: 4px; font-size: 0.6rem; }
   .vol-table td {
     padding: 5px 8px; text-align: right; border-bottom: 1px solid var(--border);
     white-space: nowrap; font-size: 0.75rem;
@@ -88,7 +92,6 @@
   .vol-table tr:hover { background: var(--surface2); }
   .table-scroll { overflow-x: auto; max-height: 600px; overflow-y: auto; }
   .kpi-row { flex-wrap: wrap; }
-  .snap-card { min-width: 180px; flex: 1 1 22%; }
   .pnl-pos { color: var(--green); } .pnl-neg { color: var(--red); }
 
   /* Source badges */
@@ -235,6 +238,7 @@
 
       <div class="filter-row" id="pos-filter">
         <button class="filter-btn active" onclick="setPositionFilter('open',this)">Open</button>
+        <button class="filter-btn" onclick="setPositionFilter('closed',this)">Closed</button>
       </div>
 
       <div class="chart-wrap">
@@ -311,7 +315,7 @@
 // ==================== GLOBALS ====================
 let ghToken = localStorage.getItem('portfolio_gh_token') || '';
 let ibkrConnected = false;
-let ibkrData = null; // full IBKR response
+let ibkrData = null;
 let ibkrFxRates = {};
 let manualTrades = [];
 let bbgPrices = {};
@@ -320,6 +324,12 @@ let navHistory = [];
 let allPositions = [];
 let positionFilter = 'open';
 let analysisRange = 'YTD';
+let ibkrSnapshot = null;
+let ibkrSnapshotSha = null;
+let closedPositions = [];
+let navHistorySha = null;
+let sortColumn = 'mkt_value_usd';
+let sortAscending = false;
 
 const GH_TRADES_REPO = 'aggasuk/trade-book';
 const GH_DASH_REPO = 'aggasuk/portfolio-dash';
@@ -327,6 +337,7 @@ const GH_TRADES_PATH = 'portfolio_trades.json';
 const GH_PRICES_PATH = 'portfolio_prices.json';
 const GH_NAV_PATH = 'nav_history.json';
 const GH_TICKER_PATH = 'ticker_map.json';
+const GH_IBKR_SNAPSHOT_PATH = 'ibkr_snapshot.json';
 const IBKR_URL = 'http://localhost:8090';
 
 const plotlyLayout = {
@@ -391,7 +402,6 @@ async function doAuth() {
   const token = el.value.trim();
   if (!token) { errEl.textContent = 'Token required'; errEl.style.display = 'block'; return; }
 
-  // Validate GitHub token
   try {
     const r = await fetch(`https://api.github.com/repos/${GH_TRADES_REPO}`, {
       headers: { 'Authorization': 'token ' + token }
@@ -412,7 +422,6 @@ async function doAuth() {
 
 // Check auth on load
 (async function () {
-  // Check IBKR for auth gate display
   const ib = await checkIbkr();
   const dot = document.getElementById('auth-ibkr-dot');
   const txt = document.getElementById('auth-ibkr-text');
@@ -426,7 +435,6 @@ async function doAuth() {
     txt.style.color = 'var(--amber)';
   }
 
-  // Auto-login if token saved
   if (ghToken) {
     try {
       const r = await fetch(`https://api.github.com/repos/${GH_TRADES_REPO}`, {
@@ -439,7 +447,6 @@ async function doAuth() {
         return;
       }
     } catch (e) {}
-    // Token expired
     ghToken = '';
     localStorage.removeItem('portfolio_gh_token');
   }
@@ -480,7 +487,6 @@ async function loadTickerMap() {
 
 async function loadBbgPrices() {
   try {
-    // Load directly from Netlify (static file, no auth needed)
     const r = await fetch('portfolio_prices.json?t=' + Date.now());
     if (r.ok) {
       const raw = await r.json();
@@ -493,22 +499,152 @@ async function loadBbgPrices() {
 }
 
 async function loadNavHistory() {
-  try { const r = await fetch('nav_history.json'); if (r.ok) navHistory = await r.json(); } catch (e) { navHistory = []; }
+  try {
+    const { content, sha } = await ghGet(GH_DASH_REPO, GH_NAV_PATH);
+    if (content && content.snapshots) {
+      navHistory = content.snapshots.filter(s => s.nav > 0);
+    } else if (Array.isArray(content)) {
+      navHistory = content.filter(s => s.nav > 0);
+    } else {
+      navHistory = [];
+    }
+    navHistorySha = sha;
+  } catch (e) {
+    // Fallback to static file
+    try { const r = await fetch('nav_history.json'); if (r.ok) { const d = await r.json(); navHistory = (d.snapshots || []).filter(s => s.nav > 0); } } catch (e2) {}
+  }
 }
 
 async function loadManualTrades() {
   try { const d = await ghGet(GH_TRADES_REPO, GH_TRADES_PATH); manualTrades = d.content || []; } catch (e) { manualTrades = []; }
 }
 
+async function loadIbkrSnapshot() {
+  try {
+    const { content, sha } = await ghGet(GH_DASH_REPO, GH_IBKR_SNAPSHOT_PATH);
+    ibkrSnapshot = content;
+    ibkrSnapshotSha = sha;
+    if (ibkrSnapshot && ibkrSnapshot.closed_positions) {
+      closedPositions = ibkrSnapshot.closed_positions;
+    }
+    console.log('[IBKR] Loaded snapshot from GitHub, closed positions:', closedPositions.length);
+  } catch (e) {
+    console.warn('[IBKR] Failed to load snapshot:', e);
+  }
+}
+
+async function saveIbkrSnapshot() {
+  if (!ibkrConnected || !ibkrData) return;
+  try {
+    const snapshot = {
+      last_updated: ibkrData.last_updated || new Date().toISOString(),
+      fx_rates: ibkrData.fx_rates || {},
+      positions: ibkrData.positions || [],
+      closed_positions: closedPositions,
+    };
+    const resp = await ghPut(GH_DASH_REPO, GH_IBKR_SNAPSHOT_PATH, snapshot, ibkrSnapshotSha, 'IBKR snapshot');
+    ibkrSnapshotSha = resp.content.sha;
+    ibkrSnapshot = snapshot;
+    console.log('[IBKR] Saved snapshot to GitHub');
+  } catch (e) {
+    console.error('[IBKR] Save snapshot failed:', e);
+  }
+}
+
+function detectClosedPositions() {
+  if (!ibkrConnected || !ibkrData || !ibkrSnapshot || !ibkrSnapshot.positions) return;
+
+  const oldPositions = {};
+  for (const p of ibkrSnapshot.positions) {
+    if (p.ticker) oldPositions[p.ticker] = p;
+  }
+
+  const currentTickers = new Set((ibkrData.positions || []).map(p => p.ticker).filter(Boolean));
+  const today = new Date().toISOString().slice(0, 10);
+
+  for (const [tk, oldP] of Object.entries(oldPositions)) {
+    if (currentTickers.has(tk)) continue;
+    // Position disappeared — check it's not already recorded
+    if (closedPositions.some(cp => cp.ticker === tk && cp.close_date === today)) continue;
+
+    const closePrice = oldP.mkt_price || oldP.avg_cost || 0;
+    const avgCost = oldP.avg_cost || 0;
+    const qty = oldP.qty || 0;
+    const ccy = oldP.currency || 'USD';
+
+    // Determine price factor from ticker_map
+    const info = tickerMap[tk];
+    const priceFactor = (info && info.bbg && /\b(Govt|Corp)\b/i.test(info.bbg)) ? 0.01 : 1;
+    const fx = getFxToUsd(ccy);
+    const realizedPnl = (closePrice - avgCost) * qty * priceFactor * fx;
+
+    closedPositions.push({
+      ticker: tk,
+      name: oldP.name || tk,
+      qty_closed: qty,
+      avg_cost: avgCost,
+      close_price: closePrice,
+      realized_pnl: Math.round(realizedPnl * 100) / 100,
+      close_date: today,
+      currency: ccy,
+      price_factor: priceFactor,
+    });
+    console.log(`[CLOSED] ${tk}: ${qty} shares, realized P&L: $${realizedPnl.toFixed(2)}`);
+  }
+}
+
+async function saveNavSnapshot() {
+  if (!ibkrConnected || !allPositions.length) return;
+  const today = new Date().toISOString().slice(0, 10);
+
+  if (navHistory.some(s => s.date === today)) {
+    console.log('[NAV] Snapshot for', today, 'already exists');
+    return;
+  }
+
+  const openPositions = allPositions.filter(p => !p.closed && p.qty > 0);
+  const totalNav = openPositions.reduce((s, p) => s + (p.mkt_value_usd || 0), 0);
+  const totalCost = openPositions.reduce((s, p) => s + (p.cost_basis_usd || 0), 0);
+  const dailyPnl = openPositions.reduce((s, p) => s + (p.daily_pnl_usd || 0), 0);
+
+  const positionsMap = {};
+  for (const p of openPositions) {
+    positionsMap[p.ticker] = { qty: p.qty, mkt_val_usd: Math.round(p.mkt_value_usd * 100) / 100 };
+  }
+
+  // Try to get SPX from BBG prices
+  let spxClose = 0;
+  if (bbgPrices['SPX'] && bbgPrices['SPX'].px_last) spxClose = bbgPrices['SPX'].px_last;
+
+  const snapshot = {
+    date: today,
+    nav: Math.round(totalNav * 100) / 100,
+    cost: Math.round(totalCost * 100) / 100,
+    daily_pnl: Math.round(dailyPnl * 100) / 100,
+    positions: positionsMap,
+    spx_close: spxClose,
+  };
+
+  navHistory.push(snapshot);
+  navHistory.sort((a, b) => a.date.localeCompare(b.date));
+
+  try {
+    const resp = await ghPut(GH_DASH_REPO, GH_NAV_PATH, { snapshots: navHistory }, navHistorySha, 'NAV snapshot ' + today);
+    navHistorySha = resp.content.sha;
+    console.log('[NAV] Saved snapshot for', today, '- NAV:', fmt$(totalNav));
+  } catch (e) {
+    console.error('[NAV] Save failed:', e);
+    navHistory = navHistory.filter(s => s.date !== today);
+  }
+}
+
 // ==================== PRICE LOOKUP ====================
-// Build a unified price table from IBKR (primary) + BBG (fallback)
 function buildPriceTable() {
-  // priceTable[ticker] = { last, prevClose, ccy, name, country, sector, type }
   const pt = {};
 
   // 1. BBG prices as base layer
   for (const [tk, p] of Object.entries(bbgPrices)) {
-    if (tk.startsWith('_')) continue; // skip _fx_rates etc
+    if (tk.startsWith('_')) continue;
     pt[tk] = {
       last: p.px_last || 0,
       prevClose: p.prev_close || p.px_last || 0,
@@ -520,30 +656,25 @@ function buildPriceTable() {
     };
   }
 
-  // 2. IBKR positions: overwrite ONLY the live price, keep BBG metadata
+  // 2. IBKR positions: overwrite ONLY the live price
   if (ibkrData && ibkrData.positions) {
     for (const p of ibkrData.positions) {
       const tk = p.ticker;
       if (!tk) continue;
       if (!pt[tk]) pt[tk] = { last: 0, prevClose: 0, ccy: 'USD', name: tk, country: '', sector: '', type: '' };
-      // Only update price from IBKR (it's more recent), keep BBG name/country/sector
       if (p.mkt_price) pt[tk].last = p.mkt_price;
       if (!pt[tk].ccy || pt[tk].ccy === 'USD') pt[tk].ccy = p.currency || 'USD';
-      // Only use IBKR name/country if BBG doesn't have it
       if (!pt[tk].name || pt[tk].name === tk) pt[tk].name = p.name || tk;
-      if (!pt[tk].country) pt[tk].country = p.country || '';
-      if (!pt[tk].type) pt[tk].type = p.type || '';
     }
   }
 
-  // 3. Enrich with ticker_map metadata (class, sector, country, name)
+  // 3. Enrich with ticker_map metadata — ALWAYS prefer ticker_map over IBKR/BBG metadata
   for (const [tk, info] of Object.entries(tickerMap)) {
     if (!pt[tk]) continue;
-    if (!pt[tk].type || pt[tk].type === 'nan') pt[tk].type = info.class || '';
-    if (!pt[tk].sector || pt[tk].sector === 'nan') pt[tk].sector = info.sector || '';
-    if (!pt[tk].country) pt[tk].country = info.geo || '';
-    if (!pt[tk].name || pt[tk].name === tk) pt[tk].name = info.name || tk;
-    // Mark bonds (Govt/Corp) — prices quoted per 100 face value
+    if (info.class) pt[tk].type = info.class;
+    if (info.sector && info.sector !== 'nan') pt[tk].sector = info.sector;
+    if (info.geo) pt[tk].country = info.geo;
+    if (info.name) pt[tk].name = info.name;
     if (info.bbg && /\b(Govt|Corp)\b/i.test(info.bbg)) pt[tk].isBond = true;
   }
 
@@ -552,12 +683,32 @@ function buildPriceTable() {
 
 function getFxToUsd(ccy) {
   if (ccy === 'USD') return 1;
-  // Try BBG fx_rates first (JPYUSD = 0.00628 etc)
   const bbgFx = bbgPrices._fx_rates || {};
   if (bbgFx[ccy + 'USD']) return bbgFx[ccy + 'USD'];
-  // Try IBKR fx_rates (these are vs SGD base: JPY=0.008, USD=1.27)
   if (ibkrFxRates[ccy] && ibkrFxRates.USD) return ibkrFxRates[ccy] / ibkrFxRates.USD;
   return 1;
+}
+
+// ==================== YTD P&L ====================
+function computeYtdPnl() {
+  const currentYear = new Date().getFullYear().toString();
+  const yearStartSnapshot = navHistory.find(s => s.date >= currentYear + '-01-01') || null;
+
+  for (const pos of allPositions) {
+    if (pos.closed) {
+      pos.ytd_pnl_usd = pos.realized_pnl_usd || 0;
+      pos.ytd_pnl_pct = pos.cost_basis_usd > 0 ? pos.ytd_pnl_usd / pos.cost_basis_usd : 0;
+      continue;
+    }
+
+    let ytdBase = pos.cost_basis_usd; // default: cost basis if no history
+    if (yearStartSnapshot && yearStartSnapshot.positions && yearStartSnapshot.positions[pos.ticker]) {
+      ytdBase = yearStartSnapshot.positions[pos.ticker].mkt_val_usd || pos.cost_basis_usd;
+    }
+
+    pos.ytd_pnl_usd = pos.mkt_value_usd - ytdBase;
+    pos.ytd_pnl_pct = ytdBase > 0 ? pos.ytd_pnl_usd / ytdBase : 0;
+  }
 }
 
 // ==================== POSITION ENGINE ====================
@@ -575,6 +726,7 @@ async function loadAllPositions() {
       try { localStorage.setItem('ibkr_cache', JSON.stringify(ibkrData)); } catch (e) {}
     }
   } catch (e) {
+    // Fallback 1: localStorage
     try {
       const cached = JSON.parse(localStorage.getItem('ibkr_cache'));
       if (cached && cached.positions) {
@@ -582,13 +734,18 @@ async function loadAllPositions() {
         ibkrFxRates = cached.fx_rates || {};
       }
     } catch (e2) {}
+    // Fallback 2: GitHub snapshot
+    if (!ibkrData && ibkrSnapshot && ibkrSnapshot.positions && ibkrSnapshot.positions.length) {
+      ibkrData = ibkrSnapshot;
+      ibkrFxRates = ibkrSnapshot.fx_rates || {};
+    }
   }
 
   // Build unified price table
   const prices = buildPriceTable();
 
-  // Step 1: Collect all holdings by ticker (IBKR qty + manual qty)
-  const holdings = {}; // ticker -> { ibkrQty, ibkrAvgCost, manualQty, manualAvgCost, ccy, broker }
+  // Ensure all held tickers have a price entry (for manual-only tickers)
+  const holdings = {};
 
   // IBKR positions
   if (ibkrData && ibkrData.positions) {
@@ -611,7 +768,6 @@ async function loadAllPositions() {
       holdings[tk].manualQty += qty;
       holdings[tk].manualCost += qty * px;
     } else {
-      // Sell reduces manual position
       const avgCost = holdings[tk].manualQty > 0 ? holdings[tk].manualCost / holdings[tk].manualQty : px;
       holdings[tk].manualQty -= qty;
       holdings[tk].manualCost = holdings[tk].manualQty > 0 ? avgCost * holdings[tk].manualQty : 0;
@@ -619,7 +775,22 @@ async function loadAllPositions() {
     if (t.broker) holdings[tk].broker = t.broker;
   }
 
-  // Step 2: For each ticker, compute one merged position row
+  // Ensure price entries exist for all held tickers
+  for (const tk of Object.keys(holdings)) {
+    if (!prices[tk]) {
+      prices[tk] = { last: 0, prevClose: 0, ccy: holdings[tk].ccy || 'USD', name: tk, country: '', sector: '', type: '' };
+      if (tickerMap[tk]) {
+        const info = tickerMap[tk];
+        if (info.class) prices[tk].type = info.class;
+        if (info.sector) prices[tk].sector = info.sector;
+        if (info.geo) prices[tk].country = info.geo;
+        if (info.name) prices[tk].name = info.name;
+        if (info.bbg && /\b(Govt|Corp)\b/i.test(info.bbg)) prices[tk].isBond = true;
+      }
+    }
+  }
+
+  // Compute merged position rows
   allPositions = [];
   for (const [tk, h] of Object.entries(holdings)) {
     const totalQty = h.ibkrQty + Math.max(0, h.manualQty);
@@ -632,7 +803,6 @@ async function loadAllPositions() {
     const prevClose = p.prevClose || last;
     const ccy = h.ccy;
     const fx = getFxToUsd(ccy);
-    // Bonds (Govt/Corp) quote price per 100 face — divide by 100
     const priceFactor = p.isBond ? 0.01 : 1;
 
     const mktValUsd = totalQty * last * priceFactor * fx;
@@ -642,35 +812,39 @@ async function loadAllPositions() {
     const dailyPnl = totalQty * (last - prevClose) * priceFactor * fx;
     const dailyPct = prevClose > 0 ? (last - prevClose) / prevClose : 0;
 
-    // Sources
     const sources = [];
     if (h.ibkrQty > 0) sources.push('IBKR');
     if (h.manualQty > 0) sources.push(h.broker || 'UBS');
 
     allPositions.push({
-      ticker: tk,
-      name: p.name || tk,
-      qty: totalQty,
-      avg_cost: avgCost,
-      mkt_price: last,
-      prev_close: prevClose,
-      mkt_value_usd: mktValUsd,
-      cost_basis_usd: costUsd,
-      unrealised_pnl_usd: unrealPnl,
-      unrealised_pnl_pct: unrealPct,
-      daily_pnl_usd: dailyPnl,
-      daily_pnl_pct: dailyPct,
-      currency: ccy,
-      country: p.country || '',
+      ticker: tk, name: p.name || tk, qty: totalQty,
+      avg_cost: avgCost, mkt_price: last, prev_close: prevClose,
+      mkt_value_usd: mktValUsd, cost_basis_usd: costUsd,
+      unrealised_pnl_usd: unrealPnl, unrealised_pnl_pct: unrealPct,
+      daily_pnl_usd: dailyPnl, daily_pnl_pct: dailyPct,
+      currency: ccy, country: p.country || '',
       sector: (p.sector && p.sector !== 'nan') ? p.sector : '',
-      type: p.type || '',
-      sources: sources,
-      closed: false,
+      type: p.type || '', sources: sources, closed: false,
     });
   }
 
-  // Sort by mkt value descending
+  // Append closed positions
+  for (const cp of closedPositions) {
+    const costUsd = cp.avg_cost * cp.qty_closed * (cp.price_factor || 1);
+    allPositions.push({
+      ticker: cp.ticker, name: cp.name || cp.ticker, qty: 0,
+      avg_cost: cp.avg_cost, mkt_price: cp.close_price,
+      mkt_value_usd: 0, cost_basis_usd: costUsd,
+      unrealised_pnl_usd: 0, unrealised_pnl_pct: 0,
+      realized_pnl_usd: cp.realized_pnl,
+      daily_pnl_usd: 0, daily_pnl_pct: 0,
+      currency: cp.currency || 'USD', country: '', sector: '', type: '',
+      sources: ['IBKR'], closed: true, close_date: cp.close_date,
+    });
+  }
+
   allPositions.sort((a, b) => (b.mkt_value_usd || 0) - (a.mkt_value_usd || 0));
+  computeYtdPnl();
 }
 
 // ==================== RENDER ====================
@@ -706,17 +880,20 @@ function renderKPIs() {
   const totalCost = openPositions.reduce((s, p) => s + (p.cost_basis_usd || 0), 0);
   const totalUnreal = openPositions.reduce((s, p) => s + (p.unrealised_pnl_usd || 0), 0);
   const unrealPct = totalCost > 0 ? totalUnreal / totalCost : 0;
-  const ibkrCount = openPositions.filter(p => (p.sources || []).some(s => s === 'IBKR')).length;
-  const manualCount = openPositions.filter(p => (p.sources || []).some(s => s !== 'IBKR')).length;
 
   const dailyPnl = openPositions.reduce((s, p) => s + (p.daily_pnl_usd || 0), 0);
   const dailyPct = totalNav > 0 ? dailyPnl / (totalNav - dailyPnl) : 0;
 
+  const totalRealized = closedPositions.reduce((s, cp) => s + (cp.realized_pnl || 0), 0);
+  const ytdPnl = allPositions.reduce((s, p) => s + (p.ytd_pnl_usd || 0), 0);
+  const ytdPct = totalCost > 0 ? ytdPnl / totalCost : 0;
+
   const cards = [
     { label: 'Total NAV (USD)', value: fmt$(totalNav) },
-    { label: 'Cost Basis (USD)', value: fmt$(totalCost) },
     { label: 'Daily P&L', value: `${fmt$(dailyPnl)} (${fmtPct(dailyPct)})`, cls: pnlClass(dailyPnl) },
     { label: 'Unrealised P&L', value: `${fmt$(totalUnreal)} (${fmtPct(unrealPct)})`, cls: pnlClass(totalUnreal) },
+    { label: 'YTD P&L', value: `${fmt$(ytdPnl)} (${fmtPct(ytdPct)})`, cls: pnlClass(ytdPnl) },
+    { label: 'Realised P&L', value: fmt$(totalRealized), cls: pnlClass(totalRealized) },
   ];
 
   document.getElementById('kpi-row').innerHTML = cards.map(c =>
@@ -724,33 +901,79 @@ function renderKPIs() {
   ).join('');
 }
 
-function renderPositionsTable() {
-  let positions = positionFilter === 'open'
-    ? allPositions.filter(p => !p.closed && p.qty > 0)
-    : allPositions;
+// ==================== SORTABLE TABLE ====================
+const SORT_FIELDS = {
+  ticker: { field: 'ticker', type: 'string' },
+  name: { field: 'name', type: 'string' },
+  qty: { field: 'qty', type: 'number' },
+  avg_cost: { field: 'avg_cost', type: 'number' },
+  last: { field: 'mkt_price', type: 'number' },
+  mkt_val: { field: 'mkt_value_usd', type: 'number' },
+  daily_pnl: { field: 'daily_pnl_usd', type: 'number' },
+  unreal_pnl: { field: 'unrealised_pnl_usd', type: 'number' },
+  ytd_pnl: { field: 'ytd_pnl_usd', type: 'number' },
+};
 
-  // Sort by mkt value USD descending
-  positions.sort((a, b) => (b.mkt_value_usd || 0) - (a.mkt_value_usd || 0));
+function doSort(col) {
+  if (sortColumn === SORT_FIELDS[col]?.field) {
+    sortAscending = !sortAscending;
+  } else {
+    sortColumn = SORT_FIELDS[col]?.field || 'mkt_value_usd';
+    sortAscending = SORT_FIELDS[col]?.type === 'string'; // strings default ascending
+  }
+  renderPositionsTable();
+}
+
+function sortArrow(col) {
+  const f = SORT_FIELDS[col]?.field;
+  if (sortColumn !== f) return '';
+  return `<span class="sort-arrow">${sortAscending ? '\u25B2' : '\u25BC'}</span>`;
+}
+
+function renderPositionsTable() {
+  let positions;
+  if (positionFilter === 'closed') {
+    positions = allPositions.filter(p => p.closed);
+  } else {
+    positions = allPositions.filter(p => !p.closed && p.qty > 0);
+  }
+
+  // Dynamic sort
+  positions.sort((a, b) => {
+    const av = a[sortColumn] ?? 0;
+    const bv = b[sortColumn] ?? 0;
+    const cmp = typeof av === 'string' ? av.localeCompare(bv) : (av - bv);
+    return sortAscending ? cmp : -cmp;
+  });
+
+  const th = (label, key, align) => {
+    const style = align ? `style="text-align:${align}"` : '';
+    return `<th class="sortable" onclick="doSort('${key}')" ${style}>${label}${sortArrow(key)}</th>`;
+  };
 
   const hdr = `<table class="vol-table">
     <thead><tr>
-      <th style="text-align:left">Ticker</th><th style="text-align:left">Name</th>
-      <th>Qty</th><th>Avg Cost</th><th>Last</th><th>Mkt Val (USD)</th>
-      <th>Daily P&L</th><th>Unrealised P&L</th>
+      ${th('Ticker', 'ticker', 'left')}${th('Name', 'name', 'left')}
+      ${th('Qty', 'qty')}${th('Avg Cost', 'avg_cost')}${th('Last', 'last')}${th('Mkt Val (USD)', 'mkt_val')}
+      ${th('Daily P&L', 'daily_pnl')}${th('Unrealised P&L', 'unreal_pnl')}${th('YTD P&L', 'ytd_pnl')}
     </tr></thead><tbody>`;
 
   const rows = positions.map(p => {
     const dailyStr = `<span class="${pnlClass(p.daily_pnl_usd)}">${fmt$(p.daily_pnl_usd)}</span> <span class="${pnlClass(p.daily_pnl_pct)}" style="opacity:0.7">(${fmtPct(p.daily_pnl_pct)})</span>`;
-    const unrealStr = `<span class="${pnlClass(p.unrealised_pnl_usd)}">${fmt$(p.unrealised_pnl_usd)}</span> <span class="${pnlClass(p.unrealised_pnl_pct)}" style="opacity:0.7">(${fmtPct(p.unrealised_pnl_pct)})</span>`;
+    const unrealStr = p.closed
+      ? `<span class="${pnlClass(p.realized_pnl_usd)}">${fmt$(p.realized_pnl_usd)}</span> <span style="opacity:0.7;color:var(--amber)">closed</span>`
+      : `<span class="${pnlClass(p.unrealised_pnl_usd)}">${fmt$(p.unrealised_pnl_usd)}</span> <span class="${pnlClass(p.unrealised_pnl_pct)}" style="opacity:0.7">(${fmtPct(p.unrealised_pnl_pct)})</span>`;
+    const ytdStr = `<span class="${pnlClass(p.ytd_pnl_usd)}">${fmt$(p.ytd_pnl_usd)}</span> <span class="${pnlClass(p.ytd_pnl_pct)}" style="opacity:0.7">(${fmtPct(p.ytd_pnl_pct)})</span>`;
     return `<tr>
       <td style="text-align:left; font-weight:600;">${p.ticker}</td>
       <td style="text-align:left; color:var(--text-dim); max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${p.name || ''}">${p.name || ''}</td>
       <td>${fmtNum(p.qty, 0)}</td>
       <td>${fmtNum(p.avg_cost, 2)}</td>
       <td>${fmtNum(p.mkt_price, 2)}</td>
-      <td>${fmtNum(p.mkt_value_usd/1000, 1)}k</td>
-      <td>${dailyStr}</td>
+      <td>${p.closed ? '--' : fmtNum(p.mkt_value_usd/1000, 1) + 'k'}</td>
+      <td>${p.closed ? '--' : dailyStr}</td>
       <td>${unrealStr}</td>
+      <td>${ytdStr}</td>
     </tr>`;
   }).join('');
 
@@ -777,31 +1000,23 @@ function renderAllocationCharts() {
     }], donutLayout, plotlyConfig);
   }
 
-  // By type
   const byType = {};
   open.forEach(p => { const k = p.type || 'Other'; byType[k] = (byType[k] || 0) + (p.mkt_value_usd || 0); });
   makeDonut('chart-type', byType);
 
-  // By country
   const byCountry = {};
   open.forEach(p => { const k = p.country || 'N/A'; byCountry[k] = (byCountry[k] || 0) + (p.mkt_value_usd || 0); });
   makeDonut('chart-country', byCountry);
 
-  // By currency
   const byCcy = {};
   open.forEach(p => { const k = p.currency || 'USD'; byCcy[k] = (byCcy[k] || 0) + (p.mkt_value_usd || 0); });
   makeDonut('chart-currency', byCcy);
 
-  // By broker
   const bySource = {};
   open.forEach(p => {
-    const sources = p.sources || [p.source || 'manual'];
-    // Split value proportionally if held at multiple brokers (approximate: equal split)
+    const sources = p.sources || ['manual'];
     const val = (p.mkt_value_usd || 0) / sources.length;
-    sources.forEach(s => {
-      const k = s === 'ibkr' ? 'IBKR' : (p.broker || 'UBS');
-      bySource[k] = (bySource[k] || 0) + val;
-    });
+    sources.forEach(s => { bySource[s] = (bySource[s] || 0) + val; });
   });
   makeDonut('chart-source', bySource);
 }
@@ -818,7 +1033,6 @@ function renderBlotter() {
   }
 
   empty.classList.add('hidden');
-  // Show most recent first
   const sorted = [...manualTrades].reverse();
   list.innerHTML = sorted.map((t, i) => {
     const realIdx = manualTrades.length - 1 - i;
@@ -855,7 +1069,6 @@ async function submitTrade() {
   document.getElementById('blotter-submit').disabled = true;
 
   try {
-    // Reload to get latest sha
     const { content, sha } = await ghGet(GH_TRADES_REPO, GH_TRADES_PATH);
     manualTrades = content || [];
     manualTrades.push(trade);
@@ -888,27 +1101,17 @@ async function deleteTrade(idx) {
 }
 
 function parseTrade(raw) {
-  // Patterns:
-  // buy 100 AAPL at 185.50
-  // sell 30 AAPL at 198
-  // close AAPL
-  // buy 100 AAPL at 185.50 @UBS
-  // buy 100 AAPL at 185.50 USD @UBS
   const s = raw.trim();
-
-  // Extract broker
   let broker = '';
   const brokerMatch = s.match(/@(\w+)\s*$/);
   if (brokerMatch) broker = brokerMatch[1];
   const cleaned = s.replace(/@\w+\s*$/, '').trim();
 
-  // Close pattern
   const closeMatch = cleaned.match(/^close\s+([A-Z0-9.]+)/i);
   if (closeMatch) {
     return { side: 'close', ticker: closeMatch[1].toUpperCase(), qty: 0, price: 0, currency: 'USD', broker, date: new Date().toISOString() };
   }
 
-  // Buy/Sell pattern
   const m = cleaned.match(/^(buy|sell)\s+([\d,.]+)\s+([A-Z0-9.]+)\s+(?:at|@)\s+([\d,.]+)\s*([A-Z]{3})?/i);
   if (!m) return null;
 
@@ -939,16 +1142,15 @@ function renderWinnersLosers() {
     return;
   }
 
-  // Sort by P&L % ascending (losers at top, winners at bottom)
   const sorted = [...open].sort((a, b) => (a.unrealised_pnl_pct || 0) - (b.unrealised_pnl_pct || 0));
   const tickers = sorted.map(p => p.ticker);
   const pcts = sorted.map(p => (p.unrealised_pnl_pct || 0) * 100);
-  const colors = pcts.map(v => v >= 0 ? '#22c55e' : '#ef4444');
+  const barColors = pcts.map(v => v >= 0 ? '#22c55e' : '#ef4444');
 
   Plotly.newPlot('chart-winloss', [{
     type: 'bar', orientation: 'h',
     y: tickers, x: pcts,
-    marker: { color: colors },
+    marker: { color: barColors },
     text: pcts.map(v => v.toFixed(1) + '%'),
     textposition: 'outside',
     textfont: { size: 10, color: '#8b8fa3' },
@@ -981,7 +1183,7 @@ function filterNavByRange(data) {
 function renderNavChart() {
   const filtered = filterNavByRange(navHistory);
   if (!filtered.length) {
-    document.getElementById('chart-nav').innerHTML = '<div class="no-data">No NAV history yet. Run Bloomberg Enrich to populate.</div>';
+    document.getElementById('chart-nav').innerHTML = '<div class="no-data">No NAV history yet. Connect IBKR or run Bloomberg Enrich.</div>';
     return;
   }
   const dates = filtered.map(d => d.date);
@@ -1002,15 +1204,15 @@ function renderNavChart() {
 
 function renderPerfChart() {
   const filtered = filterNavByRange(navHistory);
-  if (!filtered.length || !filtered[0].nav || !filtered[0].spx) {
+  if (!filtered.length || !filtered[0].nav || !filtered[0].spx_close) {
     document.getElementById('chart-perf').innerHTML = '<div class="no-data">No history yet.</div>';
     return;
   }
   const baseNav = filtered[0].nav;
-  const baseSpx = filtered[0].spx;
+  const baseSpx = filtered[0].spx_close;
   const dates = filtered.map(d => d.date);
   const navRet = filtered.map(d => ((d.nav / baseNav) - 1) * 100);
-  const spxRet = filtered.map(d => d.spx ? ((d.spx / baseSpx) - 1) * 100 : null);
+  const spxRet = filtered.map(d => d.spx_close ? ((d.spx_close / baseSpx) - 1) * 100 : null);
 
   Plotly.newPlot('chart-perf', [
     { x: dates, y: navRet, type: 'scatter', mode: 'lines', name: 'Portfolio', line: { color: '#6c63ff', width: 2 }, hovertemplate: '%{x}<br>Portfolio: %{y:.1f}%<extra></extra>' },
@@ -1057,7 +1259,6 @@ function renderHeatmap() {
     return;
   }
 
-  // Compute monthly returns
   const monthly = {};
   const sorted = [...navHistory].sort((a, b) => a.date.localeCompare(b.date));
   for (let i = 1; i < sorted.length; i++) {
@@ -1104,16 +1305,21 @@ async function doRefresh() {
   btn.disabled = true;
 
   try {
-    // First call refresh endpoint to update IBKR cache
     try {
       await fetch(IBKR_URL + '/refresh', { method: 'POST', signal: AbortSignal.timeout(10000) });
     } catch (e) {}
 
-    // Reload all data
     await loadManualTrades();
     await loadBbgPrices();
     await loadAllPositions();
     render();
+
+    if (ibkrConnected) {
+      detectClosedPositions();
+      await saveIbkrSnapshot();
+      await saveNavSnapshot();
+      render(); // re-render after saving (closed positions may have changed)
+    }
   } catch (e) {
     console.error('Refresh error:', e);
   }
@@ -1137,7 +1343,7 @@ async function triggerBloombergEnrich() {
       alert('Bloomberg enrichment triggered! Prices will update in ~1 min (needs BBG + self-hosted runner).');
     } else {
       const txt = await r.text();
-      alert('Failed: ' + r.status + ' — ' + txt.slice(0, 100));
+      alert('Failed: ' + r.status + ' \u2014 ' + txt.slice(0, 100));
     }
   } catch (e) {
     alert('Error: ' + e.message);
@@ -1152,7 +1358,6 @@ function switchTab(tab, btn) {
   document.getElementById('tab-blotter').classList.toggle('hidden', tab !== 'blotter');
   document.getElementById('tab-analysis').classList.toggle('hidden', tab !== 'analysis');
 
-  // Re-render charts on tab switch (Plotly needs visible container)
   if (tab === 'overview') {
     setTimeout(() => renderAllocationCharts(), 50);
   } else if (tab === 'analysis') {
@@ -1183,10 +1388,19 @@ async function init() {
       loadTickerMap(),
       loadNavHistory(),
       loadBbgPrices(),
+      loadIbkrSnapshot(),
     ]);
     await loadManualTrades();
     await loadAllPositions();
     render();
+
+    // Save snapshots if IBKR is live
+    if (ibkrConnected) {
+      detectClosedPositions();
+      await saveIbkrSnapshot();
+      await saveNavSnapshot();
+      render();
+    }
 
     // Auto-refresh every 5 minutes
     setInterval(async () => {
