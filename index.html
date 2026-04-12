@@ -85,6 +85,51 @@
   .vol-table th.sortable { cursor: pointer; user-select: none; }
   .vol-table th.sortable:hover { color: var(--text); }
   .sort-arrow { margin-left: 4px; font-size: 0.6rem; }
+
+  /* Resizable columns */
+  .vol-table th { position: sticky; top: 0; z-index: 1; }
+  .vol-table th.resizable { position: relative; }
+  .col-resize-handle {
+    position: absolute; right: -2px; top: 0; bottom: 0; width: 5px;
+    cursor: col-resize; z-index: 2; background: transparent;
+  }
+  .col-resize-handle:hover, .col-resize-handle.active { background: var(--accent); opacity: 0.5; }
+
+  /* Column picker */
+  .col-picker-wrap { position: relative; display: inline-block; }
+  .col-picker-btn {
+    padding: 5px 12px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--text-dim); cursor: pointer; font-size: 0.72rem;
+    font-family: inherit; font-weight: 600;
+  }
+  .col-picker-btn:hover { color: var(--text); border-color: var(--accent); }
+  .col-picker-menu {
+    position: absolute; top: 100%; right: 0; margin-top: 4px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 8px; padding: 8px 0; min-width: 180px;
+    z-index: 100; box-shadow: 0 8px 24px rgba(0,0,0,0.4); max-height: 320px; overflow-y: auto;
+  }
+  .col-picker-item {
+    display: flex; align-items: center; gap: 8px; padding: 6px 14px; cursor: pointer;
+    font-size: 0.75rem; color: var(--text-dim); transition: background 0.1s;
+  }
+  .col-picker-item:hover { background: var(--surface2); color: var(--text); }
+  .col-picker-item input { accent-color: var(--accent); }
+
+  /* Pie drill-down panel */
+  .drill-panel {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px; margin-top: 12px; font-size: 0.78rem;
+  }
+  .drill-panel h4 { font-size: 0.78rem; color: var(--accent); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .drill-panel .drill-close {
+    float: right; background: none; border: none; color: var(--text-dim); cursor: pointer;
+    font-size: 1rem; line-height: 1; padding: 0 4px;
+  }
+  .drill-panel .drill-close:hover { color: var(--text); }
+  .drill-table { width: 100%; border-collapse: collapse; }
+  .drill-table td { padding: 3px 8px; border-bottom: 1px solid var(--border); font-size: 0.72rem; }
+  .drill-table td:first-child { font-weight: 600; }
+  .drill-table td:last-child { text-align: right; }
   .vol-table td {
     padding: 5px 8px; text-align: right; border-bottom: 1px solid var(--border);
     white-space: nowrap; font-size: 0.75rem;
@@ -239,6 +284,11 @@
       <div class="filter-row" id="pos-filter">
         <button class="filter-btn active" onclick="setPositionFilter('open',this)">Open</button>
         <button class="filter-btn" onclick="setPositionFilter('closed',this)">Closed</button>
+        <div style="flex:1"></div>
+        <div class="col-picker-wrap">
+          <button class="col-picker-btn" onclick="toggleColPicker(event)">Columns &#9662;</button>
+          <div class="col-picker-menu hidden" id="col-picker-menu"></div>
+        </div>
       </div>
 
       <div class="chart-wrap">
@@ -247,10 +297,10 @@
       </div>
 
       <div class="chart-grid" id="allocation-charts">
-        <div class="chart-wrap"><h3>By Type</h3><div id="chart-type"></div></div>
-        <div class="chart-wrap"><h3>By Country</h3><div id="chart-country"></div></div>
-        <div class="chart-wrap"><h3>By Currency</h3><div id="chart-currency"></div></div>
-        <div class="chart-wrap"><h3>By Source</h3><div id="chart-source"></div></div>
+        <div class="chart-wrap"><h3>By Type</h3><div id="chart-type"></div><div id="drill-type"></div></div>
+        <div class="chart-wrap"><h3>By Country</h3><div id="chart-country"></div><div id="drill-country"></div></div>
+        <div class="chart-wrap"><h3>By Currency</h3><div id="chart-currency"></div><div id="drill-currency"></div></div>
+        <div class="chart-wrap"><h3>By Source</h3><div id="chart-source"></div><div id="drill-source"></div></div>
       </div>
     </div>
 
@@ -901,32 +951,70 @@ function renderKPIs() {
   ).join('');
 }
 
-// ==================== SORTABLE TABLE ====================
-const SORT_FIELDS = {
-  ticker: { field: 'ticker', type: 'string' },
-  name: { field: 'name', type: 'string' },
-  qty: { field: 'qty', type: 'number' },
-  avg_cost: { field: 'avg_cost', type: 'number' },
-  last: { field: 'mkt_price', type: 'number' },
-  mkt_val: { field: 'mkt_value_usd', type: 'number' },
-  daily_pnl: { field: 'daily_pnl_usd', type: 'number' },
-  unreal_pnl: { field: 'unrealised_pnl_usd', type: 'number' },
-  ytd_pnl: { field: 'ytd_pnl_usd', type: 'number' },
-};
+// ==================== COLUMN DEFINITIONS ====================
+const ALL_COLUMNS = [
+  { key: 'ticker',     label: 'Ticker',          field: 'ticker',              type: 'string', align: 'left',  default: true,  render: p => `<td style="text-align:left; font-weight:600;">${p.ticker}</td>` },
+  { key: 'name',       label: 'Name',            field: 'name',               type: 'string', align: 'left',  default: true,  render: p => `<td style="text-align:left; color:var(--text-dim); max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${p.name || ''}">${p.name || ''}</td>` },
+  { key: 'qty',        label: 'Qty',             field: 'qty',                type: 'number', align: 'right', default: true,  render: p => `<td>${fmtNum(p.qty, 0)}</td>` },
+  { key: 'avg_cost',   label: 'Avg Cost',        field: 'avg_cost',           type: 'number', align: 'right', default: true,  render: p => `<td>${fmtNum(p.avg_cost, 2)}</td>` },
+  { key: 'last',       label: 'Last',            field: 'mkt_price',          type: 'number', align: 'right', default: true,  render: p => `<td>${fmtNum(p.mkt_price, 2)}</td>` },
+  { key: 'mkt_val',    label: 'Mkt Val (USD)',   field: 'mkt_value_usd',      type: 'number', align: 'right', default: true,  render: p => `<td>${p.closed ? '--' : fmtNum(p.mkt_value_usd/1000, 1) + 'k'}</td>` },
+  { key: 'daily_pnl',  label: 'Daily P&L',       field: 'daily_pnl_usd',      type: 'number', align: 'right', default: true,  render: p => { if (p.closed) return '<td>--</td>'; return `<td><span class="${pnlClass(p.daily_pnl_usd)}">${fmt$(p.daily_pnl_usd)}</span> <span class="${pnlClass(p.daily_pnl_pct)}" style="opacity:0.7">(${fmtPct(p.daily_pnl_pct)})</span></td>`; } },
+  { key: 'unreal_pnl', label: 'Unrealised P&L',  field: 'unrealised_pnl_usd', type: 'number', align: 'right', default: true,  render: p => { if (p.closed) return `<td><span class="${pnlClass(p.realized_pnl_usd)}">${fmt$(p.realized_pnl_usd)}</span> <span style="opacity:0.7;color:var(--amber)">closed</span></td>`; return `<td><span class="${pnlClass(p.unrealised_pnl_usd)}">${fmt$(p.unrealised_pnl_usd)}</span> <span class="${pnlClass(p.unrealised_pnl_pct)}" style="opacity:0.7">(${fmtPct(p.unrealised_pnl_pct)})</span></td>`; } },
+  { key: 'ytd_pnl',    label: 'YTD P&L',         field: 'ytd_pnl_usd',        type: 'number', align: 'right', default: true,  render: p => `<td><span class="${pnlClass(p.ytd_pnl_usd)}">${fmt$(p.ytd_pnl_usd)}</span> <span class="${pnlClass(p.ytd_pnl_pct)}" style="opacity:0.7">(${fmtPct(p.ytd_pnl_pct)})</span></td>` },
+  // Optional columns
+  { key: 'type',       label: 'Asset Class',     field: 'type',               type: 'string', align: 'left',  default: false, render: p => `<td style="text-align:left">${p.type || '--'}</td>` },
+  { key: 'sector',     label: 'Sector',          field: 'sector',             type: 'string', align: 'left',  default: false, render: p => `<td style="text-align:left">${p.sector || '--'}</td>` },
+  { key: 'country',    label: 'Country',         field: 'country',            type: 'string', align: 'left',  default: false, render: p => `<td style="text-align:left">${p.country || '--'}</td>` },
+  { key: 'currency',   label: 'Currency',        field: 'currency',           type: 'string', align: 'left',  default: false, render: p => `<td style="text-align:left">${p.currency || '--'}</td>` },
+  { key: 'source',     label: 'Source',           field: 'sources',            type: 'string', align: 'left',  default: false, render: p => `<td style="text-align:left">${(p.sources || []).join(', ') || '--'}</td>` },
+  { key: 'cost_basis', label: 'Cost Basis',      field: 'cost_basis_usd',     type: 'number', align: 'right', default: false, render: p => `<td>${fmtNum(p.cost_basis_usd/1000, 1)}k</td>` },
+];
 
+// Load visible columns from localStorage
+let visibleColumns = JSON.parse(localStorage.getItem('portfolio_columns') || 'null') || ALL_COLUMNS.filter(c => c.default).map(c => c.key);
+
+function toggleColPicker(e) {
+  e.stopPropagation();
+  const menu = document.getElementById('col-picker-menu');
+  const isHidden = menu.classList.contains('hidden');
+  menu.classList.toggle('hidden');
+  if (isHidden) {
+    menu.innerHTML = ALL_COLUMNS.map(c => {
+      const checked = visibleColumns.includes(c.key) ? 'checked' : '';
+      const disabled = (c.key === 'ticker') ? 'disabled' : '';
+      return `<label class="col-picker-item"><input type="checkbox" ${checked} ${disabled} onchange="toggleColumn('${c.key}', this.checked)"> ${c.label}</label>`;
+    }).join('');
+    // Close on outside click
+    setTimeout(() => document.addEventListener('click', closeColPicker, { once: true }), 0);
+  }
+}
+
+function closeColPicker() { document.getElementById('col-picker-menu').classList.add('hidden'); }
+
+function toggleColumn(key, on) {
+  if (on && !visibleColumns.includes(key)) visibleColumns.push(key);
+  if (!on) visibleColumns = visibleColumns.filter(k => k !== key);
+  localStorage.setItem('portfolio_columns', JSON.stringify(visibleColumns));
+  renderPositionsTable();
+}
+
+// ==================== SORTABLE TABLE ====================
 function doSort(col) {
-  if (sortColumn === SORT_FIELDS[col]?.field) {
+  const colDef = ALL_COLUMNS.find(c => c.key === col);
+  if (!colDef) return;
+  if (sortColumn === colDef.field) {
     sortAscending = !sortAscending;
   } else {
-    sortColumn = SORT_FIELDS[col]?.field || 'mkt_value_usd';
-    sortAscending = SORT_FIELDS[col]?.type === 'string'; // strings default ascending
+    sortColumn = colDef.field;
+    sortAscending = colDef.type === 'string';
   }
   renderPositionsTable();
 }
 
 function sortArrow(col) {
-  const f = SORT_FIELDS[col]?.field;
-  if (sortColumn !== f) return '';
+  const colDef = ALL_COLUMNS.find(c => c.key === col);
+  if (!colDef || sortColumn !== colDef.field) return '';
   return `<span class="sort-arrow">${sortAscending ? '\u25B2' : '\u25BC'}</span>`;
 }
 
@@ -940,44 +1028,59 @@ function renderPositionsTable() {
 
   // Dynamic sort
   positions.sort((a, b) => {
-    const av = a[sortColumn] ?? 0;
-    const bv = b[sortColumn] ?? 0;
-    const cmp = typeof av === 'string' ? av.localeCompare(bv) : (av - bv);
+    let av = a[sortColumn] ?? 0;
+    let bv = b[sortColumn] ?? 0;
+    if (Array.isArray(av)) av = av.join(',');
+    if (Array.isArray(bv)) bv = bv.join(',');
+    const cmp = typeof av === 'string' ? String(av).localeCompare(String(bv)) : (av - bv);
     return sortAscending ? cmp : -cmp;
   });
 
-  const th = (label, key, align) => {
-    const style = align ? `style="text-align:${align}"` : '';
-    return `<th class="sortable" onclick="doSort('${key}')" ${style}>${label}${sortArrow(key)}</th>`;
-  };
+  const cols = ALL_COLUMNS.filter(c => visibleColumns.includes(c.key));
 
-  const hdr = `<table class="vol-table">
-    <thead><tr>
-      ${th('Ticker', 'ticker', 'left')}${th('Name', 'name', 'left')}
-      ${th('Qty', 'qty')}${th('Avg Cost', 'avg_cost')}${th('Last', 'last')}${th('Mkt Val (USD)', 'mkt_val')}
-      ${th('Daily P&L', 'daily_pnl')}${th('Unrealised P&L', 'unreal_pnl')}${th('YTD P&L', 'ytd_pnl')}
-    </tr></thead><tbody>`;
+  const hdr = `<table class="vol-table" id="pos-table">
+    <thead><tr>` + cols.map(c => {
+      const style = c.align === 'left' ? 'style="text-align:left"' : '';
+      return `<th class="sortable resizable" onclick="doSort('${c.key}')" ${style}>${c.label}${sortArrow(c.key)}<div class="col-resize-handle" onmousedown="startResize(event, this)"></div></th>`;
+    }).join('') + `</tr></thead><tbody>`;
 
-  const rows = positions.map(p => {
-    const dailyStr = `<span class="${pnlClass(p.daily_pnl_usd)}">${fmt$(p.daily_pnl_usd)}</span> <span class="${pnlClass(p.daily_pnl_pct)}" style="opacity:0.7">(${fmtPct(p.daily_pnl_pct)})</span>`;
-    const unrealStr = p.closed
-      ? `<span class="${pnlClass(p.realized_pnl_usd)}">${fmt$(p.realized_pnl_usd)}</span> <span style="opacity:0.7;color:var(--amber)">closed</span>`
-      : `<span class="${pnlClass(p.unrealised_pnl_usd)}">${fmt$(p.unrealised_pnl_usd)}</span> <span class="${pnlClass(p.unrealised_pnl_pct)}" style="opacity:0.7">(${fmtPct(p.unrealised_pnl_pct)})</span>`;
-    const ytdStr = `<span class="${pnlClass(p.ytd_pnl_usd)}">${fmt$(p.ytd_pnl_usd)}</span> <span class="${pnlClass(p.ytd_pnl_pct)}" style="opacity:0.7">(${fmtPct(p.ytd_pnl_pct)})</span>`;
-    return `<tr>
-      <td style="text-align:left; font-weight:600;">${p.ticker}</td>
-      <td style="text-align:left; color:var(--text-dim); max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${p.name || ''}">${p.name || ''}</td>
-      <td>${fmtNum(p.qty, 0)}</td>
-      <td>${fmtNum(p.avg_cost, 2)}</td>
-      <td>${fmtNum(p.mkt_price, 2)}</td>
-      <td>${p.closed ? '--' : fmtNum(p.mkt_value_usd/1000, 1) + 'k'}</td>
-      <td>${p.closed ? '--' : dailyStr}</td>
-      <td>${unrealStr}</td>
-      <td>${ytdStr}</td>
-    </tr>`;
-  }).join('');
+  const rows = positions.map(p =>
+    '<tr>' + cols.map(c => c.render(p)).join('') + '</tr>'
+  ).join('');
 
   document.getElementById('positions-table-wrap').innerHTML = hdr + rows + '</tbody></table>';
+}
+
+// ==================== COLUMN RESIZE ====================
+let resizeCol = null, resizeStartX = 0, resizeStartW = 0;
+
+function startResize(e, handle) {
+  e.stopPropagation();
+  e.preventDefault();
+  const th = handle.parentElement;
+  resizeCol = th;
+  resizeStartX = e.clientX;
+  resizeStartW = th.offsetWidth;
+  handle.classList.add('active');
+  document.addEventListener('mousemove', doResize);
+  document.addEventListener('mouseup', stopResize);
+}
+
+function doResize(e) {
+  if (!resizeCol) return;
+  const diff = e.clientX - resizeStartX;
+  resizeCol.style.width = Math.max(40, resizeStartW + diff) + 'px';
+  resizeCol.style.minWidth = Math.max(40, resizeStartW + diff) + 'px';
+}
+
+function stopResize() {
+  if (resizeCol) {
+    const handle = resizeCol.querySelector('.col-resize-handle');
+    if (handle) handle.classList.remove('active');
+  }
+  resizeCol = null;
+  document.removeEventListener('mousemove', doResize);
+  document.removeEventListener('mouseup', stopResize);
 }
 
 function renderAllocationCharts() {
@@ -989,28 +1092,37 @@ function renderAllocationCharts() {
   };
   const colors = ['#6c63ff', '#22c55e', '#f59e0b', '#ef4444', '#3b82f6', '#ec4899', '#14b8a6', '#a855f7', '#64748b'];
 
-  function makeDonut(containerId, labelsValues) {
+  function makeDonut(containerId, drillId, labelsValues, groupField) {
     const labels = Object.keys(labelsValues);
     const values = Object.values(labelsValues);
+    const el = document.getElementById(containerId);
     Plotly.newPlot(containerId, [{
       type: 'pie', hole: 0.55, labels, values,
       marker: { colors: colors.slice(0, labels.length) },
       textinfo: 'label+percent', textfont: { size: 10, color: '#8b8fa3' },
       hoverinfo: 'label+value+percent',
     }], donutLayout, plotlyConfig);
+
+    // Click handler for drill-down
+    el.removeAllListeners && el.removeAllListeners('plotly_click');
+    el.on('plotly_click', function(data) {
+      if (!data.points || !data.points.length) return;
+      const clickedLabel = data.points[0].label;
+      showDrillDown(drillId, clickedLabel, groupField, open);
+    });
   }
 
   const byType = {};
   open.forEach(p => { const k = p.type || 'Other'; byType[k] = (byType[k] || 0) + (p.mkt_value_usd || 0); });
-  makeDonut('chart-type', byType);
+  makeDonut('chart-type', 'drill-type', byType, 'type');
 
   const byCountry = {};
   open.forEach(p => { const k = p.country || 'N/A'; byCountry[k] = (byCountry[k] || 0) + (p.mkt_value_usd || 0); });
-  makeDonut('chart-country', byCountry);
+  makeDonut('chart-country', 'drill-country', byCountry, 'country');
 
   const byCcy = {};
   open.forEach(p => { const k = p.currency || 'USD'; byCcy[k] = (byCcy[k] || 0) + (p.mkt_value_usd || 0); });
-  makeDonut('chart-currency', byCcy);
+  makeDonut('chart-currency', 'drill-currency', byCcy, 'currency');
 
   const bySource = {};
   open.forEach(p => {
@@ -1018,7 +1130,37 @@ function renderAllocationCharts() {
     const val = (p.mkt_value_usd || 0) / sources.length;
     sources.forEach(s => { bySource[s] = (bySource[s] || 0) + val; });
   });
-  makeDonut('chart-source', bySource);
+  makeDonut('chart-source', 'drill-source', bySource, '_source');
+}
+
+function showDrillDown(drillId, label, groupField, positions) {
+  // Find matching positions
+  let matches;
+  if (groupField === '_source') {
+    matches = positions.filter(p => (p.sources || []).includes(label));
+  } else {
+    matches = positions.filter(p => (p[groupField] || (groupField === 'type' ? 'Other' : 'N/A')) === label);
+  }
+  matches.sort((a, b) => (b.mkt_value_usd || 0) - (a.mkt_value_usd || 0));
+
+  const totalVal = matches.reduce((s, p) => s + (p.mkt_value_usd || 0), 0);
+
+  const rows = matches.map(p => {
+    const pct = totalVal > 0 ? ((p.mkt_value_usd / totalVal) * 100).toFixed(1) : '0.0';
+    return `<tr>
+      <td>${p.ticker}</td>
+      <td style="color:var(--text-dim)">${(p.name || '').slice(0, 20)}</td>
+      <td>${fmt$(p.mkt_value_usd)}</td>
+      <td>${pct}%</td>
+    </tr>`;
+  }).join('');
+
+  const el = document.getElementById(drillId);
+  el.innerHTML = `<div class="drill-panel">
+    <button class="drill-close" onclick="document.getElementById('${drillId}').innerHTML=''">&times;</button>
+    <h4>${label} &mdash; ${matches.length} positions (${fmt$(totalVal)})</h4>
+    <table class="drill-table">${rows}</table>
+  </div>`;
 }
 
 // ==================== BLOTTER ====================
