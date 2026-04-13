@@ -20,5 +20,8 @@
   "EWZ": {"bbg": "EWZ US Equity", "fmp": "EWZ", "ccy": "USD", "geo": "LatAm", "class": "Equity", "sector": "Broad Market", "name": "iShares MSCI Brazil ETF"},
   "MUFG": {"bbg": "MUFG US Equity", "fmp": "MUFG", "ccy": "USD", "geo": "Asia", "class": "Equity", "sector": "Financials", "name": "Mitsubishi UFJ Financial ADR"},
   "UST2Y": {"bbg": "91282CME@BGN Govt", "fmp": "", "ccy": "USD", "geo": "US", "class": "Fixed Income", "sector": "Government Bonds", "name": "US Treasury 2Y (91282CME)"},
-  "BNO": {"bbg": "BNO US Equity", "fmp": "BNO", "ccy": "USD", "geo": "US", "class": "Commodities", "sector": "Commodities", "name": "United States Brent Oil Fund"}
+  "BNO": {"bbg": "BNO US Equity", "fmp": "BNO", "ccy": "USD", "geo": "US", "class": "Commodities", "sector": "Commodities", "name": "United States Brent Oil Fund"},
+  "WEAT": {"bbg": "WEAT US Equity", "fmp": "WEAT", "ccy": "USD", "geo": "US", "class": "Commodities", "sector": "Commodities", "name": "Teucrium Wheat Fund"},
+  "CORN": {"bbg": "CORN US Equity", "fmp": "CORN", "ccy": "USD", "geo": "US", "class": "Commodities", "sector": "Commodities", "name": "Teucrium Corn Fund"},
+  "CANE": {"bbg": "CANE US Equity", "fmp": "CANE", "ccy": "USD", "geo": "US", "class": "Commodities", "sector": "Commodities", "name": "Teucrium Sugar Fund"}
 }
