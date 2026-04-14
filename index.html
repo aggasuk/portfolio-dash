@@ -752,7 +752,11 @@ function computeYtdPnl() {
 
     let ytdBase = pos.cost_basis_usd; // default: cost basis if no history
     if (yearStartSnapshot && yearStartSnapshot.positions && yearStartSnapshot.positions[pos.ticker]) {
-      ytdBase = yearStartSnapshot.positions[pos.ticker].mkt_val_usd || pos.cost_basis_usd;
+      const snap = yearStartSnapshot.positions[pos.ticker];
+      // Only use snapshot if quantity matches — otherwise position changed and cost basis is safer
+      if (snap.qty === pos.qty) {
+        ytdBase = snap.mkt_val_usd || pos.cost_basis_usd;
+      }
     }
 
     pos.ytd_pnl_usd = pos.mkt_value_usd - ytdBase;
