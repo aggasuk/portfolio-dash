@@ -282,6 +282,7 @@
 
       <div class="filter-row" id="pos-filter">
         <button class="filter-btn active" onclick="setPositionFilter('open',this)">Open</button>
+        <button class="filter-btn" onclick="setPositionFilter('derivatives',this)">Derivatives</button>
         <button class="filter-btn" onclick="setPositionFilter('closed',this)">Closed</button>
         <div style="flex:1"></div>
         <div class="col-picker-wrap">
@@ -801,10 +802,17 @@ async function loadAllPositions() {
   const holdings = {};
 
   // IBKR positions
+  const ibkrDerivatives = [];  // options handled separately (100x multiplier)
   if (ibkrData && ibkrData.positions) {
     for (const p of ibkrData.positions) {
       const tk = p.ticker;
       if (!tk) continue;
+      // Options have a 100x contract multiplier and IBKR's mkt_value/avg_cost already
+      // bake that in. Skip the per-share aggregation — use IBKR values directly.
+      if (p.asset_class === 'OPT') {
+        ibkrDerivatives.push(p);
+        continue;
+      }
       holdings[tk] = holdings[tk] || { ibkrQty: 0, ibkrCost: 0, manualQty: 0, manualCost: 0, ccy: p.currency || 'USD', broker: 'IBKR' };
       holdings[tk].ibkrQty += p.qty || 0;
       holdings[tk].ibkrCost += (p.avg_cost || 0) * (p.qty || 0);
@@ -878,6 +886,52 @@ async function loadAllPositions() {
       currency: ccy, country: p.country || '',
       sector: (p.sector && p.sector !== 'nan') ? p.sector : '',
       type: p.type || '', sources: sources, closed: false,
+    });
+  }
+
+  // Append derivatives (options) — use IBKR values directly (100x multiplier already baked in)
+  for (const p of ibkrDerivatives) {
+    const fx = getFxToUsd(p.currency || 'USD');
+    const mktValUsd = (p.mkt_value || 0) * fx;
+    const costLocal = (p.avg_cost || 0) * (p.qty || 0);
+    const costUsd = costLocal * fx;
+    const unrealPnl = (p.unrealised_pnl || (p.mkt_value - costLocal) || 0) * fx;
+    const unrealPct = costUsd > 0 ? unrealPnl / costUsd : 0;
+    // Parse IBKR option ticker into clean display form.
+    // e.g. "BNO    JUL2026 60 C [BNO   260717C00060000 100]" -> "BNO Jul26 60C"
+    const rawTk = p.ticker || '';
+    const m = rawTk.match(/^(\S+)\s+(\w{3})(\d{4})\s+([\d.]+)\s+([CP])/i);
+    let displayTk = rawTk;
+    let underlying = '';
+    if (m) {
+      const mon = m[2].charAt(0).toUpperCase() + m[2].slice(1).toLowerCase();
+      const yr = m[3].slice(2);
+      displayTk = `${m[1]} ${mon}${yr} ${m[4]}${m[5].toUpperCase()}`;
+      underlying = m[1];
+    }
+    allPositions.push({
+      ticker: displayTk, name: displayTk,
+      underlying: underlying,
+      qty: p.qty || 0,
+      avg_cost: p.avg_cost || 0,
+      mkt_price: p.mkt_price || 0,
+      prev_close: p.mkt_price || 0,  // options: no reliable prev_close source yet
+      mkt_value_usd: mktValUsd,
+      cost_basis_usd: costUsd,
+      unrealised_pnl_usd: unrealPnl,
+      unrealised_pnl_pct: unrealPct,
+      daily_pnl_usd: 0,   // no prev_close data for options
+      daily_pnl_pct: 0,
+      currency: p.currency || 'USD',
+      country: 'US',
+      sector: 'Derivatives',
+      type: 'Options',
+      sources: ['IBKR'],
+      closed: false,
+      is_derivative: true,
+      contract_size: 100,
+      raw_ticker: rawTk,
+      conid: p.conid,
     });
   }
 
@@ -1025,8 +1079,10 @@ function renderPositionsTable() {
   let positions;
   if (positionFilter === 'closed') {
     positions = allPositions.filter(p => p.closed);
+  } else if (positionFilter === 'derivatives') {
+    positions = allPositions.filter(p => !p.closed && p.is_derivative && p.qty !== 0);
   } else {
-    positions = allPositions.filter(p => !p.closed && p.qty > 0);
+    positions = allPositions.filter(p => !p.closed && !p.is_derivative && p.qty > 0);
   }
 
   // Dynamic sort
