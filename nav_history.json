@@ -347,6 +347,95 @@
         }
       },
       "spx_close": 0
+    },
+    {
+      "date": "2026-04-17",
+      "nav": 2576781.73,
+      "cost": 2633613.6,
+      "daily_pnl": -62994.57,
+      "positions": {
+        "1306": {
+          "qty": 20000,
+          "mkt_val_usd": 49776.61
+        },
+        "1615": {
+          "qty": 13500,
+          "mkt_val_usd": 53420.66
+        },
+        "UST2Y": {
+          "qty": 528000,
+          "mkt_val_usd": 529980
+        },
+        "IAU": {
+          "qty": 4637,
+          "mkt_val_usd": 418209.63
+        },
+        "AMZN": {
+          "qty": 1000,
+          "mkt_val_usd": 237625
+        },
+        "VOO": {
+          "qty": 330,
+          "mkt_val_usd": 213032.83
+        },
+        "QQQ": {
+          "qty": 310,
+          "mkt_val_usd": 198474.4
+        },
+        "KWEB": {
+          "qty": 6700,
+          "mkt_val_usd": 192792.5
+        },
+        "MUFG": {
+          "qty": 7400,
+          "mkt_val_usd": 133311
+        },
+        "NVDA": {
+          "qty": 459,
+          "mkt_val_usd": 86583.51
+        },
+        "CPER": {
+          "qty": 2000,
+          "mkt_val_usd": 73934.4
+        },
+        "WEAT": {
+          "qty": 3200,
+          "mkt_val_usd": 72959.68
+        },
+        "CORN": {
+          "qty": 3900,
+          "mkt_val_usd": 70122.78
+        },
+        "CANE": {
+          "qty": 6900,
+          "mkt_val_usd": 64033.52
+        },
+        "EWZ": {
+          "qty": 1500,
+          "mkt_val_usd": 61515
+        },
+        "AZN": {
+          "qty": 188,
+          "mkt_val_usd": 38527.76
+        },
+        "REMX": {
+          "qty": 300,
+          "mkt_val_usd": 30882
+        },
+        "EMLC": {
+          "qty": 1000,
+          "mkt_val_usd": 25922.7
+        },
+        "IGV": {
+          "qty": 252,
+          "mkt_val_usd": 18829.44
+        },
+        "BNO": {
+          "qty": 2100,
+          "mkt_val_usd": 6848.32
+        }
+      },
+      "spx_close": 0
     }
   ]
 }
