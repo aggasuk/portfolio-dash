@@ -160,6 +160,13 @@ def fetch_prices(tickers):
 
             px_last = float(row.get("px_last", 0) or 0)
             prev_close = float(row.get("prev_close_value_realtime", 0) or 0)
+            chg_pct_1d = float(row.get("chg_pct_1d", 0) or 0)
+
+            # Bloomberg's PREV_CLOSE_VALUE_REALTIME tracks the intraday last when the
+            # market is open, defeating its purpose for "yesterday's close". If it
+            # equals px_last but the day has a move, back it out from CHG_PCT_1D.
+            if px_last and abs(chg_pct_1d) > 1e-6 and abs(prev_close - px_last) < 1e-6:
+                prev_close = px_last / (1.0 + chg_pct_1d / 100.0)
 
             # Handle GBp (pence) → GBP
             if ccy == "GBp":
@@ -171,7 +178,7 @@ def fetch_prices(tickers):
                 "bbg_ticker": bbg_ticker,
                 "px_last": px_last,
                 "prev_close": prev_close,
-                "chg_pct_1d": float(row.get("chg_pct_1d", 0) or 0),
+                "chg_pct_1d": chg_pct_1d,
                 "chg_pct_ytd": float(row.get("chg_pct_ytd", 0) or 0),
                 "name": str(row.get("name", short_ticker) or short_ticker),
                 "currency": ccy,
@@ -236,8 +243,8 @@ def compute_nav(tickers_info, prices, fx_rates, ibkr_data):
 
             # Bond price factor (price per 100 face)
             price_factor = 1.0
-            if tk in (tickers or {}):
-                bbg_tk = tickers[tk].get("bbg", "")
+            if tk in (tickers_info or {}):
+                bbg_tk = tickers_info[tk].get("bbg", "")
                 if "Govt" in bbg_tk or "Corp" in bbg_tk:
                     price_factor = 0.01
 
