@@ -493,6 +493,59 @@
         }
       },
       "spx_close": 0
+    },
+    {
+      "date": "2026-04-22",
+      "nav": 895329.62,
+      "cost": 887656.74,
+      "daily_pnl": 7672.88,
+      "positions": {
+        "CORN": {
+          "qty": 3900.0,
+          "mkt_val_usd": 71003.4
+        },
+        "VOO": {
+          "qty": 330.0,
+          "mkt_val_usd": 214028.1
+        },
+        "QQQ": {
+          "qty": 310.0,
+          "mkt_val_usd": 199956.21
+        },
+        "CANE": {
+          "qty": 6900.0,
+          "mkt_val_usd": 63576.6
+        },
+        "BNO": {
+          "qty": 2000.0,
+          "mkt_val_usd": 99007.13
+        },
+        "CPER": {
+          "qty": 2000.0,
+          "mkt_val_usd": 73347.9
+        },
+        "REMX": {
+          "qty": 300.0,
+          "mkt_val_usd": 30334.0
+        },
+        "EMLC": {
+          "qty": 1000.0,
+          "mkt_val_usd": 25914.0
+        },
+        "BNO    JUL2026 60 C [BNO   260717C00060000 100]": {
+          "qty": 100.0,
+          "mkt_val_usd": 334.47
+        },
+        "WEAT": {
+          "qty": 3200.0,
+          "mkt_val_usd": 73515.87
+        },
+        "IAU": {
+          "qty": 500.0,
+          "mkt_val_usd": 44311.95
+        }
+      },
+      "spx_close": 7081.68
     }
   ]
 }
