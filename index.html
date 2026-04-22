@@ -720,6 +720,9 @@ function buildPriceTable() {
     for (const p of ibkrData.positions) {
       const tk = p.ticker;
       if (!tk) continue;
+      // Skip options — they share ticker root with the underlying ETF (e.g. "BNO")
+      // and would otherwise clobber the ETF's last price with the option premium.
+      if (p.asset_class === 'OPT') continue;
       if (!pt[tk]) pt[tk] = { last: 0, prevClose: 0, ccy: 'USD', name: tk, country: '', sector: '', type: '' };
       if (p.mkt_price) pt[tk].last = p.mkt_price;
       if (!pt[tk].ccy || pt[tk].ccy === 'USD') pt[tk].ccy = p.currency || 'USD';
