@@ -609,37 +609,46 @@ function detectClosedPositions() {
     if (p.ticker) oldPositions[p.ticker] = p;
   }
 
-  const currentTickers = new Set((ibkrData.positions || []).map(p => p.ticker).filter(Boolean));
+  const currentByTicker = {};
+  for (const p of (ibkrData.positions || [])) {
+    if (p.ticker) currentByTicker[p.ticker] = p;
+  }
   const today = new Date().toISOString().slice(0, 10);
 
   for (const [tk, oldP] of Object.entries(oldPositions)) {
-    if (currentTickers.has(tk)) continue;
-    // Position disappeared — check it's not already recorded
-    if (closedPositions.some(cp => cp.ticker === tk && cp.close_date === today)) continue;
+    const oldQty = oldP.qty || 0;
+    const curP = currentByTicker[tk];
+    const newQty = curP ? (curP.qty || 0) : 0;
+    const qtyClosed = oldQty - newQty;
+    if (qtyClosed <= 0) continue;  // new position or qty unchanged/increased
+
+    // Dedupe: don't re-record the same partial/full close for today
+    if (closedPositions.some(cp => cp.ticker === tk && cp.close_date === today && cp.qty_closed === qtyClosed)) continue;
 
     const closePrice = oldP.mkt_price || oldP.avg_cost || 0;
     const avgCost = oldP.avg_cost || 0;
-    const qty = oldP.qty || 0;
     const ccy = oldP.currency || 'USD';
 
-    // Determine price factor from ticker_map
     const info = tickerMap[tk];
     const priceFactor = (info && info.bbg && /\b(Govt|Corp)\b/i.test(info.bbg)) ? 0.01 : 1;
     const fx = getFxToUsd(ccy);
-    const realizedPnl = (closePrice - avgCost) * qty * priceFactor * fx;
+    const realizedPnl = (closePrice - avgCost) * qtyClosed * priceFactor * fx;
+    const isPartial = newQty > 0;
 
     closedPositions.push({
       ticker: tk,
       name: oldP.name || tk,
-      qty_closed: qty,
+      qty_closed: qtyClosed,
       avg_cost: avgCost,
       close_price: closePrice,
       realized_pnl: Math.round(realizedPnl * 100) / 100,
       close_date: today,
       currency: ccy,
       price_factor: priceFactor,
+      partial: isPartial,
+      remaining_qty: newQty,
     });
-    console.log(`[CLOSED] ${tk}: ${qty} shares, realized P&L: $${realizedPnl.toFixed(2)}`);
+    console.log(`[${isPartial ? 'PARTIAL' : 'CLOSED'}] ${tk}: ${qtyClosed} closed (${newQty} remaining), realized P&L: $${realizedPnl.toFixed(2)}`);
   }
 }
 
@@ -889,6 +898,14 @@ async function loadAllPositions() {
     });
   }
 
+  // Build snapshot lookup by conid for options prev_close
+  const snapByConid = {};
+  if (ibkrSnapshot && ibkrSnapshot.positions) {
+    for (const sp of ibkrSnapshot.positions) {
+      if (sp.conid) snapByConid[sp.conid] = sp;
+    }
+  }
+
   // Append derivatives (options) — use IBKR values directly (100x multiplier already baked in)
   for (const p of ibkrDerivatives) {
     const fx = getFxToUsd(p.currency || 'USD');
@@ -897,6 +914,12 @@ async function loadAllPositions() {
     const costUsd = costLocal * fx;
     const unrealPnl = (p.unrealised_pnl || (p.mkt_value - costLocal) || 0) * fx;
     const unrealPct = costUsd > 0 ? unrealPnl / costUsd : 0;
+    const snap = snapByConid[p.conid];
+    const prevMktPrice = snap ? (snap.mkt_price || 0) : 0;
+    const curMktPrice = p.mkt_price || 0;
+    // Option mkt_value = qty * mkt_price * 100 (contract multiplier)
+    const optDailyPnl = prevMktPrice > 0 ? (curMktPrice - prevMktPrice) * (p.qty || 0) * 100 * fx : 0;
+    const optDailyPct = prevMktPrice > 0 ? (curMktPrice - prevMktPrice) / prevMktPrice : 0;
     // Parse IBKR option ticker into clean display form.
     // e.g. "BNO    JUL2026 60 C [BNO   260717C00060000 100]" -> "BNO Jul26 60C"
     const rawTk = p.ticker || '';
@@ -915,13 +938,13 @@ async function loadAllPositions() {
       qty: p.qty || 0,
       avg_cost: p.avg_cost || 0,
       mkt_price: p.mkt_price || 0,
-      prev_close: p.mkt_price || 0,  // options: no reliable prev_close source yet
+      prev_close: prevMktPrice || (p.mkt_price || 0),
       mkt_value_usd: mktValUsd,
       cost_basis_usd: costUsd,
       unrealised_pnl_usd: unrealPnl,
       unrealised_pnl_pct: unrealPct,
-      daily_pnl_usd: 0,   // no prev_close data for options
-      daily_pnl_pct: 0,
+      daily_pnl_usd: optDailyPnl,
+      daily_pnl_pct: optDailyPct,
       currency: p.currency || 'USD',
       country: 'US',
       sector: 'Derivatives',

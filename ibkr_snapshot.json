@@ -229,17 +229,5 @@
       "base_unrealised_pnl": 0
     }
   ],
-  "closed_positions": [
-    {
-      "ticker": "1615",
-      "name": "NEXT FUNDS TOPIX BANKS ETF",
-      "qty_closed": 6500,
-      "avg_cost": 583.41733885,
-      "close_price": 630.4104004,
-      "realized_pnl": 1917.34,
-      "close_date": "2026-04-17",
-      "currency": "JPY",
-      "price_factor": 1
-    }
-  ]
+  "closed_positions": []
 }
