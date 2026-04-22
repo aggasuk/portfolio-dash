@@ -249,32 +249,5 @@
       "base_unrealised_pnl": -4244.15
     }
   ],
-  "closed_positions": [
-    {
-      "ticker": "BNO",
-      "name": "BNO",
-      "qty_closed": 1900,
-      "avg_cost": 50.974975,
-      "close_price": 49.676239,
-      "realized_pnl": -2467.6,
-      "close_date": "2026-04-22",
-      "currency": "USD",
-      "price_factor": 1,
-      "partial": true,
-      "remaining_qty": 100
-    },
-    {
-      "ticker": "BNO    JUL2026 60 C [BNO   260717C00060000 100]",
-      "name": "BNO    JUL2026 60 C [BNO   260717C00060000 100]",
-      "qty_closed": 100,
-      "avg_cost": 341.70045,
-      "close_price": 3.40076255,
-      "realized_pnl": -33829.97,
-      "close_date": "2026-04-22",
-      "currency": "USD",
-      "price_factor": 1,
-      "partial": false,
-      "remaining_qty": 0
-    }
-  ]
+  "closed_positions": []
 }

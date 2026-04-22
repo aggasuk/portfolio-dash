@@ -604,26 +604,29 @@ async function saveIbkrSnapshot() {
 function detectClosedPositions() {
   if (!ibkrConnected || !ibkrData || !ibkrSnapshot || !ibkrSnapshot.positions) return;
 
-  const oldPositions = {};
+  // Key by conid — ticker isn't unique (BNO ETF + BNO option share root)
+  // and IBKR can change ticker formatting between snapshots.
+  const oldByConid = {};
   for (const p of ibkrSnapshot.positions) {
-    if (p.ticker) oldPositions[p.ticker] = p;
+    if (p.conid) oldByConid[p.conid] = p;
   }
 
-  const currentByTicker = {};
+  const curByConid = {};
   for (const p of (ibkrData.positions || [])) {
-    if (p.ticker) currentByTicker[p.ticker] = p;
+    if (p.conid) curByConid[p.conid] = p;
   }
   const today = new Date().toISOString().slice(0, 10);
 
-  for (const [tk, oldP] of Object.entries(oldPositions)) {
+  for (const [conid, oldP] of Object.entries(oldByConid)) {
     const oldQty = oldP.qty || 0;
-    const curP = currentByTicker[tk];
+    const curP = curByConid[conid];
     const newQty = curP ? (curP.qty || 0) : 0;
     const qtyClosed = oldQty - newQty;
-    if (qtyClosed <= 0) continue;  // new position or qty unchanged/increased
+    if (qtyClosed <= 0) continue;
 
-    // Dedupe: don't re-record the same partial/full close for today
-    if (closedPositions.some(cp => cp.ticker === tk && cp.close_date === today && cp.qty_closed === qtyClosed)) continue;
+    const tk = oldP.ticker || '';
+    // Dedupe on conid+date+qty
+    if (closedPositions.some(cp => cp.conid == conid && cp.close_date === today && cp.qty_closed === qtyClosed)) continue;
 
     const closePrice = oldP.mkt_price || oldP.avg_cost || 0;
     const avgCost = oldP.avg_cost || 0;
@@ -636,6 +639,7 @@ function detectClosedPositions() {
     const isPartial = newQty > 0;
 
     closedPositions.push({
+      conid: oldP.conid,
       ticker: tk,
       name: oldP.name || tk,
       qty_closed: qtyClosed,
@@ -648,7 +652,7 @@ function detectClosedPositions() {
       partial: isPartial,
       remaining_qty: newQty,
     });
-    console.log(`[${isPartial ? 'PARTIAL' : 'CLOSED'}] ${tk}: ${qtyClosed} closed (${newQty} remaining), realized P&L: $${realizedPnl.toFixed(2)}`);
+    console.log(`[${isPartial ? 'PARTIAL' : 'CLOSED'}] ${tk} (conid=${conid}): ${qtyClosed} closed (${newQty} remaining), realized P&L: $${realizedPnl.toFixed(2)}`);
   }
 }
 
