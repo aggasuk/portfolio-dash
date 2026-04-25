@@ -173,6 +173,10 @@ def main():
 
     # Fetch all BBG histories in one shot
     px_df = fetch_history(bbg_list, bdh_start, bdh_end)
+    if px_df.empty:
+        print("\n  ABORT: BDH returned no data — Bloomberg Terminal probably disconnected.")
+        print("  Refusing to overwrite nav_history.json.")
+        sys.exit(2)
 
     # Apply GBp -> GBP conversion for tickers quoted in pence
     if not px_df.empty:
