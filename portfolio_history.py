@@ -238,6 +238,15 @@ def main():
             "positions": positions_snap,
         })
 
+    # Re-baseline YTD P&L so day 1 = 0:
+    #   ytd_pnl_clean = (unrealised(t) - unrealised(jan_1)) + realized_ytd(t)
+    if snapshots:
+        baseline = snapshots[0]["unrealised_pnl_usd"]
+        for s in snapshots:
+            s["ytd_pnl_clean_usd"] = round(
+                (s["unrealised_pnl_usd"] - baseline) + s["realized_pnl_ytd_usd"], 2
+            )
+
     output = {
         "schema_version": 1,
         "last_updated": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
