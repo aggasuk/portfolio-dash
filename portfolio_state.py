@@ -194,7 +194,46 @@ def fetch_prices(meta, open_lots):
     if not bbg_to_tk:
         return {}, {}
     fields = ["PX_LAST", "PREV_CLOSE_VALUE_REALTIME", "CHG_PCT_1D",
-              "CHG_PCT_YTD", "NAME", "CRNCY", "GICS_SECTOR_NAME", "COUNTRY_ISO"]
+              "CHG_PCT_YTD", "NAME", "CRNCY", "GICS_SECTOR_NAME", "COUNTRY_ISO",
+              "SECURITY_TYP", "FUND_ASSET_CLASS_FOCUS", "FUND_INDUSTRY_FOCUS"]
+
+
+def classify_position(meta_ac, sec_typ, fund_asset_class, fund_industry, gics_sector):
+    """Map raw BBG fields to user-friendly type + sector.
+    Returns (type_display, sector_display)."""
+    # Manual asset_class from journal takes precedence
+    if meta_ac == "OPT":
+        return ("Option", "Derivatives")
+    if meta_ac == "BOND":
+        return ("Bond", gics_sector or "Government" if "treasury" in (sec_typ or "").lower() else "Government")
+    if meta_ac == "STRUCT":
+        return ("Structured", "Other")
+
+    # ETFs / Funds — use FUND_ASSET_CLASS_FOCUS
+    sec_typ_l = (sec_typ or "").lower()
+    fac = (fund_asset_class or "").strip()
+    fi  = (fund_industry or "").strip()
+    is_etf = sec_typ_l in ("etp", "fund", "open-end fund", "exchange traded fund", "common stock open-end fund") or fac
+    if is_etf:
+        if fac in ("Commodity", "Commodities"):
+            return ("Commodity ETF", fi or "Commodities")
+        if fac == "Fixed Income":
+            return ("Bond ETF", fi or "Fixed Income")
+        if fac == "Real Estate":
+            return ("REIT ETF", fi or "Real Estate")
+        if fac == "Multi-Asset":
+            return ("Multi-Asset ETF", fi or "Multi-Asset")
+        if fac == "Equity":
+            return ("Equity ETF", fi or gics_sector or "Equity")
+        # No clear class — best guess
+        return ("ETF", fi or gics_sector or "Other")
+
+    # Common stock
+    if sec_typ_l in ("common stock", "ordinary shares", "ads", "adr") or gics_sector:
+        return ("Equity", gics_sector or "Other")
+
+    # Fallback
+    return (sec_typ or "Other", gics_sector or fi or "Other")
     print(f"  Fetching {len(bbg_to_tk)} prices from Bloomberg...")
     try:
         ref = blp.bdp(list(bbg_to_tk.keys()), fields)
@@ -214,12 +253,20 @@ def fetch_prices(meta, open_lots):
                 prev = px / (1 + ch1d/100.0)
             if ccy == "GBp":
                 ccy = "GBP"; px /= 100.0; prev /= 100.0
+            sec_typ = str(row.get("security_typ") or "").strip()
+            fund_ac = str(row.get("fund_asset_class_focus") or "").strip()
+            fund_ind = str(row.get("fund_industry_focus") or "").strip()
+            gics = str(row.get("gics_sector_name") or "").strip()
+            type_disp, sector_disp = classify_position(meta[tk]["asset_class"], sec_typ, fund_ac, fund_ind, gics)
             prices[tk] = {
                 "bbg": bbg, "px_last": px, "prev_close": prev,
                 "chg_pct_1d": ch1d, "chg_pct_ytd": safe_float(row.get("chg_pct_ytd")),
                 "name": str(row.get("name") or tk),
                 "currency": ccy,
-                "sector": str(row.get("gics_sector_name") or "") if row.get("gics_sector_name") else "",
+                "type_display": type_disp,
+                "sector": sector_disp,
+                "raw_security_typ": sec_typ,
+                "raw_fund_asset_class": fund_ac,
                 "country": str(row.get("country_iso") or "")
             }
             currencies.add(ccy)
@@ -335,6 +382,7 @@ def build_state():
             "prev_close": prev,
             "currency": ccy,
             "asset_class": m.get("asset_class","STK"),
+            "type_display": p.get("type_display") or m.get("asset_class","STK"),
             "price_factor": pf,
             "mkt_value_usd": round(mkt_val_usd, 2),
             "cost_basis_usd": round(cost_usd, 2),
