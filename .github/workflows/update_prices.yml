@@ -12,15 +12,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Compute portfolio state (FIFO + Bloomberg prices + IBKR reconciliation)
+      - name: Reconstruct daily NAV history (Bloomberg historical) -> writes nav_history.json
+        shell: powershell
+        run: python portfolio_history.py
+
+      - name: Compute portfolio state (FIFO + Bloomberg prices + IBKR reconciliation, reads nav_history for YTD baseline)
         shell: powershell
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python portfolio_state.py
-
-      - name: Reconstruct daily NAV history (Bloomberg historical)
-        shell: powershell
-        run: python portfolio_history.py
 
       - name: Commit refreshed state files
         shell: powershell
