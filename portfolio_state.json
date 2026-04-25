@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-04-25T15:20:41",
+  "last_updated": "2026-04-25T15:26:16",
   "as_of": "2026-04-25",
   "summary": {
     "as_of": "2026-04-25",
@@ -393,7 +393,7 @@
       "unrealised_pnl_pct": 0.2903,
       "daily_pnl_usd": -100.0,
       "daily_pnl_pct": -0.0023,
-      "chg_pct_ytd": NaN,
+      "chg_pct_ytd": 0.0,
       "sector": "nan",
       "country": "US",
       "by_broker": {
@@ -918,7 +918,7 @@
   },
   "fx_rates": {
     "USD": 1.0,
-    "JPY": 0.006274,
-    "GBP": 1.3532
+    "GBP": 1.3532,
+    "JPY": 0.006274
   }
 }
