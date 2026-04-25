@@ -367,9 +367,10 @@ const POS_COLS = [
   { key: 'avg_cost',        label: 'Avg Cost',    render: p => `<td>${fmtPx(p.avg_cost)} ${p.currency}</td>` },
   { key: 'mkt_price',       label: 'Last',        render: p => `<td>${fmtPx(p.mkt_price)} ${p.currency}</td>` },
   { key: 'mkt_value_usd',   label: 'Mkt Val USD', render: p => `<td>${fmt$(p.mkt_value_usd)}</td>` },
-  { key: 'unrealised_pnl_usd', label: 'Unrl P&L', render: p => `<td><span class="${pnlClass(p.unrealised_pnl_usd)}">${fmt$(p.unrealised_pnl_usd)}<br><span class="small-cell ${pnlClass(p.unrealised_pnl_pct)}">${fmtPct(p.unrealised_pnl_pct)}</span></span></td>` },
+  { key: 'unrealised_pnl_usd', label: 'Unrl P&L (since cost)', render: p => `<td><span class="${pnlClass(p.unrealised_pnl_usd)}">${fmt$(p.unrealised_pnl_usd)}<br><span class="small-cell ${pnlClass(p.unrealised_pnl_pct)}">${fmtPct(p.unrealised_pnl_pct)}</span></span></td>` },
+  { key: 'ytd_pnl_usd',     label: 'YTD P&L',     render: p => `<td><span class="${pnlClass(p.ytd_pnl_usd)}">${fmt$(p.ytd_pnl_usd)}<br><span class="small-cell ${pnlClass(p.ytd_pnl_pct)}">${fmtPct(p.ytd_pnl_pct)}</span></span></td>` },
   { key: 'daily_pnl_usd',   label: 'Daily P&L',   render: p => `<td><span class="${pnlClass(p.daily_pnl_usd)}">${fmt$(p.daily_pnl_usd)}<br><span class="small-cell ${pnlClass(p.daily_pnl_pct)}">${fmtPct(p.daily_pnl_pct)}</span></span></td>` },
-  { key: 'chg_pct_ytd',     label: 'Ticker YTD',  render: p => `<td><span class="${pnlClass(p.chg_pct_ytd)}">${p.chg_pct_ytd ? p.chg_pct_ytd.toFixed(2) + '%' : '—'}</span></td>` },
+  { key: 'chg_pct_ytd',     label: 'Ticker YTD%',  render: p => `<td><span class="${pnlClass(p.chg_pct_ytd)}">${p.chg_pct_ytd ? p.chg_pct_ytd.toFixed(2) + '%' : '—'}</span></td>` },
   { key: 'type_display',    label: 'Type',        render: p => `<td>${p.type_display || p.asset_class || '—'}</td>` },
   { key: 'sector',          label: 'Sector',      render: p => `<td>${p.sector || '—'}</td>` },
 ];
