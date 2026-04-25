@@ -12,6 +12,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Sync IBKR trades from Flex Web Service into trade_journal.json
+        shell: powershell
+        env:
+          IBKR_FLEX_TOKEN:    ${{ secrets.IBKR_FLEX_TOKEN }}
+          IBKR_FLEX_QUERY_ID: ${{ secrets.IBKR_FLEX_QUERY_ID }}
+        run: python ibkr_flex_sync.py
+
       - name: Reconstruct daily NAV history (Bloomberg historical) -> writes nav_history.json
         shell: powershell
         run: python portfolio_history.py
@@ -22,15 +29,15 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python portfolio_state.py
 
-      - name: Commit refreshed state files
+      - name: Commit refreshed files (journal + state + history + recon)
         shell: powershell
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add portfolio_state.json reconciliation.json nav_history.json
+          git add trade_journal.json portfolio_state.json reconciliation.json nav_history.json
           git diff --staged --quiet
           if ($LASTEXITCODE -ne 0) {
-            git commit -m "Bloomberg refresh $(Get-Date -Format 'yyyy-MM-ddTHH:mm')"
+            git commit -m "Bloomberg refresh + Flex sync $(Get-Date -Format 'yyyy-MM-ddTHH:mm')"
             git push
           } else {
             Write-Host "No changes to commit"
