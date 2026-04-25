@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-04-25T18:11:13",
+  "last_updated": "2026-04-25T18:15:19",
   "as_of": "2026-04-25",
   "summary": {
     "as_of": "2026-04-25",
@@ -188,7 +188,7 @@
       "daily_pnl_usd": 2680.0,
       "daily_pnl_pct": 0.0141,
       "chg_pct_ytd": -15.33039,
-      "sector": "Technology",
+      "sector": "Information Technology",
       "country": "US",
       "by_broker": {
         "UBS": 6700.0
@@ -548,7 +548,7 @@
       "daily_pnl_usd": 8.78,
       "daily_pnl_pct": 0.0003,
       "chg_pct_ytd": 13.46081,
-      "sector": "Financial",
+      "sector": "Financials",
       "country": "JP",
       "by_broker": {
         "UBS": 7000.0
@@ -1035,7 +1035,7 @@
   },
   "fx_rates": {
     "USD": 1.0,
-    "GBP": 1.3532,
-    "JPY": 0.006274
+    "JPY": 0.006274,
+    "GBP": 1.3532
   }
 }
