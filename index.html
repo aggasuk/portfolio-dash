@@ -618,6 +618,7 @@ function detectClosedPositions() {
   const today = new Date().toISOString().slice(0, 10);
 
   for (const [conid, oldP] of Object.entries(oldByConid)) {
+    if (!conid || conid === 'undefined') continue;  // never auto-close non-IBKR entries
     const oldQty = oldP.qty || 0;
     const curP = curByConid[conid];
     const newQty = curP ? (curP.qty || 0) : 0;
@@ -848,6 +849,33 @@ async function loadAllPositions() {
       const avgCost = holdings[tk].manualQty > 0 ? holdings[tk].manualCost / holdings[tk].manualQty : px;
       holdings[tk].manualQty -= qty;
       holdings[tk].manualCost = holdings[tk].manualQty > 0 ? avgCost * holdings[tk].manualQty : 0;
+
+      // Record manual sell as a closed position (dedupe via trade_key)
+      const tradeKey = t.id || `manual_${tk}_${t.date || ''}_${qty}_${px}`;
+      const alreadyRecorded = closedPositions.some(cp => cp.trade_key === tradeKey);
+      if (!alreadyRecorded) {
+        const ccy = t.currency || holdings[tk].ccy || 'USD';
+        const fxRate = getFxToUsd(ccy);
+        const info = tickerMap[tk];
+        const priceFactor = (info && info.bbg && /\b(Govt|Corp)\b/i.test(info.bbg)) ? 0.01 : 1;
+        const realizedPnl = (px - avgCost) * qty * priceFactor * fxRate;
+        const closeDate = (t.date || new Date().toISOString()).slice(0, 10);
+        closedPositions.push({
+          trade_key: tradeKey,
+          ticker: tk,
+          name: (info && info.name) || t.name || tk,
+          qty_closed: qty,
+          avg_cost: avgCost,
+          close_price: px,
+          realized_pnl: Math.round(realizedPnl * 100) / 100,
+          close_date: closeDate,
+          currency: ccy,
+          price_factor: priceFactor,
+          partial: holdings[tk].manualQty > 0,
+          remaining_qty: Math.max(0, holdings[tk].manualQty),
+          source: 'manual',
+        });
+      }
     }
     if (t.broker) holdings[tk].broker = t.broker;
   }
