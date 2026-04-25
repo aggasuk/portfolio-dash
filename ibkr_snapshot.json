@@ -223,6 +223,21 @@
       "price_factor": 1,
       "partial": false,
       "remaining_qty": 0
+    },
+    {
+      "trade_key": "manual_IGV_2026-04-25T05:43:18.005Z_252_85",
+      "ticker": "IGV",
+      "name": "iShares Expanded Tech-Software",
+      "qty_closed": 252,
+      "avg_cost": 98.54,
+      "close_price": 85,
+      "realized_pnl": -3412.08,
+      "close_date": "2026-04-25",
+      "currency": "USD",
+      "price_factor": 1,
+      "partial": false,
+      "remaining_qty": 0,
+      "source": "manual"
     }
   ]
 }
