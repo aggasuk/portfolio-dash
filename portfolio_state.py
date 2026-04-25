@@ -193,13 +193,52 @@ def _clean_str(v):
     return s
 
 
+# Normalize sector names so GICS (Financials/Industrials) and Bloomberg
+# fund-industry-focus (Financial/Industrial) bucket the same.
+_SECTOR_ALIASES = {
+    "financial": "Financials",
+    "industrial": "Industrials",
+    "material": "Materials",
+    "utility": "Utilities",
+    "tech": "Information Technology",
+    "technology": "Information Technology",
+    "info tech": "Information Technology",
+    "information tech": "Information Technology",
+    "consumer disc": "Consumer Discretionary",
+    "consumer discretionary": "Consumer Discretionary",
+    "consumer staple": "Consumer Staples",
+    "consumer staples": "Consumer Staples",
+    "health": "Health Care",
+    "health care": "Health Care",
+    "healthcare": "Health Care",
+    "comm services": "Communication Services",
+    "communication services": "Communication Services",
+    "real estate": "Real Estate",
+    "energy": "Energy",
+    "commodities": "Commodities",
+    "commodity": "Commodities",
+    "fixed income": "Fixed Income",
+    "government": "Government",
+    "broad market": "Broad Market",
+    "equity": "Broad Market",
+    "all sectors": "Broad Market",
+    "multi-asset": "Multi-Asset",
+    "derivatives": "Derivatives",
+}
+
+
+def _normalize_sector(s):
+    if not s: return s
+    return _SECTOR_ALIASES.get(s.strip().lower(), s.strip())
+
+
 def classify_position(meta_ac, sec_typ, fund_asset_class, fund_industry, gics_sector):
     """Map raw BBG fields to user-friendly type + sector.
     Returns (type_display, sector_display)."""
     sec_typ = _clean_str(sec_typ)
     fund_asset_class = _clean_str(fund_asset_class)
-    fund_industry = _clean_str(fund_industry)
-    gics_sector = _clean_str(gics_sector)
+    fund_industry = _normalize_sector(_clean_str(fund_industry))
+    gics_sector = _normalize_sector(_clean_str(gics_sector))
     if meta_ac == "OPT":
         return ("Option", "Derivatives")
     if meta_ac == "BOND":
