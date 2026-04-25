@@ -61,6 +61,14 @@
   .ticker-cell { font-weight: 600; color: var(--text); }
   .small-cell { font-size: 0.7rem; color: var(--text-dim); }
 
+  .drill { margin-top: 8px; font-size: 0.7rem; max-height: 200px; overflow-y: auto; }
+  .drill table { width: 100%; }
+  .drill th { padding: 4px 6px; text-align: right; font-size: 0.6rem; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+  .drill th:first-child { text-align: left; }
+  .drill td { padding: 4px 6px; text-align: right; border-bottom: 1px solid var(--border); }
+  .drill td:first-child { text-align: left; font-weight: 600; }
+  .drill .clear { color: var(--accent); cursor: pointer; font-size: 0.65rem; padding: 2px 6px; }
+
   .filter-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
   .filter-btn { padding: 6px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text-dim); cursor: pointer; font-size: 0.75rem; font-family: inherit; font-weight: 600; }
   .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
@@ -135,10 +143,10 @@
         <div class="table-scroll" id="positions-table-wrap"></div>
       </div>
       <div class="chart-grid">
-        <div class="chart-wrap"><h3>By Asset Class</h3><div id="chart-type"></div></div>
-        <div class="chart-wrap"><h3>By Currency</h3><div id="chart-currency"></div></div>
-        <div class="chart-wrap"><h3>By Broker</h3><div id="chart-broker"></div></div>
-        <div class="chart-wrap"><h3>By Country</h3><div id="chart-country"></div></div>
+        <div class="chart-wrap"><h3>By Asset Class</h3><div id="chart-type"></div><div id="drill-type" class="drill"></div></div>
+        <div class="chart-wrap"><h3>By Currency</h3><div id="chart-currency"></div><div id="drill-currency" class="drill"></div></div>
+        <div class="chart-wrap"><h3>By Broker</h3><div id="chart-broker"></div><div id="drill-broker" class="drill"></div></div>
+        <div class="chart-wrap"><h3>By Sector</h3><div id="chart-sector"></div><div id="drill-sector" class="drill"></div></div>
       </div>
     </div>
 
@@ -362,7 +370,7 @@ const POS_COLS = [
   { key: 'unrealised_pnl_usd', label: 'Unrl P&L', render: p => `<td><span class="${pnlClass(p.unrealised_pnl_usd)}">${fmt$(p.unrealised_pnl_usd)}<br><span class="small-cell ${pnlClass(p.unrealised_pnl_pct)}">${fmtPct(p.unrealised_pnl_pct)}</span></span></td>` },
   { key: 'daily_pnl_usd',   label: 'Daily P&L',   render: p => `<td><span class="${pnlClass(p.daily_pnl_usd)}">${fmt$(p.daily_pnl_usd)}<br><span class="small-cell ${pnlClass(p.daily_pnl_pct)}">${fmtPct(p.daily_pnl_pct)}</span></span></td>` },
   { key: 'chg_pct_ytd',     label: 'Ticker YTD',  render: p => `<td><span class="${pnlClass(p.chg_pct_ytd)}">${p.chg_pct_ytd ? p.chg_pct_ytd.toFixed(2) + '%' : '—'}</span></td>` },
-  { key: 'asset_class',     label: 'Type',        render: p => `<td>${p.asset_class || '—'}</td>` },
+  { key: 'type_display',    label: 'Type',        render: p => `<td>${p.type_display || p.asset_class || '—'}</td>` },
   { key: 'sector',          label: 'Sector',      render: p => `<td>${p.sector || '—'}</td>` },
 ];
 
@@ -399,20 +407,23 @@ function renderAllocationCharts() {
     }
     return m;
   };
-  const drawPie = (id, dataMap) => {
+
+  const drawPie = (chartId, drillId, dataMap, positionFilterKey) => {
     const labels = Object.keys(dataMap);
     const values = Object.values(dataMap);
-    Plotly.newPlot(id, [{
+    Plotly.newPlot(chartId, [{
       type: 'pie', labels, values, hole: 0.45,
       textinfo: 'label+percent', textposition: 'auto',
-      hovertemplate: '%{label}<br>$%{value:,.0f}<br>%{percent}<extra></extra>',
+      hovertemplate: '%{label}<br>$%{value:,.0f}<br>%{percent}<br><i>click to drill down</i><extra></extra>',
     }], { paper_bgcolor: 'transparent', plot_bgcolor: 'transparent', font: { color: '#e1e4ed', size: 10 }, showlegend: false, margin: { t: 0, b: 0, l: 0, r: 0 }, height: 280 }, { displayModeBar: false, responsive: true });
+    const el = document.getElementById(chartId);
+    el.on('plotly_click', evt => showDrill(drillId, positionFilterKey, evt.points[0].label));
   };
 
-  drawPie('chart-type', groupSum('asset_class'));
-  drawPie('chart-currency', groupSum('currency'));
-  drawPie('chart-country', groupSum('country'));
-  // By broker
+  drawPie('chart-type', 'drill-type', groupSum('type_display'), 'type_display');
+  drawPie('chart-currency', 'drill-currency', groupSum('currency'), 'currency');
+  drawPie('chart-sector', 'drill-sector', groupSum('sector'), 'sector');
+  // By broker (positions can span brokers — split by qty share)
   const brokerMap = {};
   for (const p of state.open_positions) {
     const by = p.by_broker || {};
@@ -421,7 +432,32 @@ function renderAllocationCharts() {
       brokerMap[b] = (brokerMap[b] || 0) + (p.mkt_value_usd || 0) * (q / total);
     }
   }
-  drawPie('chart-broker', brokerMap);
+  drawPie('chart-broker', 'drill-broker', brokerMap, '__broker');
+}
+
+function showDrill(drillId, key, label) {
+  let positions;
+  if (key === '__broker') {
+    positions = state.open_positions.filter(p => (p.by_broker || {})[label] > 0);
+  } else {
+    positions = state.open_positions.filter(p => (p[key] || 'Unknown') === label);
+  }
+  positions.sort((a, b) => (b.mkt_value_usd || 0) - (a.mkt_value_usd || 0));
+  const total = positions.reduce((s, p) => s + (p.mkt_value_usd || 0), 0);
+  const rows = positions.map(p => `
+    <tr>
+      <td>${p.ticker}</td>
+      <td>${fmtQty(p.qty)}</td>
+      <td>${fmt$(p.mkt_value_usd)}</td>
+      <td><span class="${pnlClass(p.unrealised_pnl_usd)}">${fmt$(p.unrealised_pnl_usd)}</span></td>
+    </tr>`).join('');
+  const el = document.getElementById(drillId);
+  el.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      <strong>${label}</strong> · ${positions.length} positions · ${fmt$(total)}
+      <span class="clear" onclick="document.getElementById('${drillId}').innerHTML=''">clear</span>
+    </div>
+    <table><thead><tr><th>Ticker</th><th>Qty</th><th>Mkt Val</th><th>Unrl P&L</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 // ==================== CASH ====================
@@ -445,32 +481,86 @@ function renderCash() {
 }
 
 // ==================== CLOSED ====================
+let closedExpanded = {};   // ticker -> bool
+
 function renderClosed() {
-  const cls = state.closed_positions || [];
-  const realized2026 = cls.filter(c => c.sell_date >= '2026-01-01').reduce((s, c) => s + (c.realized_pnl_usd || 0), 0);
-  const winners = cls.filter(c => c.realized_pnl_usd > 0).length;
-  const losers = cls.filter(c => c.realized_pnl_usd < 0).length;
+  const cls = (state.closed_positions || []).filter(c => c.sell_date >= '2026-01-01');
+  const realized2026 = cls.reduce((s, c) => s + (c.realized_pnl_usd || 0), 0);
+
+  // Aggregate by ticker
+  const byTicker = {};
+  for (const c of cls) {
+    const tk = c.ticker;
+    if (!byTicker[tk]) byTicker[tk] = {
+      ticker: tk, name: c.name, currency: c.currency,
+      qty_closed: 0, gross_buy_value: 0, gross_sell_value: 0,
+      realized_pnl_usd: 0, lots: [], first_sell: c.sell_date, last_sell: c.sell_date,
+      brokers: new Set(),
+    };
+    const a = byTicker[tk];
+    a.qty_closed += c.qty_closed;
+    a.gross_buy_value  += c.qty_closed * c.buy_price;
+    a.gross_sell_value += c.qty_closed * c.sell_price;
+    a.realized_pnl_usd += c.realized_pnl_usd || 0;
+    a.lots.push(c);
+    if (c.sell_date < a.first_sell) a.first_sell = c.sell_date;
+    if (c.sell_date > a.last_sell) a.last_sell = c.sell_date;
+    if (c.broker_sell) a.brokers.add(c.broker_sell);
+  }
+  const aggList = Object.values(byTicker).map(a => ({
+    ...a,
+    avg_buy: a.qty_closed ? a.gross_buy_value / a.qty_closed : 0,
+    avg_sell: a.qty_closed ? a.gross_sell_value / a.qty_closed : 0,
+    pct: a.gross_buy_value ? (a.gross_sell_value - a.gross_buy_value) / a.gross_buy_value : 0,
+    brokers: [...a.brokers].join(', ') || '—',
+  })).sort((x, y) => (y.realized_pnl_usd || 0) - (x.realized_pnl_usd || 0));
+
+  const winners = aggList.filter(a => a.realized_pnl_usd > 0).length;
+  const losers  = aggList.filter(a => a.realized_pnl_usd < 0).length;
   document.getElementById('closed-kpi').innerHTML = [
     { label: 'Realised 2026', value: `<span class="${pnlClass(realized2026)}">${fmt$(realized2026)}</span>` },
+    { label: 'Tickers Traded', value: aggList.length },
     { label: 'Winners', value: winners },
     { label: 'Losers', value: losers },
-    { label: 'Win Rate', value: cls.length ? Math.round(winners / cls.length * 100) + '%' : '—' },
+    { label: 'Win Rate', value: aggList.length ? Math.round(winners / aggList.length * 100) + '%' : '—' },
   ].map(k => `<div class="snap-card"><div class="label">${k.label}</div><div class="value">${k.value}</div></div>`).join('');
 
-  const sorted = [...cls].sort((a, b) => (b.sell_date || '').localeCompare(a.sell_date || ''));
-  const rows = sorted.map(c => `
-    <tr>
-      <td><span class="ticker-cell">${c.ticker}</span><div class="small-cell">${(c.name || '').slice(0,30)}</div></td>
-      <td>${c.broker_sell || '—'}</td>
-      <td>${c.buy_date || '—'}</td>
-      <td>${c.sell_date || '—'}</td>
-      <td>${fmtQty(c.qty_closed)}</td>
-      <td>${fmtPx(c.buy_price)} ${c.currency}</td>
-      <td>${fmtPx(c.sell_price)} ${c.currency}</td>
-      <td><span class="${pnlClass(c.realized_pnl_usd)}">${fmt$(c.realized_pnl_usd)}</span></td>
-      <td><span class="${pnlClass(c.realized_pnl_local)}">${c.buy_price > 0 ? fmtPct((c.sell_price - c.buy_price) / c.buy_price) : '—'}</span></td>
-    </tr>`).join('');
-  document.getElementById('closed-table-wrap').innerHTML = `<table class="vol-table"><thead><tr><th>Ticker</th><th>Broker</th><th>Buy</th><th>Sell</th><th>Qty</th><th>Buy Px</th><th>Sell Px</th><th>P&L USD</th><th>%</th></tr></thead><tbody>${rows || '<tr><td colspan="9" class="no-data">No closed trades</td></tr>'}</tbody></table>`;
+  const rowsHtml = [];
+  for (const a of aggList) {
+    const expanded = !!closedExpanded[a.ticker];
+    rowsHtml.push(`<tr style="cursor:pointer" onclick="toggleClosedRow('${a.ticker}')">
+      <td>${a.lots.length > 1 ? (expanded ? '▼' : '▶') : ''} <span class="ticker-cell">${a.ticker}</span><div class="small-cell">${(a.name || '').slice(0,30)}</div></td>
+      <td>${a.brokers}</td>
+      <td>${a.first_sell === a.last_sell ? a.first_sell : (a.first_sell + ' → ' + a.last_sell)}</td>
+      <td>${fmtQty(a.qty_closed)}</td>
+      <td>${fmtPx(a.avg_buy)} ${a.currency}</td>
+      <td>${fmtPx(a.avg_sell)} ${a.currency}</td>
+      <td><span class="${pnlClass(a.realized_pnl_usd)}">${fmt$(a.realized_pnl_usd)}</span></td>
+      <td><span class="${pnlClass(a.pct)}">${fmtPct(a.pct)}</span></td>
+      <td>${a.lots.length}</td>
+    </tr>`);
+    if (expanded && a.lots.length > 1) {
+      for (const c of a.lots) {
+        rowsHtml.push(`<tr style="background:rgba(108,99,255,0.04)">
+          <td style="padding-left:32px;font-size:0.7rem;color:var(--text-dim)">└ lot</td>
+          <td>${c.broker_sell || '—'}</td>
+          <td>${c.buy_date} → ${c.sell_date}</td>
+          <td>${fmtQty(c.qty_closed)}</td>
+          <td>${fmtPx(c.buy_price)}</td>
+          <td>${fmtPx(c.sell_price)}</td>
+          <td><span class="${pnlClass(c.realized_pnl_usd)}">${fmt$(c.realized_pnl_usd)}</span></td>
+          <td><span class="${pnlClass((c.sell_price - c.buy_price))}">${c.buy_price > 0 ? fmtPct((c.sell_price - c.buy_price) / c.buy_price) : '—'}</span></td>
+          <td></td>
+        </tr>`);
+      }
+    }
+  }
+  document.getElementById('closed-table-wrap').innerHTML = `<table class="vol-table"><thead><tr><th>Ticker</th><th>Broker</th><th>Sell Date(s)</th><th>Total Qty</th><th>Avg Buy</th><th>Avg Sell</th><th>P&L USD</th><th>%</th><th>Lots</th></tr></thead><tbody>${rowsHtml.join('') || '<tr><td colspan="9" class="no-data">No closed trades</td></tr>'}</tbody></table>`;
+}
+
+function toggleClosedRow(ticker) {
+  closedExpanded[ticker] = !closedExpanded[ticker];
+  renderClosed();
 }
 
 // ==================== BLOTTER ====================
@@ -578,9 +668,11 @@ function renderAnalysis() {
 
   const dates = snaps.map(s => s.date);
   const navs = snaps.map(s => s.nav_securities_usd);
-  const totalPnl = snaps.map(s => s.total_pnl_ytd_usd);
+  // Re-baseline: clean YTD P&L starts at 0 on Jan 1
+  const cleanYtd = snaps.map(s => s.ytd_pnl_clean_usd != null ? s.ytd_pnl_clean_usd : s.total_pnl_ytd_usd);
   const realised = snaps.map(s => s.realized_pnl_ytd_usd);
-  const unreal = snaps.map(s => s.unrealised_pnl_usd);
+  const baselineUnr = snaps[0].unrealised_pnl_usd;
+  const unrealClean = snaps.map(s => s.unrealised_pnl_usd - baselineUnr);
 
   // NAV
   Plotly.newPlot('chart-nav', [{
@@ -588,12 +680,12 @@ function renderAnalysis() {
     hovertemplate: '%{x|%Y-%m-%d}<br>NAV: $%{y:,.0f}<extra></extra>',
   }], chartLayout('NAV USD'), { displayModeBar: false, responsive: true });
 
-  // PNL stack
+  // YTD P&L (re-baselined to 0 on day 1)
   Plotly.newPlot('chart-pnl', [
-    { x: dates, y: unreal, type: 'scatter', mode: 'lines', line: { color: '#22c55e' }, name: 'Unrealised', stackgroup: 'pnl' },
-    { x: dates, y: realised, type: 'scatter', mode: 'lines', line: { color: '#f59e0b' }, name: 'Realised', stackgroup: 'pnl' },
-    { x: dates, y: totalPnl, type: 'scatter', mode: 'lines', line: { color: '#fff', width: 1, dash: 'dot' }, name: 'Total YTD' },
-  ], chartLayout('USD'), { displayModeBar: false, responsive: true });
+    { x: dates, y: unrealClean, type: 'scatter', mode: 'lines', line: { color: '#22c55e' }, name: 'Unrealised Δ', stackgroup: 'pnl' },
+    { x: dates, y: realised,    type: 'scatter', mode: 'lines', line: { color: '#f59e0b' }, name: 'Realised',    stackgroup: 'pnl' },
+    { x: dates, y: cleanYtd,    type: 'scatter', mode: 'lines', line: { color: '#fff', width: 1, dash: 'dot' }, name: 'Total YTD' },
+  ], chartLayout('USD (Δ from Jan 1)'), { displayModeBar: false, responsive: true });
 
   // Drawdown
   const peaks = []; let peak = -Infinity;
