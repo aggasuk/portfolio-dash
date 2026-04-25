@@ -211,19 +211,6 @@
   ],
   "closed_positions": [
     {
-      "ticker": "1615",
-      "name": "NEXT FUNDS TOPIX BANKS ETF",
-      "qty_closed": 6500,
-      "avg_cost": 583.41733885,
-      "close_price": 607.44396975,
-      "realized_pnl": 978.58,
-      "close_date": "2026-04-22",
-      "currency": "JPY",
-      "price_factor": 1,
-      "partial": false,
-      "remaining_qty": 0
-    },
-    {
       "conid": 415578518,
       "ticker": "REMX",
       "name": "REMX",
