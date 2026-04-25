@@ -184,36 +184,34 @@ def compute_positions(trades):
 # =============================================================
 # 4) FETCH BLOOMBERG PRICES FOR CURRENTLY-OPEN TICKERS
 # =============================================================
-def fetch_prices(meta, open_lots):
-    """Bloomberg BDP for tickers with non-empty open lots."""
-    bbg_to_tk = {}
-    for tk, m in meta.items():
-        if not open_lots.get(tk): continue
-        bbg = m.get("bbg")
-        if bbg: bbg_to_tk[bbg] = tk
-    if not bbg_to_tk:
-        return {}, {}
-    fields = ["PX_LAST", "PREV_CLOSE_VALUE_REALTIME", "CHG_PCT_1D",
-              "CHG_PCT_YTD", "NAME", "CRNCY", "GICS_SECTOR_NAME", "COUNTRY_ISO",
-              "SECURITY_TYP", "FUND_ASSET_CLASS_FOCUS", "FUND_INDUSTRY_FOCUS"]
+def _clean_str(v):
+    """Coerce a possibly-NaN BBG field to an empty string."""
+    if v is None: return ""
+    s = str(v).strip()
+    if s.lower() in ("nan", "none", "null", ""): return ""
+    return s
 
 
 def classify_position(meta_ac, sec_typ, fund_asset_class, fund_industry, gics_sector):
     """Map raw BBG fields to user-friendly type + sector.
     Returns (type_display, sector_display)."""
-    # Manual asset_class from journal takes precedence
+    sec_typ = _clean_str(sec_typ)
+    fund_asset_class = _clean_str(fund_asset_class)
+    fund_industry = _clean_str(fund_industry)
+    gics_sector = _clean_str(gics_sector)
     if meta_ac == "OPT":
         return ("Option", "Derivatives")
     if meta_ac == "BOND":
-        return ("Bond", gics_sector or "Government" if "treasury" in (sec_typ or "").lower() else "Government")
+        return ("Bond", "Government" if "treasury" in (sec_typ or "").lower() else (gics_sector or "Government"))
     if meta_ac == "STRUCT":
         return ("Structured", "Other")
 
-    # ETFs / Funds — use FUND_ASSET_CLASS_FOCUS
-    sec_typ_l = (sec_typ or "").lower()
-    fac = (fund_asset_class or "").strip()
-    fi  = (fund_industry or "").strip()
-    is_etf = sec_typ_l in ("etp", "fund", "open-end fund", "exchange traded fund", "common stock open-end fund") or fac
+    sec_typ_l = sec_typ.lower()
+    fac = fund_asset_class
+    fi  = fund_industry
+    # ETF detection: only if SECURITY_TYP says fund/ETP OR FUND_ASSET_CLASS_FOCUS is set
+    # (Common Stock, ADR, ORD = NOT ETF even if some other field has a stale value)
+    is_etf = bool(fac) or sec_typ_l in ("etp", "fund", "open-end fund", "exchange traded fund", "common stock open-end fund")
     if is_etf:
         if fac in ("Commodity", "Commodities"):
             return ("Commodity ETF", fi or "Commodities")
@@ -225,15 +223,25 @@ def classify_position(meta_ac, sec_typ, fund_asset_class, fund_industry, gics_se
             return ("Multi-Asset ETF", fi or "Multi-Asset")
         if fac == "Equity":
             return ("Equity ETF", fi or gics_sector or "Equity")
-        # No clear class — best guess
         return ("ETF", fi or gics_sector or "Other")
 
-    # Common stock
-    if sec_typ_l in ("common stock", "ordinary shares", "ads", "adr") or gics_sector:
+    if sec_typ_l in ("common stock", "ordinary shares", "ads", "adr", "ord", "preferred stock") or gics_sector:
         return ("Equity", gics_sector or "Other")
-
-    # Fallback
     return (sec_typ or "Other", gics_sector or fi or "Other")
+
+
+def fetch_prices(meta, open_lots):
+    """Bloomberg BDP for tickers with non-empty open lots."""
+    bbg_to_tk = {}
+    for tk, m in meta.items():
+        if not open_lots.get(tk): continue
+        bbg = m.get("bbg")
+        if bbg: bbg_to_tk[bbg] = tk
+    if not bbg_to_tk:
+        return {}, set()
+    fields = ["PX_LAST", "PREV_CLOSE_VALUE_REALTIME", "CHG_PCT_1D",
+              "CHG_PCT_YTD", "NAME", "CRNCY", "GICS_SECTOR_NAME", "COUNTRY_ISO",
+              "SECURITY_TYP", "FUND_ASSET_CLASS_FOCUS", "FUND_INDUSTRY_FOCUS"]
     print(f"  Fetching {len(bbg_to_tk)} prices from Bloomberg...")
     try:
         ref = blp.bdp(list(bbg_to_tk.keys()), fields)
@@ -253,10 +261,10 @@ def classify_position(meta_ac, sec_typ, fund_asset_class, fund_industry, gics_se
                 prev = px / (1 + ch1d/100.0)
             if ccy == "GBp":
                 ccy = "GBP"; px /= 100.0; prev /= 100.0
-            sec_typ = str(row.get("security_typ") or "").strip()
-            fund_ac = str(row.get("fund_asset_class_focus") or "").strip()
-            fund_ind = str(row.get("fund_industry_focus") or "").strip()
-            gics = str(row.get("gics_sector_name") or "").strip()
+            sec_typ = _clean_str(row.get("security_typ"))
+            fund_ac = _clean_str(row.get("fund_asset_class_focus"))
+            fund_ind = _clean_str(row.get("fund_industry_focus"))
+            gics = _clean_str(row.get("gics_sector_name"))
             type_disp, sector_disp = classify_position(meta[tk]["asset_class"], sec_typ, fund_ac, fund_ind, gics)
             prices[tk] = {
                 "bbg": bbg, "px_last": px, "prev_close": prev,
