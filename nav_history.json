@@ -1,99 +1,8 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-25T15:52:08",
+  "last_updated": "2026-04-25T18:03:33",
   "start_date": "2026-01-01",
   "snapshots": [
-    {
-      "date": "2026-01-01",
-      "nav_securities_usd": 2659017.19,
-      "cost_basis_usd": 2411159.13,
-      "unrealised_pnl_usd": 247858.06,
-      "realized_pnl_ytd_usd": 0.0,
-      "total_pnl_ytd_usd": 247858.06,
-      "positions": {
-        "AMZN": {
-          "qty": 1000.0,
-          "mkt_val_usd": 263990.0
-        },
-        "AZN": {
-          "qty": 375.0,
-          "mkt_val_usd": 71156.25
-        },
-        "CRM": {
-          "qty": 30.0,
-          "mkt_val_usd": 5344.8
-        },
-        "EMLC": {
-          "qty": 1000.0,
-          "mkt_val_usd": 25740.0
-        },
-        "EWZ": {
-          "qty": 2200.0,
-          "mkt_val_usd": 87868.0
-        },
-        "FCX": {
-          "qty": 1200.0,
-          "mkt_val_usd": 73260.0
-        },
-        "IAU": {
-          "qty": 3380.0,
-          "mkt_val_usd": 299975.0
-        },
-        "KWEB": {
-          "qty": 6700.0,
-          "mkt_val_usd": 193161.0
-        },
-        "MOS": {
-          "qty": 410.0,
-          "mkt_val_usd": 9840.0
-        },
-        "MUFG": {
-          "qty": 7400.0,
-          "mkt_val_usd": 127946.0
-        },
-        "NVDA": {
-          "qty": 200.0,
-          "mkt_val_usd": 41654.0
-        },
-        "QQQ": {
-          "qty": 400.0,
-          "mkt_val_usd": 265552.0
-        },
-        "REMX": {
-          "qty": 400.0,
-          "mkt_val_usd": 39424.0
-        },
-        "SNOW": {
-          "qty": 60.0,
-          "mkt_val_usd": 8419.2
-        },
-        "TIPS_2_125_JAN35": {
-          "qty": 5000.0,
-          "mkt_val_usd": 5090.82
-        },
-        "U": {
-          "qty": 191.0,
-          "mkt_val_usd": 4967.91
-        },
-        "USO": {
-          "qty": 450.0,
-          "mkt_val_usd": 59580.0
-        },
-        "UST_4_25_DEC26": {
-          "qty": 778000.0,
-          "mkt_val_usd": 783485.51
-        },
-        "VOO": {
-          "qty": 330.0,
-          "mkt_val_usd": 216618.6
-        },
-        "XOM": {
-          "qty": 510.0,
-          "mkt_val_usd": 75944.1
-        }
-      },
-      "ytd_pnl_clean_usd": 0.0
-    },
     {
       "date": "2026-01-02",
       "nav_securities_usd": 2559747.8,
@@ -187,7 +96,7 @@
           "mkt_val_usd": 30666.0
         }
       },
-      "ytd_pnl_clean_usd": -129687.89
+      "ytd_pnl_clean_usd": 0.0
     },
     {
       "date": "2026-01-05",
@@ -282,7 +191,7 @@
           "mkt_val_usd": 52415.0
         }
       },
-      "ytd_pnl_clean_usd": -96943.03
+      "ytd_pnl_clean_usd": 32744.86
     },
     {
       "date": "2026-01-06",
@@ -377,7 +286,7 @@
           "mkt_val_usd": 53805.0
         }
       },
-      "ytd_pnl_clean_usd": -74445.41
+      "ytd_pnl_clean_usd": 55242.48
     },
     {
       "date": "2026-01-07",
@@ -468,7 +377,7 @@
           "mkt_val_usd": 53515.0
         }
       },
-      "ytd_pnl_clean_usd": -84988.72
+      "ytd_pnl_clean_usd": 44699.17
     },
     {
       "date": "2026-01-08",
@@ -559,7 +468,7 @@
           "mkt_val_usd": 53295.0
         }
       },
-      "ytd_pnl_clean_usd": -74594.65
+      "ytd_pnl_clean_usd": 55093.24
     },
     {
       "date": "2026-01-09",
@@ -650,7 +559,7 @@
           "mkt_val_usd": 54445.0
         }
       },
-      "ytd_pnl_clean_usd": -62126.03
+      "ytd_pnl_clean_usd": 67561.86
     },
     {
       "date": "2026-01-12",
@@ -741,7 +650,7 @@
           "mkt_val_usd": 54465.0
         }
       },
-      "ytd_pnl_clean_usd": -42970.16
+      "ytd_pnl_clean_usd": 86717.73
     },
     {
       "date": "2026-01-13",
@@ -832,7 +741,7 @@
           "mkt_val_usd": 53770.0
         }
       },
-      "ytd_pnl_clean_usd": -50154.45
+      "ytd_pnl_clean_usd": 79533.44
     },
     {
       "date": "2026-01-14",
@@ -923,7 +832,7 @@
           "mkt_val_usd": 54820.0
         }
       },
-      "ytd_pnl_clean_usd": -48172.04
+      "ytd_pnl_clean_usd": 81515.85
     },
     {
       "date": "2026-01-15",
@@ -1014,7 +923,7 @@
           "mkt_val_usd": 55525.0
         }
       },
-      "ytd_pnl_clean_usd": -46895.72
+      "ytd_pnl_clean_usd": 82792.17
     },
     {
       "date": "2026-01-16",
@@ -1105,7 +1014,7 @@
           "mkt_val_usd": 56110.0
         }
       },
-      "ytd_pnl_clean_usd": -50777.52
+      "ytd_pnl_clean_usd": 78910.37
     },
     {
       "date": "2026-01-19",
@@ -1196,7 +1105,7 @@
           "mkt_val_usd": 56110.0
         }
       },
-      "ytd_pnl_clean_usd": -50777.52
+      "ytd_pnl_clean_usd": 78910.37
     },
     {
       "date": "2026-01-20",
@@ -1287,7 +1196,7 @@
           "mkt_val_usd": 55485.0
         }
       },
-      "ytd_pnl_clean_usd": -69254.21
+      "ytd_pnl_clean_usd": 60433.68
     },
     {
       "date": "2026-01-21",
@@ -1378,7 +1287,7 @@
           "mkt_val_usd": 57830.0
         }
       },
-      "ytd_pnl_clean_usd": -47803.16
+      "ytd_pnl_clean_usd": 81884.73
     },
     {
       "date": "2026-01-22",
@@ -1469,7 +1378,7 @@
           "mkt_val_usd": 57995.0
         }
       },
-      "ytd_pnl_clean_usd": -31145.39
+      "ytd_pnl_clean_usd": 98542.5
     },
     {
       "date": "2026-01-23",
@@ -1560,7 +1469,7 @@
           "mkt_val_usd": 58985.0
         }
       },
-      "ytd_pnl_clean_usd": -16155.95
+      "ytd_pnl_clean_usd": 113531.94
     },
     {
       "date": "2026-01-26",
@@ -1655,7 +1564,7 @@
           "mkt_val_usd": 24900.12
         }
       },
-      "ytd_pnl_clean_usd": -10452.28
+      "ytd_pnl_clean_usd": 119235.61
     },
     {
       "date": "2026-01-27",
@@ -1750,7 +1659,7 @@
           "mkt_val_usd": 24635.52
         }
       },
-      "ytd_pnl_clean_usd": 21683.6
+      "ytd_pnl_clean_usd": 151371.49
     },
     {
       "date": "2026-01-28",
@@ -1845,7 +1754,7 @@
           "mkt_val_usd": 34878.95
         }
       },
-      "ytd_pnl_clean_usd": -10217.92
+      "ytd_pnl_clean_usd": 119469.97
     },
     {
       "date": "2026-01-29",
@@ -1940,7 +1849,7 @@
           "mkt_val_usd": 34757.53
         }
       },
-      "ytd_pnl_clean_usd": -12077.85
+      "ytd_pnl_clean_usd": 117610.04
     },
     {
       "date": "2026-01-30",
@@ -2035,7 +1944,7 @@
           "mkt_val_usd": 34806.24
         }
       },
-      "ytd_pnl_clean_usd": -74512.56
+      "ytd_pnl_clean_usd": 55175.33
     },
     {
       "date": "2026-02-02",
@@ -2138,7 +2047,7 @@
           "mkt_val_usd": 75551.04
         }
       },
-      "ytd_pnl_clean_usd": -86372.18
+      "ytd_pnl_clean_usd": 43315.71
     },
     {
       "date": "2026-02-03",
@@ -2225,7 +2134,7 @@
           "mkt_val_usd": 75366.7
         }
       },
-      "ytd_pnl_clean_usd": -71552.95
+      "ytd_pnl_clean_usd": 58134.94
     },
     {
       "date": "2026-02-04",
@@ -2312,7 +2221,7 @@
           "mkt_val_usd": 75777.92
         }
       },
-      "ytd_pnl_clean_usd": -97491.65
+      "ytd_pnl_clean_usd": 32196.24
     },
     {
       "date": "2026-02-05",
@@ -2399,7 +2308,7 @@
           "mkt_val_usd": 75083.1
         }
       },
-      "ytd_pnl_clean_usd": -133560.54
+      "ytd_pnl_clean_usd": -3872.65
     },
     {
       "date": "2026-02-06",
@@ -2486,7 +2395,7 @@
           "mkt_val_usd": 75551.04
         }
       },
-      "ytd_pnl_clean_usd": -98226.76
+      "ytd_pnl_clean_usd": 31461.13
     },
     {
       "date": "2026-02-09",
@@ -2573,7 +2482,7 @@
           "mkt_val_usd": 75777.92
         }
       },
-      "ytd_pnl_clean_usd": -79275.72
+      "ytd_pnl_clean_usd": 50412.17
     },
     {
       "date": "2026-02-10",
@@ -2660,7 +2569,7 @@
           "mkt_val_usd": 76203.32
         }
       },
-      "ytd_pnl_clean_usd": -85805.93
+      "ytd_pnl_clean_usd": 43881.96
     },
     {
       "date": "2026-02-11",
@@ -2747,7 +2656,7 @@
           "mkt_val_usd": 75905.54
         }
       },
-      "ytd_pnl_clean_usd": -72866.58
+      "ytd_pnl_clean_usd": 56821.31
     },
     {
       "date": "2026-02-12",
@@ -2830,7 +2739,7 @@
           "mkt_val_usd": 75309.98
         }
       },
-      "ytd_pnl_clean_usd": -119209.63
+      "ytd_pnl_clean_usd": 10478.26
     },
     {
       "date": "2026-02-13",
@@ -2913,7 +2822,7 @@
           "mkt_val_usd": 74998.02
         }
       },
-      "ytd_pnl_clean_usd": -109473.41
+      "ytd_pnl_clean_usd": 20214.48
     },
     {
       "date": "2026-02-16",
@@ -2996,7 +2905,7 @@
           "mkt_val_usd": 74998.02
         }
       },
-      "ytd_pnl_clean_usd": -109352.08
+      "ytd_pnl_clean_usd": 20335.81
     },
     {
       "date": "2026-02-17",
@@ -3079,7 +2988,7 @@
           "mkt_val_usd": 75536.86
         }
       },
-      "ytd_pnl_clean_usd": -124242.75
+      "ytd_pnl_clean_usd": 5445.14
     },
     {
       "date": "2026-02-18",
@@ -3162,7 +3071,7 @@
           "mkt_val_usd": 75607.76
         }
       },
-      "ytd_pnl_clean_usd": -100840.22
+      "ytd_pnl_clean_usd": 28847.67
     },
     {
       "date": "2026-02-19",
@@ -3245,7 +3154,7 @@
           "mkt_val_usd": 74161.4
         }
       },
-      "ytd_pnl_clean_usd": -103470.96
+      "ytd_pnl_clean_usd": 26216.93
     },
     {
       "date": "2026-02-20",
@@ -3328,7 +3237,7 @@
           "mkt_val_usd": 75749.56
         }
       },
-      "ytd_pnl_clean_usd": -85726.03
+      "ytd_pnl_clean_usd": 43961.86
     },
     {
       "date": "2026-02-23",
@@ -3411,7 +3320,7 @@
           "mkt_val_usd": 74600.98
         }
       },
-      "ytd_pnl_clean_usd": -92135.25
+      "ytd_pnl_clean_usd": 37552.64
     },
     {
       "date": "2026-02-24",
@@ -3494,7 +3403,7 @@
           "mkt_val_usd": 74686.06
         }
       },
-      "ytd_pnl_clean_usd": -89507.27
+      "ytd_pnl_clean_usd": 40180.62
     },
     {
       "date": "2026-02-25",
@@ -3577,7 +3486,7 @@
           "mkt_val_usd": 74785.32
         }
       },
-      "ytd_pnl_clean_usd": -79531.99
+      "ytd_pnl_clean_usd": 50155.9
     },
     {
       "date": "2026-02-26",
@@ -3660,7 +3569,7 @@
           "mkt_val_usd": 74558.44
         }
       },
-      "ytd_pnl_clean_usd": -91783.26
+      "ytd_pnl_clean_usd": 37904.63
     },
     {
       "date": "2026-02-27",
@@ -3743,7 +3652,7 @@
           "mkt_val_usd": 74118.86
         }
       },
-      "ytd_pnl_clean_usd": -90390.97
+      "ytd_pnl_clean_usd": 39296.92
     },
     {
       "date": "2026-03-02",
@@ -3818,7 +3727,7 @@
           "mkt_val_usd": 72247.1
         }
       },
-      "ytd_pnl_clean_usd": -88794.31
+      "ytd_pnl_clean_usd": 40893.58
     },
     {
       "date": "2026-03-03",
@@ -3897,7 +3806,7 @@
           "mkt_val_usd": 5020.01
         }
       },
-      "ytd_pnl_clean_usd": -180071.07
+      "ytd_pnl_clean_usd": -50383.18
     },
     {
       "date": "2026-03-04",
@@ -3980,7 +3889,7 @@
           "mkt_val_usd": 25136.92
         }
       },
-      "ytd_pnl_clean_usd": -156543.81
+      "ytd_pnl_clean_usd": -26855.92
     },
     {
       "date": "2026-03-05",
@@ -4063,7 +3972,7 @@
           "mkt_val_usd": 26653.2
         }
       },
-      "ytd_pnl_clean_usd": -170153.58
+      "ytd_pnl_clean_usd": -40465.69
     },
     {
       "date": "2026-03-06",
@@ -4146,7 +4055,7 @@
           "mkt_val_usd": 26597.42
         }
       },
-      "ytd_pnl_clean_usd": -179221.52
+      "ytd_pnl_clean_usd": -49533.63
     },
     {
       "date": "2026-03-09",
@@ -4229,7 +4138,7 @@
           "mkt_val_usd": 25495.05
         }
       },
-      "ytd_pnl_clean_usd": -165257.29
+      "ytd_pnl_clean_usd": -35569.4
     },
     {
       "date": "2026-03-10",
@@ -4316,7 +4225,7 @@
           "mkt_val_usd": 26148.23
         }
       },
-      "ytd_pnl_clean_usd": -148997.03
+      "ytd_pnl_clean_usd": -19309.14
     },
     {
       "date": "2026-03-11",
@@ -4403,7 +4312,7 @@
           "mkt_val_usd": 25783.66
         }
       },
-      "ytd_pnl_clean_usd": -158431.86
+      "ytd_pnl_clean_usd": -28743.97
     },
     {
       "date": "2026-03-12",
@@ -4490,7 +4399,7 @@
           "mkt_val_usd": 25203.79
         }
       },
-      "ytd_pnl_clean_usd": -186398.74
+      "ytd_pnl_clean_usd": -56710.85
     },
     {
       "date": "2026-03-13",
@@ -4577,7 +4486,7 @@
           "mkt_val_usd": 24889.76
         }
       },
-      "ytd_pnl_clean_usd": -201206.17
+      "ytd_pnl_clean_usd": -71518.28
     },
     {
       "date": "2026-03-16",
@@ -4664,7 +4573,7 @@
           "mkt_val_usd": 24905.13
         }
       },
-      "ytd_pnl_clean_usd": -185440.17
+      "ytd_pnl_clean_usd": -55752.28
     },
     {
       "date": "2026-03-17",
@@ -4747,7 +4656,7 @@
           "mkt_val_usd": 24873.0
         }
       },
-      "ytd_pnl_clean_usd": -180811.51
+      "ytd_pnl_clean_usd": -51123.62
     },
     {
       "date": "2026-03-18",
@@ -4826,7 +4735,7 @@
           "mkt_val_usd": 88672.0
         }
       },
-      "ytd_pnl_clean_usd": -215219.19
+      "ytd_pnl_clean_usd": -85531.3
     },
     {
       "date": "2026-03-19",
@@ -4905,15 +4814,15 @@
           "mkt_val_usd": 66482.0
         }
       },
-      "ytd_pnl_clean_usd": -239761.91
+      "ytd_pnl_clean_usd": -110074.02
     },
     {
       "date": "2026-03-20",
-      "nav_securities_usd": 2205964.94,
+      "nav_securities_usd": 2204695.75,
       "cost_basis_usd": 2304216.74,
-      "unrealised_pnl_usd": -98251.8,
+      "unrealised_pnl_usd": -99520.99,
       "realized_pnl_ytd_usd": 69368.48,
-      "total_pnl_ytd_usd": -28883.32,
+      "total_pnl_ytd_usd": -30152.51,
       "positions": {
         "AMZN": {
           "qty": 1000.0,
@@ -4973,18 +4882,18 @@
         },
         "1306": {
           "qty": 2000.0,
-          "mkt_val_usd": 4944.87
+          "mkt_val_usd": 4761.5
         },
         "1615": {
           "qty": 7000.0,
-          "mkt_val_usd": 26345.23
+          "mkt_val_usd": 25259.42
         },
         "BNO": {
           "qty": 1300.0,
           "mkt_val_usd": 68796.0
         }
       },
-      "ytd_pnl_clean_usd": -276741.38
+      "ytd_pnl_clean_usd": -148322.68
     },
     {
       "date": "2026-03-23",
@@ -5063,7 +4972,7 @@
           "mkt_val_usd": 90972.0
         }
       },
-      "ytd_pnl_clean_usd": -276381.7
+      "ytd_pnl_clean_usd": -146693.81
     },
     {
       "date": "2026-03-24",
@@ -5142,7 +5051,7 @@
           "mkt_val_usd": 94430.0
         }
       },
-      "ytd_pnl_clean_usd": -279082.73
+      "ytd_pnl_clean_usd": -149394.84
     },
     {
       "date": "2026-03-25",
@@ -5221,7 +5130,7 @@
           "mkt_val_usd": 92663.0
         }
       },
-      "ytd_pnl_clean_usd": -247631.95
+      "ytd_pnl_clean_usd": -117944.06
     },
     {
       "date": "2026-03-26",
@@ -5300,7 +5209,7 @@
           "mkt_val_usd": 96045.0
         }
       },
-      "ytd_pnl_clean_usd": -287845.96
+      "ytd_pnl_clean_usd": -158158.07
     },
     {
       "date": "2026-03-27",
@@ -5379,7 +5288,7 @@
           "mkt_val_usd": 100130.0
         }
       },
-      "ytd_pnl_clean_usd": -290575.21
+      "ytd_pnl_clean_usd": -160887.32
     },
     {
       "date": "2026-03-30",
@@ -5458,7 +5367,7 @@
           "mkt_val_usd": 102581.0
         }
       },
-      "ytd_pnl_clean_usd": -247533.18
+      "ytd_pnl_clean_usd": -117845.29
     },
     {
       "date": "2026-03-31",
@@ -5549,7 +5458,7 @@
           "mkt_val_usd": 49497.0
         }
       },
-      "ytd_pnl_clean_usd": -198808.77
+      "ytd_pnl_clean_usd": -69120.88
     },
     {
       "date": "2026-04-01",
@@ -5640,7 +5549,7 @@
           "mkt_val_usd": 47943.0
         }
       },
-      "ytd_pnl_clean_usd": -182706.79
+      "ytd_pnl_clean_usd": -53018.9
     },
     {
       "date": "2026-04-02",
@@ -5731,7 +5640,7 @@
           "mkt_val_usd": 48027.0
         }
       },
-      "ytd_pnl_clean_usd": -186222.1
+      "ytd_pnl_clean_usd": -56534.21
     },
     {
       "date": "2026-04-03",
@@ -5822,7 +5731,7 @@
           "mkt_val_usd": 48027.0
         }
       },
-      "ytd_pnl_clean_usd": -185922.53
+      "ytd_pnl_clean_usd": -56234.64
     },
     {
       "date": "2026-04-06",
@@ -5913,7 +5822,7 @@
           "mkt_val_usd": 47985.0
         }
       },
-      "ytd_pnl_clean_usd": -179733.53
+      "ytd_pnl_clean_usd": -50045.64
     },
     {
       "date": "2026-04-07",
@@ -6004,7 +5913,7 @@
           "mkt_val_usd": 47985.0
         }
       },
-      "ytd_pnl_clean_usd": -178703.9
+      "ytd_pnl_clean_usd": -49016.01
     },
     {
       "date": "2026-04-08",
@@ -6095,7 +6004,7 @@
           "mkt_val_usd": 46725.0
         }
       },
-      "ytd_pnl_clean_usd": -144609.34
+      "ytd_pnl_clean_usd": -14921.45
     },
     {
       "date": "2026-04-09",
@@ -6186,7 +6095,7 @@
           "mkt_val_usd": 70432.0
         }
       },
-      "ytd_pnl_clean_usd": -131283.68
+      "ytd_pnl_clean_usd": -1595.79
     },
     {
       "date": "2026-04-10",
@@ -6277,7 +6186,7 @@
           "mkt_val_usd": 69728.0
         }
       },
-      "ytd_pnl_clean_usd": -127469.76
+      "ytd_pnl_clean_usd": 2218.13
     },
     {
       "date": "2026-04-13",
@@ -6368,7 +6277,7 @@
           "mkt_val_usd": 70976.0
         }
       },
-      "ytd_pnl_clean_usd": -115102.26
+      "ytd_pnl_clean_usd": 14585.63
     },
     {
       "date": "2026-04-14",
@@ -6459,7 +6368,7 @@
           "mkt_val_usd": 72352.0
         }
       },
-      "ytd_pnl_clean_usd": -82299.58
+      "ytd_pnl_clean_usd": 47388.31
     },
     {
       "date": "2026-04-15",
@@ -6550,7 +6459,7 @@
           "mkt_val_usd": 72096.0
         }
       },
-      "ytd_pnl_clean_usd": -78772.17
+      "ytd_pnl_clean_usd": 50915.72
     },
     {
       "date": "2026-04-16",
@@ -6645,7 +6554,7 @@
           "mkt_val_usd": 32300.0
         }
       },
-      "ytd_pnl_clean_usd": -68588.07
+      "ytd_pnl_clean_usd": 61099.82
     },
     {
       "date": "2026-04-17",
@@ -6740,7 +6649,7 @@
           "mkt_val_usd": 19000.0
         }
       },
-      "ytd_pnl_clean_usd": -75526.45
+      "ytd_pnl_clean_usd": 54161.44
     },
     {
       "date": "2026-04-20",
@@ -6835,7 +6744,7 @@
           "mkt_val_usd": 25000.0
         }
       },
-      "ytd_pnl_clean_usd": -73679.3
+      "ytd_pnl_clean_usd": 56008.59
     },
     {
       "date": "2026-04-21",
@@ -6930,7 +6839,7 @@
           "mkt_val_usd": 36700.0
         }
       },
-      "ytd_pnl_clean_usd": -82984.47
+      "ytd_pnl_clean_usd": 46703.42
     },
     {
       "date": "2026-04-22",
@@ -7025,7 +6934,7 @@
           "mkt_val_usd": 35200.0
         }
       },
-      "ytd_pnl_clean_usd": -66211.36
+      "ytd_pnl_clean_usd": 63476.53
     },
     {
       "date": "2026-04-23",
@@ -7112,7 +7021,7 @@
           "mkt_val_usd": 44100.0
         }
       },
-      "ytd_pnl_clean_usd": -70698.15
+      "ytd_pnl_clean_usd": 58989.74
     },
     {
       "date": "2026-04-24",
@@ -7199,7 +7108,7 @@
           "mkt_val_usd": 44000.0
         }
       },
-      "ytd_pnl_clean_usd": -49002.48
+      "ytd_pnl_clean_usd": 80685.41
     }
   ]
 }
