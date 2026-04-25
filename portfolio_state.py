@@ -347,6 +347,13 @@ def build_state():
 
     print("  Fetching Bloomberg prices...")
     prices, currencies = fetch_prices(meta, lots)
+    # Safeguard: if Bloomberg fetch produced almost no prices, abort rather
+    # than overwrite the canonical state files with junk.
+    valid_pxs = sum(1 for p in prices.values() if p.get("px_last", 0) > 0)
+    if len(prices) and valid_pxs / len(prices) < 0.5:
+        print(f"\n  ABORT: only {valid_pxs}/{len(prices)} tickers have valid prices.")
+        print("  Bloomberg Terminal probably disconnected. Refusing to overwrite state files.")
+        sys.exit(2)
     fx_rates = fetch_fx(currencies)
     print(f"  FX rates: {fx_rates}")
 
