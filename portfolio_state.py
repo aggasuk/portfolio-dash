@@ -372,22 +372,33 @@ def build_state():
         pf = m["price_factor"]
         fx = fx_rates.get(ccy, 1.0)
 
-        # Sum lots
-        total_qty = sum(l["qty"] for l in lot_q)
-        total_cost_local = sum(l["qty"] * l["price"] for l in lot_q)
-        avg_cost = total_cost_local / total_qty if total_qty > 0 else 0
+        # Cost basis can be tracked in a different ccy than the live BBG quote
+        # (e.g. AZN_LN: cost preserved as USD from ADR origin; BBG quotes GBP).
+        # So compute cost in its native ccy (lot ccy) and mkt val in BBG quote ccy.
         last = p.get("px_last", 0) or 0
         prev = p.get("prev_close", last) or last
+        quote_ccy = p.get("currency", ccy)
+        fx_quote = fx_rates.get(quote_ccy, 1.0)
+
+        total_qty = sum(l["qty"] for l in lot_q)
+        # Cost basis: aggregate per-lot in USD using each lot's own ccy
+        cost_usd = 0.0
+        for l in lot_q:
+            lot_ccy = l.get("ccy", ccy)
+            lot_fx  = fx_rates.get(lot_ccy, 1.0)
+            cost_usd += l["qty"] * l["price"] * pf * lot_fx
+        avg_cost_usd = cost_usd / total_qty if total_qty > 0 else 0
+        # Display avg_cost in quote ccy (consistent with mkt_price display)
+        avg_cost = avg_cost_usd / fx_quote if fx_quote else avg_cost_usd
 
         # Per-broker breakdown
         by_broker = defaultdict(float)
         for l in lot_q:
             by_broker[l.get("broker","")] += l["qty"]
 
-        mkt_val_usd = total_qty * last * pf * fx
-        cost_usd = total_cost_local * pf * fx
+        mkt_val_usd = total_qty * last * pf * fx_quote
         unreal_usd = mkt_val_usd - cost_usd
-        daily_pnl_usd = total_qty * (last - prev) * pf * fx
+        daily_pnl_usd = total_qty * (last - prev) * pf * fx_quote
 
         open_positions.append({
             "ticker": tk,
@@ -396,7 +407,7 @@ def build_state():
             "avg_cost": round(avg_cost, 6),
             "mkt_price": last,
             "prev_close": prev,
-            "currency": ccy,
+            "currency": quote_ccy,
             "asset_class": m.get("asset_class","STK"),
             "type_display": p.get("type_display") or m.get("asset_class","STK"),
             "price_factor": pf,
