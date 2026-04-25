@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-25T18:15:13",
+  "last_updated": "2026-04-25T18:36:50",
   "start_date": "2026-01-01",
   "snapshots": [
     {
@@ -5457,10 +5457,6 @@
           "qty": 1900.0,
           "mkt_val_usd": 98819.0
         },
-        "CANE": {
-          "qty": 4800.0,
-          "mkt_val_usd": 50112.0
-        },
         "CORN": {
           "qty": 2800.0,
           "mkt_val_usd": 51520.0
@@ -5468,6 +5464,10 @@
         "WEAT": {
           "qty": 2100.0,
           "mkt_val_usd": 49497.0
+        },
+        "CANE": {
+          "qty": 4800.0,
+          "mkt_val_usd": 50112.0
         }
       },
       "ytd_pnl_clean_usd": -66882.99
@@ -5548,10 +5548,6 @@
           "qty": 1900.0,
           "mkt_val_usd": 95627.0
         },
-        "CANE": {
-          "qty": 4800.0,
-          "mkt_val_usd": 49344.0
-        },
         "CORN": {
           "qty": 2800.0,
           "mkt_val_usd": 50904.0
@@ -5559,6 +5555,10 @@
         "WEAT": {
           "qty": 2100.0,
           "mkt_val_usd": 47943.0
+        },
+        "CANE": {
+          "qty": 4800.0,
+          "mkt_val_usd": 49344.0
         }
       },
       "ytd_pnl_clean_usd": -50932.39
@@ -5639,10 +5639,6 @@
           "qty": 1900.0,
           "mkt_val_usd": 102828.0
         },
-        "CANE": {
-          "qty": 4800.0,
-          "mkt_val_usd": 48672.0
-        },
         "CORN": {
           "qty": 2800.0,
           "mkt_val_usd": 50932.0
@@ -5650,6 +5646,10 @@
         "WEAT": {
           "qty": 2100.0,
           "mkt_val_usd": 48027.0
+        },
+        "CANE": {
+          "qty": 4800.0,
+          "mkt_val_usd": 48672.0
         }
       },
       "ytd_pnl_clean_usd": -54676.11
@@ -5730,10 +5730,6 @@
           "qty": 1900.0,
           "mkt_val_usd": 102828.0
         },
-        "CANE": {
-          "qty": 4800.0,
-          "mkt_val_usd": 48672.0
-        },
         "CORN": {
           "qty": 2800.0,
           "mkt_val_usd": 50932.0
@@ -5741,6 +5737,10 @@
         "WEAT": {
           "qty": 2100.0,
           "mkt_val_usd": 48027.0
+        },
+        "CANE": {
+          "qty": 4800.0,
+          "mkt_val_usd": 48672.0
         }
       },
       "ytd_pnl_clean_usd": -54391.19
@@ -5821,10 +5821,6 @@
           "qty": 1900.0,
           "mkt_val_usd": 103873.0
         },
-        "CANE": {
-          "qty": 4800.0,
-          "mkt_val_usd": 48720.0
-        },
         "CORN": {
           "qty": 2800.0,
           "mkt_val_usd": 51212.0
@@ -5832,6 +5828,10 @@
         "WEAT": {
           "qty": 2100.0,
           "mkt_val_usd": 47985.0
+        },
+        "CANE": {
+          "qty": 4800.0,
+          "mkt_val_usd": 48720.0
         }
       },
       "ytd_pnl_clean_usd": -48182.84
@@ -5912,10 +5912,6 @@
           "qty": 1500.0,
           "mkt_val_usd": 80280.0
         },
-        "CANE": {
-          "qty": 4800.0,
-          "mkt_val_usd": 47376.0
-        },
         "CORN": {
           "qty": 2800.0,
           "mkt_val_usd": 50540.0
@@ -5923,6 +5919,10 @@
         "WEAT": {
           "qty": 2100.0,
           "mkt_val_usd": 47985.0
+        },
+        "CANE": {
+          "qty": 4800.0,
+          "mkt_val_usd": 47376.0
         }
       },
       "ytd_pnl_clean_usd": -46898.88
@@ -6003,10 +6003,6 @@
           "qty": 1500.0,
           "mkt_val_usd": 72030.0
         },
-        "CANE": {
-          "qty": 4800.0,
-          "mkt_val_usd": 46560.0
-        },
         "CORN": {
           "qty": 2800.0,
           "mkt_val_usd": 50372.0
@@ -6014,6 +6010,10 @@
         "WEAT": {
           "qty": 2100.0,
           "mkt_val_usd": 46725.0
+        },
+        "CANE": {
+          "qty": 4800.0,
+          "mkt_val_usd": 46560.0
         }
       },
       "ytd_pnl_clean_usd": -12901.62
@@ -6094,10 +6094,6 @@
           "qty": 1500.0,
           "mkt_val_usd": 72780.0
         },
-        "CANE": {
-          "qty": 4800.0,
-          "mkt_val_usd": 45408.0
-        },
         "CORN": {
           "qty": 2800.0,
           "mkt_val_usd": 50092.0
@@ -6105,6 +6101,10 @@
         "WEAT": {
           "qty": 3200.0,
           "mkt_val_usd": 70432.0
+        },
+        "CANE": {
+          "qty": 4800.0,
+          "mkt_val_usd": 45408.0
         }
       },
       "ytd_pnl_clean_usd": 410.7
@@ -6185,10 +6185,6 @@
           "qty": 1500.0,
           "mkt_val_usd": 70875.0
         },
-        "CANE": {
-          "qty": 4800.0,
-          "mkt_val_usd": 44784.0
-        },
         "CORN": {
           "qty": 2800.0,
           "mkt_val_usd": 49700.0
@@ -6196,6 +6192,10 @@
         "WEAT": {
           "qty": 3200.0,
           "mkt_val_usd": 69728.0
+        },
+        "CANE": {
+          "qty": 4800.0,
+          "mkt_val_usd": 44784.0
         }
       },
       "ytd_pnl_clean_usd": 4270.0
@@ -6276,10 +6276,6 @@
           "qty": 2000.0,
           "mkt_val_usd": 98140.0
         },
-        "CANE": {
-          "qty": 6900.0,
-          "mkt_val_usd": 63894.0
-        },
         "CORN": {
           "qty": 3900.0,
           "mkt_val_usd": 69303.0
@@ -6287,6 +6283,10 @@
         "WEAT": {
           "qty": 3200.0,
           "mkt_val_usd": 70976.0
+        },
+        "CANE": {
+          "qty": 6900.0,
+          "mkt_val_usd": 63894.0
         }
       },
       "ytd_pnl_clean_usd": 16823.52
@@ -6367,10 +6367,6 @@
           "qty": 2000.0,
           "mkt_val_usd": 95020.0
         },
-        "CANE": {
-          "qty": 6900.0,
-          "mkt_val_usd": 65274.0
-        },
         "CORN": {
           "qty": 3900.0,
           "mkt_val_usd": 69264.0
@@ -6378,6 +6374,10 @@
         "WEAT": {
           "qty": 3200.0,
           "mkt_val_usd": 72352.0
+        },
+        "CANE": {
+          "qty": 6900.0,
+          "mkt_val_usd": 65274.0
         }
       },
       "ytd_pnl_clean_usd": 49712.68
@@ -6458,10 +6458,6 @@
           "qty": 2000.0,
           "mkt_val_usd": 94640.0
         },
-        "CANE": {
-          "qty": 6900.0,
-          "mkt_val_usd": 63273.0
-        },
         "CORN": {
           "qty": 3900.0,
           "mkt_val_usd": 70473.0
@@ -6469,6 +6465,10 @@
         "WEAT": {
           "qty": 3200.0,
           "mkt_val_usd": 72096.0
+        },
+        "CANE": {
+          "qty": 6900.0,
+          "mkt_val_usd": 63273.0
         }
       },
       "ytd_pnl_clean_usd": 53337.87
@@ -6549,10 +6549,6 @@
           "qty": 2000.0,
           "mkt_val_usd": 98160.0
         },
-        "CANE": {
-          "qty": 6900.0,
-          "mkt_val_usd": 64032.0
-        },
         "CORN": {
           "qty": 3900.0,
           "mkt_val_usd": 70083.0
@@ -6560,6 +6556,10 @@
         "WEAT": {
           "qty": 3200.0,
           "mkt_val_usd": 72960.0
+        },
+        "CANE": {
+          "qty": 6900.0,
+          "mkt_val_usd": 64032.0
         },
         "BNO_60C_JUL26": {
           "qty": 100.0,
@@ -6644,10 +6644,6 @@
           "qty": 2000.0,
           "mkt_val_usd": 90940.0
         },
-        "CANE": {
-          "qty": 6900.0,
-          "mkt_val_usd": 62583.0
-        },
         "CORN": {
           "qty": 3900.0,
           "mkt_val_usd": 70005.0
@@ -6655,6 +6651,10 @@
         "WEAT": {
           "qty": 3200.0,
           "mkt_val_usd": 71904.0
+        },
+        "CANE": {
+          "qty": 6900.0,
+          "mkt_val_usd": 62583.0
         },
         "BNO_60C_JUL26": {
           "qty": 100.0,
@@ -6739,10 +6739,6 @@
           "qty": 2000.0,
           "mkt_val_usd": 94900.0
         },
-        "CANE": {
-          "qty": 6900.0,
-          "mkt_val_usd": 62997.0
-        },
         "CORN": {
           "qty": 3900.0,
           "mkt_val_usd": 70512.0
@@ -6750,6 +6746,10 @@
         "WEAT": {
           "qty": 3200.0,
           "mkt_val_usd": 72800.0
+        },
+        "CANE": {
+          "qty": 6900.0,
+          "mkt_val_usd": 62997.0
         },
         "BNO_60C_JUL26": {
           "qty": 100.0,
@@ -6834,10 +6834,6 @@
           "qty": 2000.0,
           "mkt_val_usd": 100140.0
         },
-        "CANE": {
-          "qty": 6900.0,
-          "mkt_val_usd": 63618.0
-        },
         "CORN": {
           "qty": 3900.0,
           "mkt_val_usd": 70902.0
@@ -6845,6 +6841,10 @@
         "WEAT": {
           "qty": 3200.0,
           "mkt_val_usd": 74112.0
+        },
+        "CANE": {
+          "qty": 6900.0,
+          "mkt_val_usd": 63618.0
         },
         "BNO_60C_JUL26": {
           "qty": 100.0,
@@ -6929,10 +6929,6 @@
           "qty": 2000.0,
           "mkt_val_usd": 101060.0
         },
-        "CANE": {
-          "qty": 6900.0,
-          "mkt_val_usd": 64032.0
-        },
         "CORN": {
           "qty": 3900.0,
           "mkt_val_usd": 71019.0
@@ -6940,6 +6936,10 @@
         "WEAT": {
           "qty": 3200.0,
           "mkt_val_usd": 73152.0
+        },
+        "CANE": {
+          "qty": 6900.0,
+          "mkt_val_usd": 64032.0
         },
         "BNO_60C_JUL26": {
           "qty": 100.0,
@@ -7016,10 +7016,6 @@
           "qty": 2000.0,
           "mkt_val_usd": 105400.0
         },
-        "CANE": {
-          "qty": 6900.0,
-          "mkt_val_usd": 64446.0
-        },
         "CORN": {
           "qty": 3900.0,
           "mkt_val_usd": 71292.0
@@ -7027,6 +7023,10 @@
         "WEAT": {
           "qty": 3200.0,
           "mkt_val_usd": 74912.0
+        },
+        "CANE": {
+          "qty": 6900.0,
+          "mkt_val_usd": 64446.0
         },
         "BNO_60C_JUL26": {
           "qty": 100.0,
@@ -7103,10 +7103,6 @@
           "qty": 2000.0,
           "mkt_val_usd": 105180.0
         },
-        "CANE": {
-          "qty": 6900.0,
-          "mkt_val_usd": 65274.0
-        },
         "CORN": {
           "qty": 3900.0,
           "mkt_val_usd": 71253.0
@@ -7114,6 +7110,10 @@
         "WEAT": {
           "qty": 3200.0,
           "mkt_val_usd": 74208.0
+        },
+        "CANE": {
+          "qty": 6900.0,
+          "mkt_val_usd": 65274.0
         },
         "BNO_60C_JUL26": {
           "qty": 100.0,

@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-04-25T18:15:19",
+  "last_updated": "2026-04-25T18:36:56",
   "as_of": "2026-04-25",
   "summary": {
     "as_of": "2026-04-25",
@@ -253,7 +253,7 @@
       "by_broker": {
         "IBKR": 2000.0
       },
-      "lots_count": 4,
+      "lots_count": 6,
       "jan1_mkt_value_usd": 0,
       "buys_2026_usd": 143063.15,
       "sells_2026_usd": 43994.5,
@@ -283,7 +283,7 @@
       "by_broker": {
         "IBKR": 2600.0
       },
-      "lots_count": 3,
+      "lots_count": 6,
       "jan1_mkt_value_usd": 0,
       "buys_2026_usd": 93172.97,
       "sells_2026_usd": 0.0,
@@ -343,7 +343,7 @@
       "by_broker": {
         "IBKR": 3200.0
       },
-      "lots_count": 3,
+      "lots_count": 14,
       "jan1_mkt_value_usd": 0,
       "buys_2026_usd": 73437.13,
       "sells_2026_usd": 0.0,
@@ -373,7 +373,7 @@
       "by_broker": {
         "IBKR": 3900.0
       },
-      "lots_count": 3,
+      "lots_count": 5,
       "jan1_mkt_value_usd": 0,
       "buys_2026_usd": 70746.0,
       "sells_2026_usd": 0.0,
@@ -403,7 +403,7 @@
       "by_broker": {
         "IBKR": 6900.0
       },
-      "lots_count": 4,
+      "lots_count": 13,
       "jan1_mkt_value_usd": 0,
       "buys_2026_usd": 69959.95,
       "sells_2026_usd": 0.0,
@@ -480,7 +480,7 @@
       "currency": "USD",
       "asset_class": "OPT",
       "type_display": "Option",
-      "price_factor": 100,
+      "price_factor": 100.0,
       "mkt_value_usd": 44000.0,
       "cost_basis_usd": 34100.0,
       "unrealised_pnl_usd": 9900.0,
@@ -493,7 +493,7 @@
       "by_broker": {
         "IBKR": 100.0
       },
-      "lots_count": 1,
+      "lots_count": 2,
       "jan1_mkt_value_usd": 0,
       "buys_2026_usd": 34100.0,
       "sells_2026_usd": 0.0,
