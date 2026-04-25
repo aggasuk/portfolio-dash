@@ -441,6 +441,7 @@ def build_state():
     # in same workflow run BEFORE state.py — see workflow yml ordering).
     ytd_baseline_unrealized = 0.0
     nav_jan1 = None
+    jan1_per_ticker = {}  # ticker -> {qty, mkt_val_usd}
     if os.path.exists(HISTORY_PATH):
         try:
             hist = json.load(open(HISTORY_PATH))
@@ -448,9 +449,40 @@ def build_state():
                 first = hist["snapshots"][0]
                 ytd_baseline_unrealized = first.get("unrealised_pnl_usd", 0)
                 nav_jan1 = first.get("nav_securities_usd")
+                jan1_per_ticker = first.get("positions", {})
         except Exception as e:
             print(f"  WARN: couldn't read nav_history baseline: {e}")
     ytd_pnl = (unreal_total - ytd_baseline_unrealized) + realized_2026
+
+    # Per-ticker 2026 cash flows from journal (today's FX for simplicity)
+    flows_2026 = defaultdict(lambda: {"buys_usd": 0.0, "sells_usd": 0.0})
+    for t in journal_trades:
+        d = (t.get("date") or "")[:10]
+        if d < "2026-01-01" or t.get("side") not in ("buy", "sell"):
+            continue
+        tk = t.get("ticker")
+        ccy = t.get("ccy", "USD")
+        pf  = t.get("price_factor", 1.0)
+        qty = float(t.get("qty", 0) or 0)
+        px  = float(t.get("price", 0) or 0)
+        fx  = fx_rates.get(ccy, 1.0)
+        usd = qty * px * pf * fx
+        if t["side"] == "buy":
+            flows_2026[tk]["buys_usd"] += usd
+        else:
+            flows_2026[tk]["sells_usd"] += usd
+
+    # Apply per-position YTD P&L = today_mkt + 2026_sells - 2026_buys - jan1_mkt
+    for p in open_positions:
+        tk = p["ticker"]
+        jan1 = jan1_per_ticker.get(tk, {}).get("mkt_val_usd", 0)
+        flow = flows_2026.get(tk, {"buys_usd": 0, "sells_usd": 0})
+        p["jan1_mkt_value_usd"] = round(jan1, 2)
+        p["buys_2026_usd"]      = round(flow["buys_usd"], 2)
+        p["sells_2026_usd"]     = round(flow["sells_usd"], 2)
+        p["ytd_pnl_usd"]        = round(p["mkt_value_usd"] + flow["sells_usd"] - flow["buys_usd"] - jan1, 2)
+        denom = jan1 if jan1 > 0 else flow["buys_usd"]
+        p["ytd_pnl_pct"]        = round(p["ytd_pnl_usd"] / denom, 4) if denom > 0 else 0
 
     summary = {
         "as_of": today,
