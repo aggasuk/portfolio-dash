@@ -12,223 +12,78 @@
     --green: #22c55e; --red: #ef4444; --amber: #f59e0b;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', Consolas, monospace;
-    background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh;
-  }
-  .container { max-width: 100%; margin: 0 auto; padding: 24px 24px; }
+  body { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', Consolas, monospace; background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; }
+  .container { max-width: 100%; margin: 0 auto; padding: 24px; }
   header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
   header h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.02em; }
   header h1 span { color: var(--accent); }
   .header-right { display: flex; align-items: center; gap: 12px; }
-  .header-btn {
-    padding: 7px 16px; background: var(--surface); border: 1px solid var(--border);
-    border-radius: 8px; color: var(--text-dim); cursor: pointer; font-size: 0.78rem;
-    font-family: inherit; font-weight: 600; transition: all 0.15s;
-  }
+  .header-btn { padding: 7px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text-dim); cursor: pointer; font-size: 0.78rem; font-family: inherit; font-weight: 600; transition: all 0.15s; }
   .header-btn:hover { color: var(--text); border-color: var(--accent); }
   .header-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .header-btn.primary:hover { opacity: 0.85; }
   .updated { font-size: 0.72rem; color: var(--text-dim); }
 
-  /* Connection banner */
-  .conn-banner {
-    display: flex; align-items: center; gap: 8px; padding: 10px 16px;
-    border-radius: 10px; margin-bottom: 20px; font-size: 0.78rem; font-weight: 600;
-  }
+  .conn-banner { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 10px; margin-bottom: 20px; font-size: 0.78rem; font-weight: 600; }
   .conn-banner.connected { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25); color: var(--green); }
   .conn-banner.offline { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25); color: var(--amber); }
+  .conn-banner.error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25); color: var(--red); }
   .conn-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
   .conn-banner.connected .conn-dot { background: var(--green); box-shadow: 0 0 6px var(--green); }
-  .conn-banner.offline .conn-dot { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+  .conn-banner.offline   .conn-dot { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+  .conn-banner.error     .conn-dot { background: var(--red); box-shadow: 0 0 6px var(--red); }
 
-  /* Top nav */
-  .top-nav { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 2px solid var(--border); padding-bottom: 0; }
-  .nav-btn {
-    padding: 10px 24px; background: transparent; border: none;
-    border-bottom: 2px solid transparent; margin-bottom: -2px;
-    color: var(--text-dim); cursor: pointer; font-size: 0.85rem;
-    font-weight: 600; font-family: inherit; letter-spacing: 0.02em; transition: all 0.15s;
-  }
+  .top-nav { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 2px solid var(--border); }
+  .nav-btn { padding: 10px 24px; background: transparent; border: none; border-bottom: 2px solid transparent; margin-bottom: -2px; color: var(--text-dim); cursor: pointer; font-size: 0.85rem; font-weight: 600; font-family: inherit; transition: all 0.15s; }
   .nav-btn:hover { color: var(--text); }
   .nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-  /* KPI snap cards */
   .kpi-row { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
-  .snap-card {
-    flex: 1; min-width: 130px; background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; padding: 14px 16px;
-  }
+  .snap-card { flex: 1 1 15%; min-width: 140px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
   .snap-card .label { font-size: 0.68rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
   .snap-card .value { font-size: 1.05rem; font-weight: 700; }
-  .snap-card { min-width: 140px; flex: 1 1 15%; }
 
-  /* Chart wrap */
-  .chart-wrap {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; padding: 16px; margin-bottom: 20px;
-  }
+  .chart-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 20px; }
   .chart-wrap h3 { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
   .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
   @media (max-width: 900px) { .chart-grid { grid-template-columns: 1fr; } }
 
-  /* Vol table */
   .vol-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.78rem; }
-  .vol-table th {
-    background: var(--surface2); padding: 8px 10px; text-align: right;
-    font-weight: 600; color: var(--text-dim); text-transform: uppercase;
-    font-size: 0.68rem; letter-spacing: 0.04em; border-bottom: 1px solid var(--border);
-    position: sticky; top: 0; z-index: 1; overflow: hidden;
-  }
+  .vol-table th { background: var(--surface2); padding: 8px 10px; text-align: right; font-weight: 600; color: var(--text-dim); text-transform: uppercase; font-size: 0.68rem; letter-spacing: 0.04em; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1; cursor: pointer; user-select: none; }
+  .vol-table th:hover { color: var(--text); }
   .vol-table th:first-child, .vol-table td:first-child { text-align: left; }
   .vol-table th:nth-child(2), .vol-table td:nth-child(2) { text-align: left; }
-  .vol-table th.sortable { cursor: pointer; user-select: none; }
-  .vol-table th.sortable:hover { color: var(--text); }
-  .sort-arrow { margin-left: 4px; font-size: 0.6rem; }
+  .vol-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: right; }
+  .vol-table tr:hover td { background: rgba(108,99,255,0.04); }
+  .pnl-pos { color: var(--green); }
+  .pnl-neg { color: var(--red); }
+  .pnl-zero { color: var(--text-dim); }
+  .table-scroll { max-height: 600px; overflow: auto; }
+  .ticker-cell { font-weight: 600; color: var(--text); }
+  .small-cell { font-size: 0.7rem; color: var(--text-dim); }
 
-  /* Resizable columns */
-  .vol-table th.resizable { position: relative; }
-  .col-resize-handle {
-    position: absolute; right: -3px; top: 0; bottom: 0; width: 7px;
-    cursor: col-resize; z-index: 3; background: transparent;
-  }
-  .col-resize-handle:hover, .col-resize-handle.active { background: var(--accent); opacity: 0.5; }
-
-  /* Column picker */
-  .col-picker-wrap { position: relative; display: inline-block; }
-  .col-picker-btn {
-    padding: 5px 12px; background: var(--surface); border: 1px solid var(--border);
-    border-radius: 6px; color: var(--text-dim); cursor: pointer; font-size: 0.72rem;
-    font-family: inherit; font-weight: 600;
-  }
-  .col-picker-btn:hover { color: var(--text); border-color: var(--accent); }
-  .col-picker-menu {
-    position: absolute; top: 100%; right: 0; margin-top: 4px; background: var(--surface);
-    border: 1px solid var(--border); border-radius: 8px; padding: 8px 0; min-width: 180px;
-    z-index: 100; box-shadow: 0 8px 24px rgba(0,0,0,0.4); max-height: 320px; overflow-y: auto;
-  }
-  .col-picker-item {
-    display: flex; align-items: center; gap: 8px; padding: 6px 14px; cursor: pointer;
-    font-size: 0.75rem; color: var(--text-dim); transition: background 0.1s;
-  }
-  .col-picker-item:hover { background: var(--surface2); color: var(--text); }
-  .col-picker-item input { accent-color: var(--accent); }
-
-  /* Pie drill-down panel */
-  .drill-panel {
-    background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
-    padding: 14px; margin-top: 12px; font-size: 0.78rem;
-  }
-  .drill-panel h4 { font-size: 0.78rem; color: var(--accent); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
-  .drill-panel .drill-close {
-    float: right; background: none; border: none; color: var(--text-dim); cursor: pointer;
-    font-size: 1rem; line-height: 1; padding: 0 4px;
-  }
-  .drill-panel .drill-close:hover { color: var(--text); }
-  .drill-table { width: 100%; border-collapse: collapse; }
-  .drill-table td { padding: 3px 8px; border-bottom: 1px solid var(--border); font-size: 0.72rem; }
-  .drill-table td:first-child { font-weight: 600; }
-  .drill-table td:last-child { text-align: right; }
-  .vol-table td {
-    padding: 5px 8px; text-align: right; border-bottom: 1px solid var(--border);
-    white-space: nowrap; font-size: 0.75rem;
-  }
-  .vol-table tr:hover { background: var(--surface2); }
-  .table-scroll { overflow-x: auto; max-height: 600px; overflow-y: auto; }
-  .kpi-row { flex-wrap: wrap; }
-  .pnl-pos { color: var(--green); } .pnl-neg { color: var(--red); }
-
-  /* Source badges */
-  .badge {
-    display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 0.65rem;
-    font-weight: 700; letter-spacing: 0.03em;
-  }
-  .badge-ib { background: rgba(59,130,246,0.15); color: #60a5fa; }
-  .badge-manual { background: rgba(245,158,11,0.15); color: var(--amber); }
-
-  /* Auth gate */
-  #auth-gate {
-    display: flex; justify-content: center; align-items: center; min-height: 80vh;
-  }
-  .auth-box {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-    padding: 32px 36px; width: 420px; max-width: 95vw;
-  }
-  .auth-box h2 { font-size: 1.1rem; margin-bottom: 20px; }
-  .auth-box label { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; display: block; margin-bottom: 4px; margin-top: 14px; }
-  .auth-box input {
-    width: 100%; padding: 10px 12px; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 8px; color: var(--text); font-family: inherit; font-size: 0.82rem;
-  }
-  .auth-box input:focus { outline: none; border-color: var(--accent); }
-  .auth-box .hint { font-size: 0.68rem; color: var(--text-dim); margin-top: 4px; }
-  .auth-box button {
-    margin-top: 20px; width: 100%; padding: 10px; background: var(--accent); border: none;
-    border-radius: 8px; color: #fff; font-family: inherit; font-size: 0.85rem;
-    font-weight: 600; cursor: pointer; transition: opacity 0.15s;
-  }
-  .auth-box button:hover { opacity: 0.85; }
-  .auth-box .err { color: var(--red); font-size: 0.75rem; margin-top: 10px; display: none; }
-  .ibkr-status { display: flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 0.75rem; }
-  .ibkr-status .dot { width: 8px; height: 8px; border-radius: 50%; }
-
-  /* Filter row */
-  .filter-row { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
-  .filter-btn {
-    padding: 6px 16px; background: var(--surface); border: 1px solid var(--border);
-    border-radius: 8px; color: var(--text-dim); cursor: pointer; font-size: 0.78rem;
-    font-family: inherit; transition: all 0.15s;
-  }
-  .filter-btn:hover { color: var(--text); }
+  .filter-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .filter-btn { padding: 6px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text-dim); cursor: pointer; font-size: 0.75rem; font-family: inherit; font-weight: 600; }
   .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
+  /* Auth gate */
+  #auth-gate { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+  .auth-box { background: var(--surface); padding: 32px; border-radius: 14px; max-width: 420px; width: 90%; border: 1px solid var(--border); }
+  .auth-box h2 { color: var(--accent); margin-bottom: 18px; font-size: 1.1rem; }
+  .auth-box label { display: block; font-size: 0.75rem; color: var(--text-dim); margin-bottom: 6px; }
+  .auth-box input { width: 100%; padding: 10px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: inherit; font-size: 0.85rem; margin-bottom: 12px; }
+  .auth-box input:focus { outline: none; border-color: var(--accent); }
+  .auth-box .hint { font-size: 0.65rem; color: var(--text-dim); margin-bottom: 14px; }
+  .auth-box button { width: 100%; padding: 10px; background: var(--accent); border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; font-family: inherit; }
+  .auth-box .err { font-size: 0.7rem; color: var(--red); margin-top: 8px; min-height: 1em; }
+
   /* Blotter */
-  .blotter-input-row { display: flex; gap: 10px; margin-bottom: 18px; }
-  .blotter-input {
-    flex: 1; padding: 10px 14px; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 8px; color: var(--text); font-family: inherit; font-size: 0.85rem;
-  }
+  .blotter-input-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .blotter-input { flex: 1; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: inherit; font-size: 0.85rem; }
   .blotter-input:focus { outline: none; border-color: var(--accent); }
-  .blotter-input::placeholder { color: var(--text-dim); }
-  .blotter-submit {
-    padding: 10px 24px; background: var(--accent); border: none; border-radius: 8px;
-    color: #fff; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer;
-  }
-  .blotter-submit:hover { opacity: 0.85; }
-  .blotter-submit:disabled { opacity: 0.4; cursor: not-allowed; }
-
-  .trade-item {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 10px 14px; background: var(--surface); border: 1px solid var(--border);
-    border-radius: 8px; margin-bottom: 8px; font-size: 0.78rem;
-  }
-  .trade-item .del-btn {
-    background: none; border: none; color: var(--red); cursor: pointer;
-    font-size: 0.85rem; opacity: 0.6; padding: 2px 6px;
-  }
-  .trade-item .del-btn:hover { opacity: 1; }
-
-  /* Date range filter */
-  .range-row { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
-
-  /* No data message */
-  .no-data {
-    text-align: center; padding: 60px 20px; color: var(--text-dim); font-size: 0.85rem;
-  }
-
-  /* Loading spinner */
-  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border);
-    border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .blotter-submit { padding: 10px 20px; background: var(--accent); border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; font-family: inherit; }
 
   .hidden { display: none !important; }
-
-  @media (max-width: 600px) {
-    .kpi-row { gap: 8px; }
-    .snap-card { min-width: 120px; padding: 10px 12px; }
-    .snap-card .value { font-size: 0.9rem; }
-    .blotter-input-row { flex-direction: column; }
-  }
+  .no-data { padding: 40px; text-align: center; color: var(--text-dim); font-size: 0.85rem; }
 </style>
 </head>
 <body>
@@ -238,12 +93,8 @@
   <div class="auth-box">
     <h2>Portfolio Dashboard</h2>
     <label>GitHub Personal Access Token</label>
-    <input type="password" id="auth-gh" placeholder="ghp_..." />
-    <div class="hint">Fine-grained PAT scoped to aggasuk/trade-book (Contents: R/W)</div>
-    <div class="ibkr-status">
-      <div class="dot" id="auth-ibkr-dot" style="background:var(--text-dim)"></div>
-      <span id="auth-ibkr-text">Checking IBKR connection...</span>
-    </div>
+    <input type="password" id="auth-gh" placeholder="ghp_..." onkeydown="if(event.key==='Enter')doAuth()" />
+    <div class="hint">Fine-grained PAT scoped to aggasuk repos (Contents R/W + Actions R/W)</div>
     <button onclick="doAuth()">Connect</button>
     <div class="err" id="auth-err"></div>
   </div>
@@ -258,1422 +109,541 @@
         <div class="updated" id="last-updated"></div>
       </div>
       <div class="header-right">
-        <button class="header-btn" id="btn-refresh" onclick="doRefresh()">Refresh</button>
-        <button class="header-btn" onclick="triggerBloombergEnrich()">Bloomberg Enrich</button>
+        <button class="header-btn" onclick="loadAll()">Reload</button>
+        <button class="header-btn primary" onclick="triggerBloombergEnrich()">Bloomberg Enrich</button>
       </div>
     </header>
 
-    <!-- Connection banner -->
     <div id="conn-banner" class="conn-banner offline">
       <div class="conn-dot"></div>
-      <span id="conn-text">Checking IBKR...</span>
+      <span id="conn-text">Loading...</span>
     </div>
 
-    <!-- Tabs -->
     <div class="top-nav">
       <button class="nav-btn active" onclick="switchTab('overview',this)">Overview</button>
+      <button class="nav-btn" onclick="switchTab('cash',this)">Cash</button>
+      <button class="nav-btn" onclick="switchTab('closed',this)">Closed Trades</button>
       <button class="nav-btn" onclick="switchTab('blotter',this)">Blotter</button>
       <button class="nav-btn" onclick="switchTab('analysis',this)">Analysis</button>
     </div>
 
-    <!-- OVERVIEW TAB -->
+    <!-- OVERVIEW -->
     <div id="tab-overview">
       <div class="kpi-row" id="kpi-row"></div>
-
-      <div class="filter-row" id="pos-filter">
-        <button class="filter-btn active" onclick="setPositionFilter('open',this)">Open</button>
-        <button class="filter-btn" onclick="setPositionFilter('derivatives',this)">Derivatives</button>
-        <button class="filter-btn" onclick="setPositionFilter('closed',this)">Closed</button>
-        <div style="flex:1"></div>
-        <div class="col-picker-wrap">
-          <button class="col-picker-btn" onclick="toggleColPicker(event)">Columns &#9662;</button>
-          <div class="col-picker-menu hidden" id="col-picker-menu"></div>
-        </div>
-      </div>
-
       <div class="chart-wrap">
-        <h3>Positions</h3>
+        <h3>Open Positions</h3>
         <div class="table-scroll" id="positions-table-wrap"></div>
       </div>
-
-      <div class="chart-grid" id="allocation-charts">
-        <div class="chart-wrap"><h3>By Type</h3><div id="chart-type"></div><div id="drill-type"></div></div>
-        <div class="chart-wrap"><h3>By Country</h3><div id="chart-country"></div><div id="drill-country"></div></div>
-        <div class="chart-wrap"><h3>By Currency</h3><div id="chart-currency"></div><div id="drill-currency"></div></div>
-        <div class="chart-wrap"><h3>By Source</h3><div id="chart-source"></div><div id="drill-source"></div></div>
+      <div class="chart-grid">
+        <div class="chart-wrap"><h3>By Asset Class</h3><div id="chart-type"></div></div>
+        <div class="chart-wrap"><h3>By Currency</h3><div id="chart-currency"></div></div>
+        <div class="chart-wrap"><h3>By Broker</h3><div id="chart-broker"></div></div>
+        <div class="chart-wrap"><h3>By Country</h3><div id="chart-country"></div></div>
       </div>
     </div>
 
-    <!-- BLOTTER TAB -->
+    <!-- CASH -->
+    <div id="tab-cash" class="hidden">
+      <div class="kpi-row" id="cash-kpi"></div>
+      <div class="chart-wrap">
+        <h3>Cash Balances</h3>
+        <div class="table-scroll" id="cash-table-wrap"></div>
+      </div>
+      <div class="chart-wrap">
+        <h3>Note</h3>
+        <p style="font-size:0.78rem;color:var(--text-dim);">
+          UBS cash balances are hardcoded into <code>portfolio_state.py</code> (refresh manually as they change).
+          IBKR cash is read live via the <code>/ledger</code> endpoint of the IBKR price server (per-currency breakdown including margin debits).
+        </p>
+      </div>
+    </div>
+
+    <!-- CLOSED TRADES -->
+    <div id="tab-closed" class="hidden">
+      <div class="kpi-row" id="closed-kpi"></div>
+      <div class="chart-wrap">
+        <h3>Closed Positions (2026 YTD)</h3>
+        <div class="table-scroll" id="closed-table-wrap"></div>
+      </div>
+    </div>
+
+    <!-- BLOTTER -->
     <div id="tab-blotter" class="hidden">
       <div class="chart-wrap">
-        <h3>Manual Positions (non-IBKR)</h3>
+        <h3>Manual UBS Trades</h3>
         <p style="font-size:0.75rem; color:var(--text-dim); margin-bottom:14px;">
-          Enter trades: <code>buy 100 AAPL at 185.50</code>, <code>sell 30 AAPL at 198</code>, <code>close AAPL</code>. Add broker: <code>buy 100 AAPL at 185.50 @UBS</code>
+          Add UBS trades that aren't auto-synced from IBKR. Format examples:
+          <code>buy 100 AAPL at 185.50</code>,
+          <code>sell 30 AAPL at 198</code>.
+          New entries go to <code>aggasuk/trade-book/portfolio_trades.json</code> and merge into the journal on the next Bloomberg Enrich.
         </p>
         <div class="blotter-input-row">
-          <input class="blotter-input" id="blotter-input" placeholder="buy 100 VOO at 500 @UBS" onkeydown="if(event.key==='Enter')submitTrade()" />
-          <button class="blotter-submit" id="blotter-submit" onclick="submitTrade()">Add</button>
+          <input class="blotter-input" id="blotter-input" placeholder="buy 100 VOO at 500" onkeydown="if(event.key==='Enter')submitTrade()" />
+          <button class="blotter-submit" onclick="submitTrade()">Add</button>
         </div>
         <div id="blotter-status" style="font-size:0.75rem; margin-bottom:14px; min-height:1.2em;"></div>
       </div>
-
       <div class="chart-wrap">
         <h3>Recent Manual Trades</h3>
         <div id="manual-trades-list"></div>
-        <div id="manual-trades-empty" class="no-data hidden">No manual trades yet.</div>
       </div>
     </div>
 
-    <!-- ANALYSIS TAB -->
+    <!-- ANALYSIS -->
     <div id="tab-analysis" class="hidden">
-      <div class="chart-wrap">
-        <h3>Winners &amp; Losers (Unrealised P&amp;L %)</h3>
-        <div id="chart-winloss"></div>
+      <div class="filter-row">
+        <button class="filter-btn" onclick="setNavRange('1M',this)">1M</button>
+        <button class="filter-btn" onclick="setNavRange('3M',this)">3M</button>
+        <button class="filter-btn active" onclick="setNavRange('YTD',this)">YTD</button>
       </div>
-
-      <div class="range-row" id="analysis-range">
-        <button class="filter-btn" onclick="setAnalysisRange('1M',this)">1M</button>
-        <button class="filter-btn" onclick="setAnalysisRange('3M',this)">3M</button>
-        <button class="filter-btn" onclick="setAnalysisRange('6M',this)">6M</button>
-        <button class="filter-btn active" onclick="setAnalysisRange('YTD',this)">YTD</button>
-        <button class="filter-btn" onclick="setAnalysisRange('1Y',this)">1Y</button>
-        <button class="filter-btn" onclick="setAnalysisRange('ALL',this)">ALL</button>
-      </div>
-
-      <div class="chart-wrap">
-        <h3>NAV Over Time</h3>
-        <div id="chart-nav"></div>
-      </div>
-      <div class="chart-wrap">
-        <h3>Performance vs SPX</h3>
-        <div id="chart-perf"></div>
-      </div>
-      <div class="chart-wrap">
-        <h3>Drawdown</h3>
-        <div id="chart-drawdown"></div>
-      </div>
-      <div class="chart-wrap">
-        <h3>Monthly Returns Heatmap</h3>
-        <div id="chart-heatmap"></div>
-      </div>
+      <div class="chart-wrap"><h3>NAV Over Time</h3><div id="chart-nav"></div></div>
+      <div class="chart-wrap"><h3>Total YTD P&amp;L (Unrealised + Realised)</h3><div id="chart-pnl"></div></div>
+      <div class="chart-wrap"><h3>Drawdown</h3><div id="chart-drawdown"></div></div>
+      <div class="chart-wrap"><h3>Winners &amp; Losers (Unrealised P&amp;L %)</h3><div id="chart-winloss"></div></div>
     </div>
+
   </div>
 </div>
 
 <script>
-// ==================== GLOBALS ====================
+// ==================== STATE ====================
+const GH_TRADES_REPO = 'aggasuk/trade-book';
+const GH_DASH_REPO   = 'aggasuk/portfolio-dash';
+const GH_TRADES_PATH = 'portfolio_trades.json';
+const STATE_PATH     = 'portfolio_state.json';
+const HISTORY_PATH   = 'nav_history.json';
+
 let ghToken = localStorage.getItem('portfolio_gh_token') || '';
-let ibkrConnected = false;
-let ibkrData = null;
-let ibkrFxRates = {};
-let manualTrades = [];
-let bbgPrices = {};
-let tickerMap = {};
-let navHistory = [];
-let allPositions = [];
-let positionFilter = 'open';
-let analysisRange = 'YTD';
-let ibkrSnapshot = null;
-let ibkrSnapshotSha = null;
-let closedPositions = [];
-let navHistorySha = null;
+let state = null;       // portfolio_state.json
+let history = null;     // nav_history.json
+let manualTrades = [];  // from trade-book/portfolio_trades.json
+let manualTradesSha = null;
 let sortColumn = 'mkt_value_usd';
 let sortAscending = false;
-
-const GH_TRADES_REPO = 'aggasuk/trade-book';
-const GH_DASH_REPO = 'aggasuk/portfolio-dash';
-const GH_TRADES_PATH = 'portfolio_trades.json';
-const GH_PRICES_PATH = 'portfolio_prices.json';
-const GH_NAV_PATH = 'nav_history.json';
-const GH_TICKER_PATH = 'ticker_map.json';
-const GH_IBKR_SNAPSHOT_PATH = 'ibkr_snapshot.json';
-const IBKR_URL = 'http://localhost:8090';
-
-const plotlyLayout = {
-  paper_bgcolor: 'rgba(0,0,0,0)',
-  plot_bgcolor: 'rgba(0,0,0,0)',
-  font: { family: 'SF Mono, Cascadia Code, Fira Code, Consolas, monospace', color: '#8b8fa3', size: 11 },
-  margin: { t: 10, b: 30, l: 40, r: 10 },
-  showlegend: false,
-};
-const plotlyConfig = { displayModeBar: false, responsive: true };
-
-// ==================== UTILS ====================
-function fmt$(v) {
-  if (v == null || isNaN(v)) return '--';
-  const neg = v < 0;
-  const abs = Math.abs(v);
-  let s;
-  if (abs >= 1e6) s = '$' + (abs / 1e6).toFixed(2) + 'M';
-  else s = '$' + abs.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-  return neg ? '-' + s : s;
-}
-
-function fmtPct(v) {
-  if (v == null || isNaN(v)) return '--';
-  const s = (v * 100).toFixed(2) + '%';
-  return v >= 0 ? '+' + s : s;
-}
-
-function pnlClass(v) {
-  if (v > 0) return 'pnl-pos';
-  if (v < 0) return 'pnl-neg';
-  return '';
-}
-
-function fmtNum(v, dp = 2) {
-  if (v == null || isNaN(v)) return '--';
-  return Number(v).toLocaleString('en-US', { minimumFractionDigits: dp, maximumFractionDigits: dp });
-}
-
-function fmtDate(iso) {
-  if (!iso) return '';
-  const d = new Date(iso);
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' ' +
-    d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-}
+let navRange = 'YTD';
 
 // ==================== AUTH ====================
-async function checkIbkr() {
-  try {
-    const r = await fetch(IBKR_URL + '/portfolio', { signal: AbortSignal.timeout(3000) });
-    if (r.ok) {
-      const d = await r.json();
-      return d.authenticated === true;
-    }
-  } catch (e) {}
-  return false;
-}
-
 async function doAuth() {
-  const el = document.getElementById('auth-gh');
-  const errEl = document.getElementById('auth-err');
-  const token = el.value.trim();
-  if (!token) { errEl.textContent = 'Token required'; errEl.style.display = 'block'; return; }
-
-  try {
-    const r = await fetch(`https://api.github.com/repos/${GH_TRADES_REPO}`, {
-      headers: { 'Authorization': 'token ' + token }
-    });
-    if (!r.ok) throw new Error('Invalid token or no access');
-  } catch (e) {
-    errEl.textContent = 'GitHub auth failed: ' + e.message;
-    errEl.style.display = 'block';
-    return;
-  }
-
-  ghToken = token;
-  localStorage.setItem('portfolio_gh_token', token);
+  const t = document.getElementById('auth-gh').value.trim();
+  if (!t) return;
+  ghToken = t;
+  localStorage.setItem('portfolio_gh_token', t);
   document.getElementById('auth-gate').classList.add('hidden');
   document.getElementById('dashboard').classList.remove('hidden');
-  init();
+  await loadAll();
 }
 
-// Check auth on load
-(async function () {
-  const ib = await checkIbkr();
-  const dot = document.getElementById('auth-ibkr-dot');
-  const txt = document.getElementById('auth-ibkr-text');
-  if (ib) {
-    dot.style.background = 'var(--green)';
-    txt.textContent = 'IBKR Connected';
-    txt.style.color = 'var(--green)';
-  } else {
-    dot.style.background = 'var(--amber)';
-    txt.textContent = 'IBKR Offline';
-    txt.style.color = 'var(--amber)';
-  }
+if (ghToken) {
+  document.getElementById('auth-gate').classList.add('hidden');
+  document.getElementById('dashboard').classList.remove('hidden');
+  loadAll();
+}
 
-  if (ghToken) {
-    try {
-      const r = await fetch(`https://api.github.com/repos/${GH_TRADES_REPO}`, {
-        headers: { 'Authorization': 'token ' + ghToken }
-      });
-      if (r.ok) {
-        document.getElementById('auth-gate').classList.add('hidden');
-        document.getElementById('dashboard').classList.remove('hidden');
-        init();
-        return;
-      }
-    } catch (e) {}
-    ghToken = '';
-    localStorage.removeItem('portfolio_gh_token');
-  }
-
-  document.getElementById('auth-gh').value = ghToken;
-})();
-
-// ==================== GITHUB API ====================
-async function ghGet(repo, path) {
-  const r = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
-    headers: { 'Authorization': 'token ' + ghToken, 'Accept': 'application/vnd.github.v3+json' }
+// ==================== GH HELPERS ====================
+async function ghFetch(repo, path) {
+  const r = await fetch(`https://api.github.com/repos/${repo}/contents/${path}?ref=main&t=${Date.now()}`, {
+    headers: { 'Authorization': `Bearer ${ghToken}`, 'Accept': 'application/vnd.github+json' }
   });
-  if (r.status === 404) return { content: null, sha: null };
-  if (!r.ok) throw new Error('GitHub GET failed: ' + r.status);
-  const d = await r.json();
-  return { content: JSON.parse(atob(d.content)), sha: d.sha };
+  if (!r.ok) throw new Error(`${repo}/${path}: ${r.status}`);
+  const j = await r.json();
+  const content = atob(j.content.replace(/\n/g, ''));
+  // Decode UTF-8 properly
+  const bytes = new Uint8Array(content.length);
+  for (let i = 0; i < content.length; i++) bytes[i] = content.charCodeAt(i);
+  const text = new TextDecoder('utf-8').decode(bytes);
+  return { content: JSON.parse(text), sha: j.sha };
 }
 
-async function ghPut(repo, path, content, sha, msg) {
-  const body = {
-    message: msg || 'Update ' + path,
-    content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2)))),
-  };
+async function ghPut(repo, path, obj, sha, message) {
+  const txt = JSON.stringify(obj, null, 2);
+  const bytes = new TextEncoder().encode(txt);
+  let bin = ''; for (const b of bytes) bin += String.fromCharCode(b);
+  const b64 = btoa(bin);
+  const body = { message, content: b64 };
   if (sha) body.sha = sha;
   const r = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
     method: 'PUT',
-    headers: { 'Authorization': 'token ' + ghToken, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
+    headers: { 'Authorization': `Bearer ${ghToken}`, 'Accept': 'application/vnd.github+json' },
+    body: JSON.stringify(body),
   });
-  if (!r.ok) throw new Error('GitHub PUT failed: ' + r.status);
-  return await r.json();
+  if (!r.ok) throw new Error(`PUT ${path}: ${r.status} ${await r.text()}`);
+  return r.json();
 }
 
-// ==================== DATA LOADING ====================
-async function loadTickerMap() {
-  try { const r = await fetch('ticker_map.json'); if (r.ok) tickerMap = await r.json(); } catch (e) { tickerMap = {}; }
-}
-
-async function loadBbgPrices() {
-  try {
-    const r = await fetch('portfolio_prices.json?t=' + Date.now());
-    if (r.ok) {
-      const raw = await r.json();
-      bbgPrices = raw.prices || {};
-      bbgPrices._fx_rates = raw.fx_rates || {};
-      bbgPrices._last_updated = raw.last_updated || null;
-      console.log('[BBG] Loaded prices for', Object.keys(bbgPrices).filter(k => !k.startsWith('_')).length, 'tickers');
-    }
-  } catch (e) { console.warn('[BBG] Failed to load prices:', e); bbgPrices = {}; }
-}
-
-async function loadNavHistory() {
-  try {
-    const { content, sha } = await ghGet(GH_DASH_REPO, GH_NAV_PATH);
-    if (content && content.snapshots) {
-      navHistory = content.snapshots.filter(s => s.nav > 0);
-    } else if (Array.isArray(content)) {
-      navHistory = content.filter(s => s.nav > 0);
-    } else {
-      navHistory = [];
-    }
-    navHistorySha = sha;
-  } catch (e) {
-    // Fallback to static file
-    try { const r = await fetch('nav_history.json'); if (r.ok) { const d = await r.json(); navHistory = (d.snapshots || []).filter(s => s.nav > 0); } } catch (e2) {}
-  }
-}
-
-async function loadManualTrades() {
-  try { const d = await ghGet(GH_TRADES_REPO, GH_TRADES_PATH); manualTrades = d.content || []; } catch (e) { manualTrades = []; }
-}
-
-async function loadIbkrSnapshot() {
-  try {
-    const { content, sha } = await ghGet(GH_DASH_REPO, GH_IBKR_SNAPSHOT_PATH);
-    ibkrSnapshot = content;
-    ibkrSnapshotSha = sha;
-    if (ibkrSnapshot && ibkrSnapshot.closed_positions) {
-      closedPositions = ibkrSnapshot.closed_positions;
-    }
-    console.log('[IBKR] Loaded snapshot from GitHub, closed positions:', closedPositions.length);
-  } catch (e) {
-    console.warn('[IBKR] Failed to load snapshot:', e);
-  }
-}
-
-async function saveIbkrSnapshot() {
-  if (!ibkrConnected || !ibkrData) return;
-  try {
-    const snapshot = {
-      last_updated: ibkrData.last_updated || new Date().toISOString(),
-      fx_rates: ibkrData.fx_rates || {},
-      positions: ibkrData.positions || [],
-      closed_positions: closedPositions,
-    };
-    const resp = await ghPut(GH_DASH_REPO, GH_IBKR_SNAPSHOT_PATH, snapshot, ibkrSnapshotSha, 'IBKR snapshot');
-    ibkrSnapshotSha = resp.content.sha;
-    ibkrSnapshot = snapshot;
-    console.log('[IBKR] Saved snapshot to GitHub');
-  } catch (e) {
-    console.error('[IBKR] Save snapshot failed:', e);
-  }
-}
-
-function detectClosedPositions() {
-  if (!ibkrConnected || !ibkrData || !ibkrSnapshot || !ibkrSnapshot.positions) return;
-
-  // Key by conid — ticker isn't unique (BNO ETF + BNO option share root)
-  // and IBKR can change ticker formatting between snapshots.
-  const oldByConid = {};
-  for (const p of ibkrSnapshot.positions) {
-    if (p.conid) oldByConid[p.conid] = p;
-  }
-
-  const curByConid = {};
-  for (const p of (ibkrData.positions || [])) {
-    if (p.conid) curByConid[p.conid] = p;
-  }
-  const today = new Date().toISOString().slice(0, 10);
-
-  for (const [conid, oldP] of Object.entries(oldByConid)) {
-    if (!conid || conid === 'undefined') continue;  // never auto-close non-IBKR entries
-    const oldQty = oldP.qty || 0;
-    const curP = curByConid[conid];
-    const newQty = curP ? (curP.qty || 0) : 0;
-    const qtyClosed = oldQty - newQty;
-    if (qtyClosed <= 0) continue;
-
-    const tk = oldP.ticker || '';
-    // Dedupe on conid+date+qty
-    if (closedPositions.some(cp => cp.conid == conid && cp.close_date === today && cp.qty_closed === qtyClosed)) continue;
-
-    const closePrice = oldP.mkt_price || oldP.avg_cost || 0;
-    const avgCost = oldP.avg_cost || 0;
-    const ccy = oldP.currency || 'USD';
-
-    const info = tickerMap[tk];
-    const priceFactor = (info && info.bbg && /\b(Govt|Corp)\b/i.test(info.bbg)) ? 0.01 : 1;
-    const fx = getFxToUsd(ccy);
-    const realizedPnl = (closePrice - avgCost) * qtyClosed * priceFactor * fx;
-    const isPartial = newQty > 0;
-
-    closedPositions.push({
-      conid: oldP.conid,
-      ticker: tk,
-      name: oldP.name || tk,
-      qty_closed: qtyClosed,
-      avg_cost: avgCost,
-      close_price: closePrice,
-      realized_pnl: Math.round(realizedPnl * 100) / 100,
-      close_date: today,
-      currency: ccy,
-      price_factor: priceFactor,
-      partial: isPartial,
-      remaining_qty: newQty,
-    });
-    console.log(`[${isPartial ? 'PARTIAL' : 'CLOSED'}] ${tk} (conid=${conid}): ${qtyClosed} closed (${newQty} remaining), realized P&L: $${realizedPnl.toFixed(2)}`);
-  }
-}
-
-async function saveNavSnapshot() {
-  if (!ibkrConnected || !allPositions.length) return;
-  const today = new Date().toISOString().slice(0, 10);
-
-  if (navHistory.some(s => s.date === today)) {
-    console.log('[NAV] Snapshot for', today, 'already exists');
-    return;
-  }
-
-  const openPositions = allPositions.filter(p => !p.closed && p.qty > 0);
-  const totalNav = openPositions.reduce((s, p) => s + (p.mkt_value_usd || 0), 0);
-  const totalCost = openPositions.reduce((s, p) => s + (p.cost_basis_usd || 0), 0);
-  const dailyPnl = openPositions.reduce((s, p) => s + (p.daily_pnl_usd || 0), 0);
-
-  const positionsMap = {};
-  for (const p of openPositions) {
-    positionsMap[p.ticker] = { qty: p.qty, mkt_val_usd: Math.round(p.mkt_value_usd * 100) / 100 };
-  }
-
-  // Try to get SPX from BBG prices
-  let spxClose = 0;
-  if (bbgPrices['SPX'] && bbgPrices['SPX'].px_last) spxClose = bbgPrices['SPX'].px_last;
-
-  const snapshot = {
-    date: today,
-    nav: Math.round(totalNav * 100) / 100,
-    cost: Math.round(totalCost * 100) / 100,
-    daily_pnl: Math.round(dailyPnl * 100) / 100,
-    positions: positionsMap,
-    spx_close: spxClose,
-  };
-
-  navHistory.push(snapshot);
-  navHistory.sort((a, b) => a.date.localeCompare(b.date));
-
-  try {
-    const resp = await ghPut(GH_DASH_REPO, GH_NAV_PATH, { snapshots: navHistory }, navHistorySha, 'NAV snapshot ' + today);
-    navHistorySha = resp.content.sha;
-    console.log('[NAV] Saved snapshot for', today, '- NAV:', fmt$(totalNav));
-  } catch (e) {
-    console.error('[NAV] Save failed:', e);
-    navHistory = navHistory.filter(s => s.date !== today);
-  }
-}
-
-// ==================== PRICE LOOKUP ====================
-function buildPriceTable() {
-  const pt = {};
-
-  // 1. BBG prices as base layer
-  for (const [tk, p] of Object.entries(bbgPrices)) {
-    if (tk.startsWith('_')) continue;
-    pt[tk] = {
-      last: p.px_last || 0,
-      prevClose: p.prev_close || p.px_last || 0,
-      ccy: p.currency || 'USD',
-      name: p.name || tk,
-      country: p.country || '',
-      sector: p.sector || '',
-      type: p.asset_class || '',
-    };
-  }
-
-  // 2. IBKR positions: overwrite ONLY the live price
-  if (ibkrData && ibkrData.positions) {
-    for (const p of ibkrData.positions) {
-      const tk = p.ticker;
-      if (!tk) continue;
-      // Skip options — they share ticker root with the underlying ETF (e.g. "BNO")
-      // and would otherwise clobber the ETF's last price with the option premium.
-      if (p.asset_class === 'OPT') continue;
-      if (!pt[tk]) pt[tk] = { last: 0, prevClose: 0, ccy: 'USD', name: tk, country: '', sector: '', type: '' };
-      if (p.mkt_price) pt[tk].last = p.mkt_price;
-      if (!pt[tk].ccy || pt[tk].ccy === 'USD') pt[tk].ccy = p.currency || 'USD';
-      if (!pt[tk].name || pt[tk].name === tk) pt[tk].name = p.name || tk;
-    }
-  }
-
-  // 3. Enrich with ticker_map metadata — ALWAYS prefer ticker_map over IBKR/BBG metadata
-  for (const [tk, info] of Object.entries(tickerMap)) {
-    if (!pt[tk]) continue;
-    if (info.class) pt[tk].type = info.class;
-    if (info.sector && info.sector !== 'nan') pt[tk].sector = info.sector;
-    if (info.geo) pt[tk].country = info.geo;
-    if (info.name) pt[tk].name = info.name;
-    if (info.bbg && /\b(Govt|Corp)\b/i.test(info.bbg)) pt[tk].isBond = true;
-  }
-
-  return pt;
-}
-
-function getFxToUsd(ccy) {
-  if (ccy === 'USD') return 1;
-  const bbgFx = bbgPrices._fx_rates || {};
-  if (bbgFx[ccy + 'USD']) return bbgFx[ccy + 'USD'];
-  if (ibkrFxRates[ccy] && ibkrFxRates.USD) return ibkrFxRates[ccy] / ibkrFxRates.USD;
-  return 1;
-}
-
-// ==================== YTD P&L ====================
-function computeYtdPnl() {
-  const currentYear = new Date().getFullYear().toString();
-  // Only treat a snapshot as YTD base if it's from genuinely early in the year
-  // (first 2 weeks). Otherwise we'd mis-anchor "YTD" to whenever tracking started.
-  const yearStart = currentYear + '-01-01';
-  const earlyYearCutoff = currentYear + '-01-15';
-  const yearStartSnapshot = navHistory.find(s => s.date >= yearStart && s.date <= earlyYearCutoff) || null;
-
-  for (const pos of allPositions) {
-    if (pos.closed) {
-      pos.ytd_pnl_usd = pos.realized_pnl_usd || 0;
-      pos.ytd_pnl_pct = pos.cost_basis_usd > 0 ? pos.ytd_pnl_usd / pos.cost_basis_usd : 0;
-      continue;
-    }
-
-    // Default YTD base: cost basis (correct for positions opened this year)
-    let ytdBase = pos.cost_basis_usd;
-    if (yearStartSnapshot && yearStartSnapshot.positions && yearStartSnapshot.positions[pos.ticker]) {
-      const snap = yearStartSnapshot.positions[pos.ticker];
-      if (snap.qty === pos.qty) {
-        ytdBase = snap.mkt_val_usd || pos.cost_basis_usd;
-      }
-    }
-
-    pos.ytd_pnl_usd = pos.mkt_value_usd - ytdBase;
-    pos.ytd_pnl_pct = ytdBase > 0 ? pos.ytd_pnl_usd / ytdBase : 0;
-  }
-}
-
-// ==================== POSITION ENGINE ====================
-async function loadAllPositions() {
-  ibkrConnected = false;
-  ibkrData = null;
-
-  // Load IBKR data (live or cached)
-  try {
-    const r = await fetch(IBKR_URL + '/portfolio', { signal: AbortSignal.timeout(5000) });
-    if (r.ok) {
-      ibkrData = await r.json();
-      ibkrConnected = ibkrData.authenticated === true;
-      ibkrFxRates = ibkrData.fx_rates || {};
-      try { localStorage.setItem('ibkr_cache', JSON.stringify(ibkrData)); } catch (e) {}
-    }
-  } catch (e) {
-    // Fallback 1: localStorage
-    try {
-      const cached = JSON.parse(localStorage.getItem('ibkr_cache'));
-      if (cached && cached.positions) {
-        ibkrData = cached;
-        ibkrFxRates = cached.fx_rates || {};
-      }
-    } catch (e2) {}
-    // Fallback 2: GitHub snapshot
-    if (!ibkrData && ibkrSnapshot && ibkrSnapshot.positions && ibkrSnapshot.positions.length) {
-      ibkrData = ibkrSnapshot;
-      ibkrFxRates = ibkrSnapshot.fx_rates || {};
-    }
-  }
-
-  // Build unified price table
-  const prices = buildPriceTable();
-
-  // Ensure all held tickers have a price entry (for manual-only tickers)
-  const holdings = {};
-
-  // IBKR positions
-  const ibkrDerivatives = [];  // options handled separately (100x multiplier)
-  if (ibkrData && ibkrData.positions) {
-    for (const p of ibkrData.positions) {
-      const tk = p.ticker;
-      if (!tk) continue;
-      // Options have a 100x contract multiplier and IBKR's mkt_value/avg_cost already
-      // bake that in. Skip the per-share aggregation — use IBKR values directly.
-      if (p.asset_class === 'OPT') {
-        ibkrDerivatives.push(p);
-        continue;
-      }
-      holdings[tk] = holdings[tk] || { ibkrQty: 0, ibkrCost: 0, manualQty: 0, manualCost: 0, ccy: p.currency || 'USD', broker: 'IBKR' };
-      holdings[tk].ibkrQty += p.qty || 0;
-      holdings[tk].ibkrCost += (p.avg_cost || 0) * (p.qty || 0);
-    }
-  }
-
-  // Manual trades
-  for (const t of manualTrades) {
-    const tk = t.ticker;
-    if (!holdings[tk]) holdings[tk] = { ibkrQty: 0, ibkrCost: 0, manualQty: 0, manualCost: 0, ccy: t.currency || 'USD', broker: t.broker || 'UBS' };
-    const qty = parseFloat(t.qty) || 0;
-    const px = parseFloat(t.price) || 0;
-    if (t.side === 'buy') {
-      holdings[tk].manualQty += qty;
-      holdings[tk].manualCost += qty * px;
-    } else {
-      const avgCost = holdings[tk].manualQty > 0 ? holdings[tk].manualCost / holdings[tk].manualQty : px;
-      holdings[tk].manualQty -= qty;
-      holdings[tk].manualCost = holdings[tk].manualQty > 0 ? avgCost * holdings[tk].manualQty : 0;
-
-      // Record manual sell as a closed position (dedupe via trade_key)
-      const tradeKey = t.id || `manual_${tk}_${t.date || ''}_${qty}_${px}`;
-      const alreadyRecorded = closedPositions.some(cp => cp.trade_key === tradeKey);
-      if (!alreadyRecorded) {
-        const ccy = t.currency || holdings[tk].ccy || 'USD';
-        const fxRate = getFxToUsd(ccy);
-        const info = tickerMap[tk];
-        const priceFactor = (info && info.bbg && /\b(Govt|Corp)\b/i.test(info.bbg)) ? 0.01 : 1;
-        const realizedPnl = (px - avgCost) * qty * priceFactor * fxRate;
-        const closeDate = (t.date || new Date().toISOString()).slice(0, 10);
-        closedPositions.push({
-          trade_key: tradeKey,
-          ticker: tk,
-          name: (info && info.name) || t.name || tk,
-          qty_closed: qty,
-          avg_cost: avgCost,
-          close_price: px,
-          realized_pnl: Math.round(realizedPnl * 100) / 100,
-          close_date: closeDate,
-          currency: ccy,
-          price_factor: priceFactor,
-          partial: holdings[tk].manualQty > 0,
-          remaining_qty: Math.max(0, holdings[tk].manualQty),
-          source: 'manual',
-        });
-      }
-    }
-    if (t.broker) holdings[tk].broker = t.broker;
-  }
-
-  // Ensure price entries exist for all held tickers
-  for (const tk of Object.keys(holdings)) {
-    if (!prices[tk]) {
-      prices[tk] = { last: 0, prevClose: 0, ccy: holdings[tk].ccy || 'USD', name: tk, country: '', sector: '', type: '' };
-      if (tickerMap[tk]) {
-        const info = tickerMap[tk];
-        if (info.class) prices[tk].type = info.class;
-        if (info.sector) prices[tk].sector = info.sector;
-        if (info.geo) prices[tk].country = info.geo;
-        if (info.name) prices[tk].name = info.name;
-        if (info.bbg && /\b(Govt|Corp)\b/i.test(info.bbg)) prices[tk].isBond = true;
-      }
-    }
-  }
-
-  // Compute merged position rows
-  allPositions = [];
-  for (const [tk, h] of Object.entries(holdings)) {
-    const totalQty = h.ibkrQty + Math.max(0, h.manualQty);
-    if (totalQty <= 0) continue;
-
-    const totalCostLocal = h.ibkrCost + Math.max(0, h.manualCost);
-    const avgCost = totalCostLocal / totalQty;
-    const p = prices[tk] || {};
-    const last = p.last || avgCost;
-    const prevClose = p.prevClose || last;
-    const ccy = h.ccy;
-    const fx = getFxToUsd(ccy);
-    const priceFactor = p.isBond ? 0.01 : 1;
-
-    const mktValUsd = totalQty * last * priceFactor * fx;
-    const costUsd = totalCostLocal * priceFactor * fx;
-    const unrealPnl = mktValUsd - costUsd;
-    const unrealPct = costUsd > 0 ? unrealPnl / costUsd : 0;
-    const dailyPnl = totalQty * (last - prevClose) * priceFactor * fx;
-    const dailyPct = prevClose > 0 ? (last - prevClose) / prevClose : 0;
-
-    const sources = [];
-    if (h.ibkrQty > 0) sources.push('IBKR');
-    if (h.manualQty > 0) sources.push(h.broker || 'UBS');
-
-    allPositions.push({
-      ticker: tk, name: p.name || tk, qty: totalQty,
-      avg_cost: avgCost, mkt_price: last, prev_close: prevClose,
-      mkt_value_usd: mktValUsd, cost_basis_usd: costUsd,
-      unrealised_pnl_usd: unrealPnl, unrealised_pnl_pct: unrealPct,
-      daily_pnl_usd: dailyPnl, daily_pnl_pct: dailyPct,
-      currency: ccy, country: p.country || '',
-      sector: (p.sector && p.sector !== 'nan') ? p.sector : '',
-      type: p.type || '', sources: sources, closed: false,
-    });
-  }
-
-  // Build snapshot lookup by conid for options prev_close
-  const snapByConid = {};
-  if (ibkrSnapshot && ibkrSnapshot.positions) {
-    for (const sp of ibkrSnapshot.positions) {
-      if (sp.conid) snapByConid[sp.conid] = sp;
-    }
-  }
-
-  // Append derivatives (options) — use IBKR values directly (100x multiplier already baked in)
-  for (const p of ibkrDerivatives) {
-    const fx = getFxToUsd(p.currency || 'USD');
-    const mktValUsd = (p.mkt_value || 0) * fx;
-    const costLocal = (p.avg_cost || 0) * (p.qty || 0);
-    const costUsd = costLocal * fx;
-    const unrealPnl = (p.unrealised_pnl || (p.mkt_value - costLocal) || 0) * fx;
-    const unrealPct = costUsd > 0 ? unrealPnl / costUsd : 0;
-    const snap = snapByConid[p.conid];
-    const prevMktPrice = snap ? (snap.mkt_price || 0) : 0;
-    const curMktPrice = p.mkt_price || 0;
-    // Option mkt_value = qty * mkt_price * 100 (contract multiplier)
-    const optDailyPnl = prevMktPrice > 0 ? (curMktPrice - prevMktPrice) * (p.qty || 0) * 100 * fx : 0;
-    const optDailyPct = prevMktPrice > 0 ? (curMktPrice - prevMktPrice) / prevMktPrice : 0;
-    // Parse IBKR option ticker into clean display form.
-    // e.g. "BNO    JUL2026 60 C [BNO   260717C00060000 100]" -> "BNO Jul26 60C"
-    const rawTk = p.ticker || '';
-    const m = rawTk.match(/^(\S+)\s+(\w{3})(\d{4})\s+([\d.]+)\s+([CP])/i);
-    let displayTk = rawTk;
-    let underlying = '';
-    if (m) {
-      const mon = m[2].charAt(0).toUpperCase() + m[2].slice(1).toLowerCase();
-      const yr = m[3].slice(2);
-      displayTk = `${m[1]} ${mon}${yr} ${m[4]}${m[5].toUpperCase()}`;
-      underlying = m[1];
-    }
-    allPositions.push({
-      ticker: displayTk, name: displayTk,
-      underlying: underlying,
-      qty: p.qty || 0,
-      avg_cost: p.avg_cost || 0,
-      mkt_price: p.mkt_price || 0,
-      prev_close: prevMktPrice || (p.mkt_price || 0),
-      mkt_value_usd: mktValUsd,
-      cost_basis_usd: costUsd,
-      unrealised_pnl_usd: unrealPnl,
-      unrealised_pnl_pct: unrealPct,
-      daily_pnl_usd: optDailyPnl,
-      daily_pnl_pct: optDailyPct,
-      currency: p.currency || 'USD',
-      country: 'US',
-      sector: 'Derivatives',
-      type: 'Options',
-      sources: ['IBKR'],
-      closed: false,
-      is_derivative: true,
-      contract_size: 100,
-      raw_ticker: rawTk,
-      conid: p.conid,
-    });
-  }
-
-  // Append closed positions
-  for (const cp of closedPositions) {
-    const costUsd = cp.avg_cost * cp.qty_closed * (cp.price_factor || 1);
-    allPositions.push({
-      ticker: cp.ticker, name: cp.name || cp.ticker, qty: 0,
-      avg_cost: cp.avg_cost, mkt_price: cp.close_price,
-      mkt_value_usd: 0, cost_basis_usd: costUsd,
-      unrealised_pnl_usd: 0, unrealised_pnl_pct: 0,
-      realized_pnl_usd: cp.realized_pnl,
-      daily_pnl_usd: 0, daily_pnl_pct: 0,
-      currency: cp.currency || 'USD', country: '', sector: '', type: '',
-      sources: ['IBKR'], closed: true, close_date: cp.close_date,
-    });
-  }
-
-  allPositions.sort((a, b) => (b.mkt_value_usd || 0) - (a.mkt_value_usd || 0));
-  computeYtdPnl();
-}
-
-// ==================== RENDER ====================
-function render() {
-  renderConnectionBanner();
-  renderKPIs();
-  renderPositionsTable();
-  renderAllocationCharts();
-  renderBlotter();
-  renderAnalysis();
-  document.getElementById('last-updated').textContent =
-    ibkrData ? 'IBKR: ' + fmtDate(ibkrData.last_updated) : 'Manual data only';
-}
-
-function renderConnectionBanner() {
+// ==================== LOAD ====================
+async function loadAll() {
   const banner = document.getElementById('conn-banner');
   const text = document.getElementById('conn-text');
-  if (ibkrConnected) {
+  banner.className = 'conn-banner offline'; text.textContent = 'Loading...';
+
+  try {
+    const [stateR, histR, tradesR] = await Promise.allSettled([
+      ghFetch(GH_DASH_REPO, STATE_PATH),
+      ghFetch(GH_DASH_REPO, HISTORY_PATH),
+      ghFetch(GH_TRADES_REPO, GH_TRADES_PATH),
+    ]);
+
+    if (stateR.status === 'fulfilled') {
+      state = stateR.value.content;
+    } else {
+      banner.className = 'conn-banner error';
+      text.textContent = 'Failed to load portfolio_state.json — run Bloomberg Enrich first.';
+      return;
+    }
+    history = histR.status === 'fulfilled' ? histR.value.content : null;
+    if (tradesR.status === 'fulfilled') {
+      manualTrades = tradesR.value.content || [];
+      manualTradesSha = tradesR.value.sha;
+    }
+
+    document.getElementById('last-updated').textContent = `Last updated: ${state.last_updated}`;
     banner.className = 'conn-banner connected';
-    text.textContent = 'IBKR Connected \u2014 live data as of ' + fmtDate(ibkrData?.last_updated);
-  } else if (ibkrData) {
-    banner.className = 'conn-banner offline';
-    text.textContent = 'IBKR Offline \u2014 showing cached data from ' + fmtDate(ibkrData?.last_updated);
-  } else {
-    banner.className = 'conn-banner offline';
-    text.textContent = 'IBKR Offline \u2014 showing manual data only';
+    text.textContent = `Loaded ${state.open_positions.length} open + ${state.closed_positions.length} closed positions  |  Reconciliation: from journal (single source of truth)`;
+
+    renderOverview();
+    renderCash();
+    renderClosed();
+    renderBlotter();
+    renderAnalysis();
+  } catch (e) {
+    banner.className = 'conn-banner error';
+    text.textContent = `Load failed: ${e.message}`;
+    console.error(e);
   }
 }
 
-function renderKPIs() {
-  const openPositions = allPositions.filter(p => !p.closed);
-  const totalNav = openPositions.reduce((s, p) => s + (p.mkt_value_usd || 0), 0);
-  const totalCost = openPositions.reduce((s, p) => s + (p.cost_basis_usd || 0), 0);
-  const totalUnreal = openPositions.reduce((s, p) => s + (p.unrealised_pnl_usd || 0), 0);
-  const unrealPct = totalCost > 0 ? totalUnreal / totalCost : 0;
-
-  const dailyPnl = openPositions.reduce((s, p) => s + (p.daily_pnl_usd || 0), 0);
-  const dailyPct = totalNav > 0 ? dailyPnl / (totalNav - dailyPnl) : 0;
-
-  const totalRealized = closedPositions.reduce((s, cp) => s + (cp.realized_pnl || 0), 0);
-  const ytdPnl = allPositions.reduce((s, p) => s + (p.ytd_pnl_usd || 0), 0);
-  const ytdPct = totalCost > 0 ? ytdPnl / totalCost : 0;
-
-  const cards = [
-    { label: 'Total NAV (USD)', value: fmt$(totalNav) },
-    { label: 'Daily P&L', value: `${fmt$(dailyPnl)} (${fmtPct(dailyPct)})`, cls: pnlClass(dailyPnl) },
-    { label: 'Unrealised P&L', value: `${fmt$(totalUnreal)} (${fmtPct(unrealPct)})`, cls: pnlClass(totalUnreal) },
-    { label: 'YTD P&L', value: `${fmt$(ytdPnl)} (${fmtPct(ytdPct)})`, cls: pnlClass(ytdPnl) },
-    { label: 'Realised P&L', value: fmt$(totalRealized), cls: pnlClass(totalRealized) },
-  ];
-
-  document.getElementById('kpi-row').innerHTML = cards.map(c =>
-    `<div class="snap-card"><div class="label">${c.label}</div><div class="value ${c.cls || ''}">${c.value}</div></div>`
-  ).join('');
+// ==================== TAB SWITCH ====================
+function switchTab(name, btn) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  ['overview', 'cash', 'closed', 'blotter', 'analysis'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('hidden', t !== name);
+  });
+  if (name === 'analysis' && history) renderAnalysis();
 }
 
-// ==================== COLUMN DEFINITIONS ====================
-const ALL_COLUMNS = [
-  { key: 'ticker',     label: 'Ticker',          field: 'ticker',              type: 'string', align: 'left',  default: true,  render: p => `<td style="text-align:left; font-weight:600;">${p.ticker}</td>` },
-  { key: 'name',       label: 'Name',            field: 'name',               type: 'string', align: 'left',  default: true,  render: p => `<td style="text-align:left; color:var(--text-dim); max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${p.name || ''}">${p.name || ''}</td>` },
-  { key: 'qty',        label: 'Qty',             field: 'qty',                type: 'number', align: 'right', default: true,  render: p => `<td>${fmtNum(p.qty, 0)}</td>` },
-  { key: 'avg_cost',   label: 'Avg Cost',        field: 'avg_cost',           type: 'number', align: 'right', default: true,  render: p => `<td>${fmtNum(p.avg_cost, 2)}</td>` },
-  { key: 'last',       label: 'Last',            field: 'mkt_price',          type: 'number', align: 'right', default: true,  render: p => `<td>${fmtNum(p.mkt_price, 2)}</td>` },
-  { key: 'mkt_val',    label: 'Mkt Val (USD)',   field: 'mkt_value_usd',      type: 'number', align: 'right', default: true,  render: p => `<td>${p.closed ? '--' : fmtNum(p.mkt_value_usd/1000, 1) + 'k'}</td>` },
-  { key: 'daily_pnl',  label: 'Daily P&L',       field: 'daily_pnl_usd',      type: 'number', align: 'right', default: true,  render: p => { if (p.closed) return '<td>--</td>'; return `<td><span class="${pnlClass(p.daily_pnl_usd)}">${fmt$(p.daily_pnl_usd)}</span> <span class="${pnlClass(p.daily_pnl_pct)}" style="opacity:0.7">(${fmtPct(p.daily_pnl_pct)})</span></td>`; } },
-  { key: 'unreal_pnl', label: 'Unrealised P&L',  field: 'unrealised_pnl_usd', type: 'number', align: 'right', default: true,  render: p => { if (p.closed) return `<td><span class="${pnlClass(p.realized_pnl_usd)}">${fmt$(p.realized_pnl_usd)}</span> <span style="opacity:0.7;color:var(--amber)">closed</span></td>`; return `<td><span class="${pnlClass(p.unrealised_pnl_usd)}">${fmt$(p.unrealised_pnl_usd)}</span> <span class="${pnlClass(p.unrealised_pnl_pct)}" style="opacity:0.7">(${fmtPct(p.unrealised_pnl_pct)})</span></td>`; } },
-  { key: 'ytd_pnl',    label: 'YTD P&L',         field: 'ytd_pnl_usd',        type: 'number', align: 'right', default: true,  render: p => `<td><span class="${pnlClass(p.ytd_pnl_usd)}">${fmt$(p.ytd_pnl_usd)}</span> <span class="${pnlClass(p.ytd_pnl_pct)}" style="opacity:0.7">(${fmtPct(p.ytd_pnl_pct)})</span></td>` },
-  // Optional columns
-  { key: 'type',       label: 'Asset Class',     field: 'type',               type: 'string', align: 'left',  default: false, render: p => `<td style="text-align:left">${p.type || '--'}</td>` },
-  { key: 'sector',     label: 'Sector',          field: 'sector',             type: 'string', align: 'left',  default: false, render: p => `<td style="text-align:left">${p.sector || '--'}</td>` },
-  { key: 'country',    label: 'Country',         field: 'country',            type: 'string', align: 'left',  default: false, render: p => `<td style="text-align:left">${p.country || '--'}</td>` },
-  { key: 'currency',   label: 'Currency',        field: 'currency',           type: 'string', align: 'left',  default: false, render: p => `<td style="text-align:left">${p.currency || '--'}</td>` },
-  { key: 'source',     label: 'Source',           field: 'sources',            type: 'string', align: 'left',  default: false, render: p => `<td style="text-align:left">${(p.sources || []).join(', ') || '--'}</td>` },
-  { key: 'cost_basis', label: 'Cost Basis',      field: 'cost_basis_usd',     type: 'number', align: 'right', default: false, render: p => `<td>${fmtNum(p.cost_basis_usd/1000, 1)}k</td>` },
+// ==================== FORMATTERS ====================
+const fmt$  = v => (v == null || isNaN(v)) ? '—' : (v < 0 ? '−' : '') + '$' + Math.abs(Math.round(v)).toLocaleString();
+const fmt$2 = v => (v == null || isNaN(v)) ? '—' : (v < 0 ? '−$' : '$') + Math.abs(v).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmtPct = v => (v == null || isNaN(v)) ? '—' : (v >= 0 ? '+' : '') + (v * 100).toFixed(2) + '%';
+const fmtQty = v => (v == null || isNaN(v)) ? '—' : Math.round(v).toLocaleString();
+const fmtPx  = (v, p = 4) => (v == null || isNaN(v)) ? '—' : v.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: p });
+const pnlClass = v => v > 0 ? 'pnl-pos' : v < 0 ? 'pnl-neg' : 'pnl-zero';
+
+// ==================== OVERVIEW ====================
+function renderOverview() {
+  const s = state.summary;
+  const kpis = [
+    { label: 'Total NAV', value: fmt$(s.nav_total_usd) },
+    { label: 'Securities', value: fmt$(s.nav_securities_usd) },
+    { label: 'Cash', value: fmt$(s.cash_usd) },
+    { label: 'Cost Basis', value: fmt$(s.cost_basis_usd) },
+    { label: 'Unrealised', value: `<span class="${pnlClass(s.unrealised_pnl_usd)}">${fmt$(s.unrealised_pnl_usd)} (${fmtPct(s.unrealised_pnl_pct)})</span>` },
+    { label: 'Realised 2026', value: `<span class="${pnlClass(s.realized_pnl_2026_usd)}">${fmt$(s.realized_pnl_2026_usd)}</span>` },
+    { label: 'YTD P&L', value: `<span class="${pnlClass(s.ytd_pnl_usd)}">${fmt$(s.ytd_pnl_usd)}</span>` },
+    { label: 'Daily P&L', value: `<span class="${pnlClass(s.daily_pnl_usd)}">${fmt$(s.daily_pnl_usd)}</span>` },
+  ];
+  document.getElementById('kpi-row').innerHTML = kpis.map(k => `<div class="snap-card"><div class="label">${k.label}</div><div class="value">${k.value}</div></div>`).join('');
+
+  renderPositionsTable();
+  renderAllocationCharts();
+}
+
+const POS_COLS = [
+  { key: 'ticker',          label: 'Ticker',      render: p => `<td><span class="ticker-cell">${p.ticker}</span><div class="small-cell">${(p.name || '').slice(0,30)}</div></td>` },
+  { key: 'broker',          label: 'Broker',      render: p => `<td>${formatBrokers(p.by_broker)}</td>` },
+  { key: 'qty',             label: 'Qty',         render: p => `<td>${fmtQty(p.qty)}</td>` },
+  { key: 'avg_cost',        label: 'Avg Cost',    render: p => `<td>${fmtPx(p.avg_cost)} ${p.currency}</td>` },
+  { key: 'mkt_price',       label: 'Last',        render: p => `<td>${fmtPx(p.mkt_price)} ${p.currency}</td>` },
+  { key: 'mkt_value_usd',   label: 'Mkt Val USD', render: p => `<td>${fmt$(p.mkt_value_usd)}</td>` },
+  { key: 'unrealised_pnl_usd', label: 'Unrl P&L', render: p => `<td><span class="${pnlClass(p.unrealised_pnl_usd)}">${fmt$(p.unrealised_pnl_usd)}<br><span class="small-cell ${pnlClass(p.unrealised_pnl_pct)}">${fmtPct(p.unrealised_pnl_pct)}</span></span></td>` },
+  { key: 'daily_pnl_usd',   label: 'Daily P&L',   render: p => `<td><span class="${pnlClass(p.daily_pnl_usd)}">${fmt$(p.daily_pnl_usd)}<br><span class="small-cell ${pnlClass(p.daily_pnl_pct)}">${fmtPct(p.daily_pnl_pct)}</span></span></td>` },
+  { key: 'chg_pct_ytd',     label: 'Ticker YTD',  render: p => `<td><span class="${pnlClass(p.chg_pct_ytd)}">${p.chg_pct_ytd ? p.chg_pct_ytd.toFixed(2) + '%' : '—'}</span></td>` },
+  { key: 'asset_class',     label: 'Type',        render: p => `<td>${p.asset_class || '—'}</td>` },
+  { key: 'sector',          label: 'Sector',      render: p => `<td>${p.sector || '—'}</td>` },
 ];
 
-// Load visible columns from localStorage
-let visibleColumns = JSON.parse(localStorage.getItem('portfolio_columns') || 'null') || ALL_COLUMNS.filter(c => c.default).map(c => c.key);
-
-function toggleColPicker(e) {
-  e.stopPropagation();
-  const menu = document.getElementById('col-picker-menu');
-  const isHidden = menu.classList.contains('hidden');
-  menu.classList.toggle('hidden');
-  if (isHidden) {
-    menu.innerHTML = ALL_COLUMNS.map(c => {
-      const checked = visibleColumns.includes(c.key) ? 'checked' : '';
-      const disabled = (c.key === 'ticker') ? 'disabled' : '';
-      return `<label class="col-picker-item"><input type="checkbox" ${checked} ${disabled} onchange="toggleColumn('${c.key}', this.checked)"> ${c.label}</label>`;
-    }).join('');
-    // Close on outside click
-    setTimeout(() => document.addEventListener('click', closeColPicker, { once: true }), 0);
-  }
-}
-
-function closeColPicker() { document.getElementById('col-picker-menu').classList.add('hidden'); }
-
-function toggleColumn(key, on) {
-  if (on && !visibleColumns.includes(key)) visibleColumns.push(key);
-  if (!on) visibleColumns = visibleColumns.filter(k => k !== key);
-  localStorage.setItem('portfolio_columns', JSON.stringify(visibleColumns));
-  renderPositionsTable();
-}
-
-// ==================== SORTABLE TABLE ====================
-function doSort(col) {
-  const colDef = ALL_COLUMNS.find(c => c.key === col);
-  if (!colDef) return;
-  if (sortColumn === colDef.field) {
-    sortAscending = !sortAscending;
-  } else {
-    sortColumn = colDef.field;
-    sortAscending = colDef.type === 'string';
-  }
-  renderPositionsTable();
-}
-
-function sortArrow(col) {
-  const colDef = ALL_COLUMNS.find(c => c.key === col);
-  if (!colDef || sortColumn !== colDef.field) return '';
-  return `<span class="sort-arrow">${sortAscending ? '\u25B2' : '\u25BC'}</span>`;
+function formatBrokers(by) {
+  if (!by) return '—';
+  return Object.entries(by).map(([b, q]) => `${b}: ${fmtQty(q)}`).join('<br>');
 }
 
 function renderPositionsTable() {
-  let positions;
-  if (positionFilter === 'closed') {
-    positions = allPositions.filter(p => p.closed);
-  } else if (positionFilter === 'derivatives') {
-    positions = allPositions.filter(p => !p.closed && p.is_derivative && p.qty !== 0);
-  } else {
-    positions = allPositions.filter(p => !p.closed && !p.is_derivative && p.qty > 0);
-  }
-
-  // Dynamic sort
+  const positions = [...state.open_positions];
   positions.sort((a, b) => {
-    let av = a[sortColumn] ?? 0;
-    let bv = b[sortColumn] ?? 0;
-    if (Array.isArray(av)) av = av.join(',');
-    if (Array.isArray(bv)) bv = bv.join(',');
-    const cmp = typeof av === 'string' ? String(av).localeCompare(String(bv)) : (av - bv);
-    return sortAscending ? cmp : -cmp;
+    const va = a[sortColumn], vb = b[sortColumn];
+    if (typeof va === 'string') return sortAscending ? va.localeCompare(vb) : vb.localeCompare(va);
+    return sortAscending ? (va || 0) - (vb || 0) : (vb || 0) - (va || 0);
   });
-
-  const cols = ALL_COLUMNS.filter(c => visibleColumns.includes(c.key));
-
-  const hdr = `<table class="vol-table" id="pos-table">
-    <thead><tr>` + cols.map(c => {
-      const style = c.align === 'left' ? 'style="text-align:left"' : '';
-      return `<th class="sortable resizable" onclick="doSort('${c.key}')" ${style}>${c.label}${sortArrow(c.key)}<div class="col-resize-handle" onmousedown="startResize(event, this)"></div></th>`;
-    }).join('') + `</tr></thead><tbody>`;
-
-  const rows = positions.map(p =>
-    '<tr>' + cols.map(c => c.render(p)).join('') + '</tr>'
-  ).join('');
-
-  document.getElementById('positions-table-wrap').innerHTML = hdr + rows + '</tbody></table>';
+  const arrow = c => c === sortColumn ? (sortAscending ? ' ▲' : ' ▼') : '';
+  const head = POS_COLS.map(c => `<th onclick="sortPositions('${c.key}')">${c.label}${arrow(c.key)}</th>`).join('');
+  const rows = positions.map(p => `<tr>${POS_COLS.map(c => c.render(p)).join('')}</tr>`).join('');
+  document.getElementById('positions-table-wrap').innerHTML = `<table class="vol-table"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table>`;
 }
 
-// ==================== COLUMN RESIZE ====================
-let resizeCol = null, resizeStartX = 0, resizeStartW = 0;
-
-function startResize(e, handle) {
-  e.stopPropagation();
-  e.preventDefault();
-  const th = handle.parentElement;
-  resizeCol = th;
-  resizeStartX = e.clientX;
-  resizeStartW = th.offsetWidth;
-  handle.classList.add('active');
-  document.addEventListener('mousemove', doResize);
-  document.addEventListener('mouseup', stopResize);
-}
-
-function doResize(e) {
-  if (!resizeCol) return;
-  const diff = e.clientX - resizeStartX;
-  resizeCol.style.width = Math.max(40, resizeStartW + diff) + 'px';
-  resizeCol.style.minWidth = Math.max(40, resizeStartW + diff) + 'px';
-}
-
-function stopResize() {
-  if (resizeCol) {
-    const handle = resizeCol.querySelector('.col-resize-handle');
-    if (handle) handle.classList.remove('active');
-  }
-  resizeCol = null;
-  document.removeEventListener('mousemove', doResize);
-  document.removeEventListener('mouseup', stopResize);
+function sortPositions(col) {
+  if (sortColumn === col) sortAscending = !sortAscending;
+  else { sortColumn = col; sortAscending = false; }
+  renderPositionsTable();
 }
 
 function renderAllocationCharts() {
-  const open = allPositions.filter(p => !p.closed && p.qty > 0);
-  const donutLayout = {
-    ...plotlyLayout,
-    height: 260,
-    margin: { t: 5, b: 5, l: 5, r: 5 },
+  const groupSum = (key) => {
+    const m = {};
+    for (const p of state.open_positions) {
+      const k = p[key] || 'Unknown';
+      m[k] = (m[k] || 0) + (p.mkt_value_usd || 0);
+    }
+    return m;
   };
-  const colors = ['#6c63ff', '#22c55e', '#f59e0b', '#ef4444', '#3b82f6', '#ec4899', '#14b8a6', '#a855f7', '#64748b'];
+  const drawPie = (id, dataMap) => {
+    const labels = Object.keys(dataMap);
+    const values = Object.values(dataMap);
+    Plotly.newPlot(id, [{
+      type: 'pie', labels, values, hole: 0.45,
+      textinfo: 'label+percent', textposition: 'auto',
+      hovertemplate: '%{label}<br>$%{value:,.0f}<br>%{percent}<extra></extra>',
+    }], { paper_bgcolor: 'transparent', plot_bgcolor: 'transparent', font: { color: '#e1e4ed', size: 10 }, showlegend: false, margin: { t: 0, b: 0, l: 0, r: 0 }, height: 280 }, { displayModeBar: false, responsive: true });
+  };
 
-  function makeDonut(containerId, drillId, labelsValues, groupField) {
-    const labels = Object.keys(labelsValues);
-    const values = Object.values(labelsValues);
-    const el = document.getElementById(containerId);
-    Plotly.newPlot(containerId, [{
-      type: 'pie', hole: 0.55, labels, values,
-      marker: { colors: colors.slice(0, labels.length) },
-      textinfo: 'label+percent', textfont: { size: 10, color: '#8b8fa3' },
-      hoverinfo: 'label+value+percent',
-    }], donutLayout, plotlyConfig);
-
-    // Click handler for drill-down
-    el.removeAllListeners && el.removeAllListeners('plotly_click');
-    el.on('plotly_click', function(data) {
-      if (!data.points || !data.points.length) return;
-      const clickedLabel = data.points[0].label;
-      showDrillDown(drillId, clickedLabel, groupField, open);
-    });
+  drawPie('chart-type', groupSum('asset_class'));
+  drawPie('chart-currency', groupSum('currency'));
+  drawPie('chart-country', groupSum('country'));
+  // By broker
+  const brokerMap = {};
+  for (const p of state.open_positions) {
+    const by = p.by_broker || {};
+    const total = Object.values(by).reduce((a, b) => a + b, 0) || 1;
+    for (const [b, q] of Object.entries(by)) {
+      brokerMap[b] = (brokerMap[b] || 0) + (p.mkt_value_usd || 0) * (q / total);
+    }
   }
-
-  const byType = {};
-  open.forEach(p => { const k = p.type || 'Other'; byType[k] = (byType[k] || 0) + (p.mkt_value_usd || 0); });
-  makeDonut('chart-type', 'drill-type', byType, 'type');
-
-  const byCountry = {};
-  open.forEach(p => { const k = p.country || 'N/A'; byCountry[k] = (byCountry[k] || 0) + (p.mkt_value_usd || 0); });
-  makeDonut('chart-country', 'drill-country', byCountry, 'country');
-
-  const byCcy = {};
-  open.forEach(p => { const k = p.currency || 'USD'; byCcy[k] = (byCcy[k] || 0) + (p.mkt_value_usd || 0); });
-  makeDonut('chart-currency', 'drill-currency', byCcy, 'currency');
-
-  const bySource = {};
-  open.forEach(p => {
-    const sources = p.sources || ['manual'];
-    const val = (p.mkt_value_usd || 0) / sources.length;
-    sources.forEach(s => { bySource[s] = (bySource[s] || 0) + val; });
-  });
-  makeDonut('chart-source', 'drill-source', bySource, '_source');
+  drawPie('chart-broker', brokerMap);
 }
 
-function showDrillDown(drillId, label, groupField, positions) {
-  // Find matching positions
-  let matches;
-  if (groupField === '_source') {
-    matches = positions.filter(p => (p.sources || []).includes(label));
-  } else {
-    matches = positions.filter(p => (p[groupField] || (groupField === 'type' ? 'Other' : 'N/A')) === label);
-  }
-  matches.sort((a, b) => (b.mkt_value_usd || 0) - (a.mkt_value_usd || 0));
+// ==================== CASH ====================
+function renderCash() {
+  const cash = state.cash || { by_currency: {}, total_usd: 0 };
+  const items = Object.entries(cash.by_currency || {}).map(([k, v]) => ({ key: k, ...v }));
+  const totalUsd = cash.total_usd || 0;
+  document.getElementById('cash-kpi').innerHTML = [
+    { label: 'Cash Total (USD)', value: fmt$(totalUsd) },
+    { label: 'Currencies', value: items.length },
+  ].map(k => `<div class="snap-card"><div class="label">${k.label}</div><div class="value">${k.value}</div></div>`).join('');
 
-  const totalVal = matches.reduce((s, p) => s + (p.mkt_value_usd || 0), 0);
+  const rows = items.sort((a, b) => Math.abs(b.amount_usd || 0) - Math.abs(a.amount_usd || 0)).map(c => `
+    <tr>
+      <td><span class="ticker-cell">${c.source || c.key}</span></td>
+      <td>${c.currency}</td>
+      <td>${fmtPx(c.amount, 2)}</td>
+      <td>${fmt$(c.amount_usd)}</td>
+    </tr>`).join('');
+  document.getElementById('cash-table-wrap').innerHTML = `<table class="vol-table"><thead><tr><th>Source</th><th>CCY</th><th>Amount</th><th>USD Equiv</th></tr></thead><tbody>${rows || '<tr><td colspan="4" class="no-data">No cash data</td></tr>'}</tbody></table>`;
+}
 
-  const rows = matches.map(p => {
-    const pct = totalVal > 0 ? ((p.mkt_value_usd / totalVal) * 100).toFixed(1) : '0.0';
-    return `<tr>
-      <td>${p.ticker}</td>
-      <td style="color:var(--text-dim)">${(p.name || '').slice(0, 20)}</td>
-      <td>${fmt$(p.mkt_value_usd)}</td>
-      <td>${pct}%</td>
-    </tr>`;
-  }).join('');
+// ==================== CLOSED ====================
+function renderClosed() {
+  const cls = state.closed_positions || [];
+  const realized2026 = cls.filter(c => c.sell_date >= '2026-01-01').reduce((s, c) => s + (c.realized_pnl_usd || 0), 0);
+  const winners = cls.filter(c => c.realized_pnl_usd > 0).length;
+  const losers = cls.filter(c => c.realized_pnl_usd < 0).length;
+  document.getElementById('closed-kpi').innerHTML = [
+    { label: 'Realised 2026', value: `<span class="${pnlClass(realized2026)}">${fmt$(realized2026)}</span>` },
+    { label: 'Winners', value: winners },
+    { label: 'Losers', value: losers },
+    { label: 'Win Rate', value: cls.length ? Math.round(winners / cls.length * 100) + '%' : '—' },
+  ].map(k => `<div class="snap-card"><div class="label">${k.label}</div><div class="value">${k.value}</div></div>`).join('');
 
-  const el = document.getElementById(drillId);
-  el.innerHTML = `<div class="drill-panel">
-    <button class="drill-close" onclick="document.getElementById('${drillId}').innerHTML=''">&times;</button>
-    <h4>${label} &mdash; ${matches.length} positions (${fmt$(totalVal)})</h4>
-    <table class="drill-table">${rows}</table>
-  </div>`;
+  const sorted = [...cls].sort((a, b) => (b.sell_date || '').localeCompare(a.sell_date || ''));
+  const rows = sorted.map(c => `
+    <tr>
+      <td><span class="ticker-cell">${c.ticker}</span><div class="small-cell">${(c.name || '').slice(0,30)}</div></td>
+      <td>${c.broker_sell || '—'}</td>
+      <td>${c.buy_date || '—'}</td>
+      <td>${c.sell_date || '—'}</td>
+      <td>${fmtQty(c.qty_closed)}</td>
+      <td>${fmtPx(c.buy_price)} ${c.currency}</td>
+      <td>${fmtPx(c.sell_price)} ${c.currency}</td>
+      <td><span class="${pnlClass(c.realized_pnl_usd)}">${fmt$(c.realized_pnl_usd)}</span></td>
+      <td><span class="${pnlClass(c.realized_pnl_local)}">${c.buy_price > 0 ? fmtPct((c.sell_price - c.buy_price) / c.buy_price) : '—'}</span></td>
+    </tr>`).join('');
+  document.getElementById('closed-table-wrap').innerHTML = `<table class="vol-table"><thead><tr><th>Ticker</th><th>Broker</th><th>Buy</th><th>Sell</th><th>Qty</th><th>Buy Px</th><th>Sell Px</th><th>P&L USD</th><th>%</th></tr></thead><tbody>${rows || '<tr><td colspan="9" class="no-data">No closed trades</td></tr>'}</tbody></table>`;
 }
 
 // ==================== BLOTTER ====================
-function renderBlotter() {
-  const list = document.getElementById('manual-trades-list');
-  const empty = document.getElementById('manual-trades-empty');
-
-  if (!manualTrades.length) {
-    list.innerHTML = '';
-    empty.classList.remove('hidden');
-    return;
-  }
-
-  empty.classList.add('hidden');
-  const sorted = [...manualTrades].reverse();
-  list.innerHTML = sorted.map((t, i) => {
-    const realIdx = manualTrades.length - 1 - i;
-    const sideColor = t.side === 'buy' ? 'var(--green)' : (t.side === 'sell' ? 'var(--red)' : 'var(--amber)');
-    const broker = t.broker ? ' @' + t.broker : '';
-    const dateStr = t.date ? new Date(t.date).toLocaleDateString() : '';
-    return `<div class="trade-item">
-      <div>
-        <span style="color:${sideColor}; font-weight:600; text-transform:uppercase;">${t.side}</span>
-        ${t.qty || ''} <span style="font-weight:600;">${t.ticker}</span>
-        ${t.price ? '@ ' + fmtNum(t.price) : ''}
-        ${t.currency && t.currency !== 'USD' ? t.currency : ''}
-        <span style="color:var(--text-dim);">${broker}</span>
-        <span style="color:var(--text-dim); margin-left:8px;">${dateStr}</span>
-      </div>
-      <button class="del-btn" onclick="deleteTrade(${realIdx})" title="Delete">&times;</button>
-    </div>`;
-  }).join('');
+function parseTrade(input) {
+  const s = input.trim().toLowerCase();
+  const m = s.match(/^(buy|sell)\s+(\d+(?:\.\d+)?)\s+([a-z0-9._-]+)\s+(?:at|@)\s+(\d+(?:\.\d+)?)/i);
+  if (!m) return null;
+  return { side: m[1], qty: parseFloat(m[2]), ticker: m[3].toUpperCase(), price: parseFloat(m[4]) };
 }
 
 async function submitTrade() {
-  const input = document.getElementById('blotter-input');
   const status = document.getElementById('blotter-status');
-  const raw = input.value.trim();
-  if (!raw) return;
+  const input = document.getElementById('blotter-input');
+  const parsed = parseTrade(input.value);
+  if (!parsed) { status.textContent = 'Could not parse. Use "buy 100 VOO at 500"'; status.style.color = 'var(--red)'; return; }
+  const trade = {
+    id: `manual_${parsed.ticker}_${Date.now()}`,
+    ticker: parsed.ticker,
+    bbg_ticker: `${parsed.ticker} US Equity`,  // user can edit later if non-US
+    side: parsed.side,
+    qty: parsed.qty,
+    price: parsed.price,
+    currency: 'USD',
+    broker: 'UBS',
+    asset_class: 'STK',
+    date: new Date().toISOString().slice(0, 10),
+  };
+  status.textContent = 'Saving...'; status.style.color = 'var(--text-dim)';
+  try {
+    const list = (manualTrades || []).slice();
+    list.push(trade);
+    const r = await ghPut(GH_TRADES_REPO, GH_TRADES_PATH, list, manualTradesSha, `Add: ${trade.side} ${trade.qty} ${trade.ticker} @ ${trade.price}`);
+    manualTrades = list;
+    manualTradesSha = r.content.sha;
+    input.value = '';
+    status.textContent = `Added ${trade.side} ${trade.qty} ${trade.ticker} @ ${trade.price}. Run Bloomberg Enrich to refresh dashboard.`;
+    status.style.color = 'var(--green)';
+    renderBlotter();
+  } catch (e) {
+    status.textContent = `Failed: ${e.message}`;
+    status.style.color = 'var(--red)';
+  }
+}
 
-  const trade = parseTrade(raw);
-  if (!trade) {
-    status.innerHTML = '<span style="color:var(--red)">Could not parse. Try: buy 100 AAPL at 185.50</span>';
+function renderBlotter() {
+  const list = manualTrades || [];
+  if (!list.length) {
+    document.getElementById('manual-trades-list').innerHTML = '<div class="no-data">No manual trades yet</div>';
     return;
   }
-
-  status.innerHTML = '<span class="spinner"></span> Saving...';
-  document.getElementById('blotter-submit').disabled = true;
-
-  try {
-    const { content, sha } = await ghGet(GH_TRADES_REPO, GH_TRADES_PATH);
-    manualTrades = content || [];
-    manualTrades.push(trade);
-    await ghPut(GH_TRADES_REPO, GH_TRADES_PATH, manualTrades, sha, `Add trade: ${trade.side} ${trade.qty} ${trade.ticker}`);
-    input.value = '';
-    status.innerHTML = '<span style="color:var(--green)">Trade saved.</span>';
-    await loadAllPositions();
-    render();
-  } catch (e) {
-    status.innerHTML = `<span style="color:var(--red)">Error: ${e.message}</span>`;
-  }
-  document.getElementById('blotter-submit').disabled = false;
+  const sorted = [...list].reverse();
+  const rows = sorted.map((t, idx) => {
+    const realIdx = list.length - 1 - idx;
+    const sideColor = t.side === 'buy' ? 'var(--green)' : 'var(--red)';
+    return `<tr>
+      <td>${(t.date || '').slice(0,10)}</td>
+      <td><span style="color:${sideColor};font-weight:600">${(t.side || '').toUpperCase()}</span></td>
+      <td>${fmtQty(t.qty)}</td>
+      <td><span class="ticker-cell">${t.ticker}</span></td>
+      <td>${fmtPx(t.price)}</td>
+      <td>${t.broker || 'UBS'}</td>
+      <td><button class="header-btn" onclick="deleteTrade(${realIdx})">×</button></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('manual-trades-list').innerHTML = `<table class="vol-table"><thead><tr><th>Date</th><th>Side</th><th>Qty</th><th>Ticker</th><th>Price</th><th>Broker</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 async function deleteTrade(idx) {
-  if (idx < 0 || idx >= manualTrades.length) return;
-  const t = manualTrades[idx];
-  if (!confirm(`Delete: ${t.side} ${t.qty} ${t.ticker}?`)) return;
-
+  if (!confirm('Delete this trade?')) return;
+  const list = manualTrades.slice();
+  list.splice(idx, 1);
   try {
-    const { content, sha } = await ghGet(GH_TRADES_REPO, GH_TRADES_PATH);
-    manualTrades = content || [];
-    manualTrades.splice(idx, 1);
-    await ghPut(GH_TRADES_REPO, GH_TRADES_PATH, manualTrades, sha, 'Delete trade');
-    await loadAllPositions();
-    render();
-  } catch (e) {
-    alert('Delete failed: ' + e.message);
-  }
-}
-
-function parseTrade(raw) {
-  const s = raw.trim();
-  let broker = '';
-  const brokerMatch = s.match(/@(\w+)\s*$/);
-  if (brokerMatch) broker = brokerMatch[1];
-  const cleaned = s.replace(/@\w+\s*$/, '').trim();
-
-  const closeMatch = cleaned.match(/^close\s+([A-Z0-9.]+)/i);
-  if (closeMatch) {
-    return { side: 'close', ticker: closeMatch[1].toUpperCase(), qty: 0, price: 0, currency: 'USD', broker, date: new Date().toISOString() };
-  }
-
-  const m = cleaned.match(/^(buy|sell)\s+([\d,.]+)\s+([A-Z0-9.]+)\s+(?:at|@)\s+([\d,.]+)\s*([A-Z]{3})?/i);
-  if (!m) return null;
-
-  return {
-    side: m[1].toLowerCase(),
-    qty: parseFloat(m[2].replace(/,/g, '')),
-    ticker: m[3].toUpperCase(),
-    price: parseFloat(m[4].replace(/,/g, '')),
-    currency: m[5] || 'USD',
-    broker,
-    date: new Date().toISOString(),
-  };
+    const r = await ghPut(GH_TRADES_REPO, GH_TRADES_PATH, list, manualTradesSha, 'Delete trade');
+    manualTrades = list; manualTradesSha = r.content.sha;
+    renderBlotter();
+  } catch (e) { alert('Delete failed: ' + e.message); }
 }
 
 // ==================== ANALYSIS ====================
-function renderAnalysis() {
-  renderWinnersLosers();
-  renderNavChart();
-  renderPerfChart();
-  renderDrawdownChart();
-  renderHeatmap();
+function setNavRange(range, btn) {
+  navRange = range;
+  document.querySelectorAll('#tab-analysis .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAnalysis();
 }
 
-function renderWinnersLosers() {
-  const open = allPositions.filter(p => !p.closed && p.qty > 0 && p.unrealised_pnl_pct != null);
-  if (!open.length) {
-    document.getElementById('chart-winloss').innerHTML = '<div class="no-data">No positions to display.</div>';
+function filteredHistory() {
+  if (!history || !history.snapshots) return [];
+  const snaps = history.snapshots;
+  if (navRange === 'YTD' || navRange === 'ALL') return snaps;
+  const now = new Date(snaps[snaps.length - 1].date);
+  const cutoff = new Date(now);
+  if (navRange === '1M') cutoff.setMonth(cutoff.getMonth() - 1);
+  if (navRange === '3M') cutoff.setMonth(cutoff.getMonth() - 3);
+  return snaps.filter(s => new Date(s.date) >= cutoff);
+}
+
+function renderAnalysis() {
+  if (!history) {
+    document.getElementById('chart-nav').innerHTML = '<div class="no-data">No NAV history yet — run Bloomberg Enrich</div>';
     return;
   }
+  const snaps = filteredHistory();
+  if (!snaps.length) return;
 
-  const sorted = [...open].sort((a, b) => (a.unrealised_pnl_pct || 0) - (b.unrealised_pnl_pct || 0));
-  const tickers = sorted.map(p => p.ticker);
-  const pcts = sorted.map(p => (p.unrealised_pnl_pct || 0) * 100);
-  const barColors = pcts.map(v => v >= 0 ? '#22c55e' : '#ef4444');
+  const dates = snaps.map(s => s.date);
+  const navs = snaps.map(s => s.nav_securities_usd);
+  const totalPnl = snaps.map(s => s.total_pnl_ytd_usd);
+  const realised = snaps.map(s => s.realized_pnl_ytd_usd);
+  const unreal = snaps.map(s => s.unrealised_pnl_usd);
 
+  // NAV
+  Plotly.newPlot('chart-nav', [{
+    x: dates, y: navs, type: 'scatter', mode: 'lines', line: { color: '#6c63ff', width: 2 }, fill: 'tozeroy', fillcolor: 'rgba(108,99,255,0.1)', name: 'NAV',
+    hovertemplate: '%{x|%Y-%m-%d}<br>NAV: $%{y:,.0f}<extra></extra>',
+  }], chartLayout('NAV USD'), { displayModeBar: false, responsive: true });
+
+  // PNL stack
+  Plotly.newPlot('chart-pnl', [
+    { x: dates, y: unreal, type: 'scatter', mode: 'lines', line: { color: '#22c55e' }, name: 'Unrealised', stackgroup: 'pnl' },
+    { x: dates, y: realised, type: 'scatter', mode: 'lines', line: { color: '#f59e0b' }, name: 'Realised', stackgroup: 'pnl' },
+    { x: dates, y: totalPnl, type: 'scatter', mode: 'lines', line: { color: '#fff', width: 1, dash: 'dot' }, name: 'Total YTD' },
+  ], chartLayout('USD'), { displayModeBar: false, responsive: true });
+
+  // Drawdown
+  const peaks = []; let peak = -Infinity;
+  for (const v of navs) { peak = Math.max(peak, v); peaks.push(peak); }
+  const dd = navs.map((v, i) => peaks[i] > 0 ? (v - peaks[i]) / peaks[i] * 100 : 0);
+  Plotly.newPlot('chart-drawdown', [{
+    x: dates, y: dd, type: 'scatter', mode: 'lines', fill: 'tozeroy', line: { color: '#ef4444' }, name: 'DD %',
+    hovertemplate: '%{x|%Y-%m-%d}<br>%{y:.2f}%<extra></extra>',
+  }], chartLayout('% from peak'), { displayModeBar: false, responsive: true });
+
+  // Winners/losers — current open positions sorted by unreal pct
+  const sorted = [...state.open_positions].sort((a, b) => (b.unrealised_pnl_pct || 0) - (a.unrealised_pnl_pct || 0));
   Plotly.newPlot('chart-winloss', [{
     type: 'bar', orientation: 'h',
-    y: tickers, x: pcts,
-    marker: { color: barColors },
-    text: pcts.map(v => v.toFixed(1) + '%'),
-    textposition: 'outside',
-    textfont: { size: 10, color: '#8b8fa3' },
-    hovertemplate: '%{y}: %{x:.2f}%<extra></extra>',
-  }], {
-    ...plotlyLayout,
-    height: Math.max(300, sorted.length * 28 + 60),
-    margin: { t: 10, b: 30, l: 80, r: 60 },
-    xaxis: { title: 'Unrealised P&L %', gridcolor: '#2d3143', zeroline: true, zerolinecolor: '#4a4e63' },
-    yaxis: { automargin: true },
-  }, plotlyConfig);
+    x: sorted.map(p => (p.unrealised_pnl_pct || 0) * 100),
+    y: sorted.map(p => p.ticker),
+    marker: { color: sorted.map(p => p.unrealised_pnl_pct >= 0 ? '#22c55e' : '#ef4444') },
+    hovertemplate: '%{y}: %{x:.2f}%<br>$%{customdata:,.0f}<extra></extra>',
+    customdata: sorted.map(p => p.unrealised_pnl_usd),
+  }], { ...chartLayout('%'), height: Math.max(300, sorted.length * 22) }, { displayModeBar: false, responsive: true });
 }
 
-function filterNavByRange(data) {
-  if (!data.length) return data;
-  const now = new Date();
-  let cutoff;
-  switch (analysisRange) {
-    case '1M': cutoff = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate()); break;
-    case '3M': cutoff = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate()); break;
-    case '6M': cutoff = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate()); break;
-    case 'YTD': cutoff = new Date(now.getFullYear(), 0, 1); break;
-    case '1Y': cutoff = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate()); break;
-    case 'ALL': return data;
-    default: return data;
-  }
-  return data.filter(d => new Date(d.date) >= cutoff);
-}
-
-function renderNavChart() {
-  const filtered = filterNavByRange(navHistory);
-  if (!filtered.length) {
-    document.getElementById('chart-nav').innerHTML = '<div class="no-data">No NAV history yet. Connect IBKR or run Bloomberg Enrich.</div>';
-    return;
-  }
-  const dates = filtered.map(d => d.date);
-  const vals = filtered.map(d => d.nav);
-
-  Plotly.newPlot('chart-nav', [{
-    x: dates, y: vals, type: 'scatter', mode: 'lines',
-    line: { color: '#6c63ff', width: 2 },
-    fill: 'tozeroy', fillcolor: 'rgba(108,99,255,0.08)',
-    hovertemplate: '%{x}<br>$%{y:,.0f}<extra></extra>',
-  }], {
-    ...plotlyLayout,
-    height: 300,
-    xaxis: { gridcolor: '#2d3143' },
-    yaxis: { gridcolor: '#2d3143', tickformat: '$,.0f' },
-  }, plotlyConfig);
-}
-
-function renderPerfChart() {
-  const filtered = filterNavByRange(navHistory);
-  if (!filtered.length || !filtered[0].nav || !filtered[0].spx_close) {
-    document.getElementById('chart-perf').innerHTML = '<div class="no-data">No history yet.</div>';
-    return;
-  }
-  const baseNav = filtered[0].nav;
-  const baseSpx = filtered[0].spx_close;
-  const dates = filtered.map(d => d.date);
-  const navRet = filtered.map(d => ((d.nav / baseNav) - 1) * 100);
-  const spxRet = filtered.map(d => d.spx_close ? ((d.spx_close / baseSpx) - 1) * 100 : null);
-
-  Plotly.newPlot('chart-perf', [
-    { x: dates, y: navRet, type: 'scatter', mode: 'lines', name: 'Portfolio', line: { color: '#6c63ff', width: 2 }, hovertemplate: '%{x}<br>Portfolio: %{y:.1f}%<extra></extra>' },
-    { x: dates, y: spxRet, type: 'scatter', mode: 'lines', name: 'SPX', line: { color: '#8b8fa3', width: 1.5, dash: 'dot' }, hovertemplate: '%{x}<br>SPX: %{y:.1f}%<extra></extra>' },
-  ], {
-    ...plotlyLayout,
-    height: 300,
+function chartLayout(yLabel) {
+  return {
+    paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
+    font: { color: '#e1e4ed', size: 10 },
+    xaxis: { gridcolor: '#2d3143', linecolor: '#2d3143', tickfont: { size: 9 } },
+    yaxis: { gridcolor: '#2d3143', linecolor: '#2d3143', tickfont: { size: 9 }, title: { text: yLabel, font: { size: 10, color: '#8b8fa3' } } },
+    margin: { t: 10, r: 16, b: 30, l: 60 },
     showlegend: true,
-    legend: { x: 0, y: 1.15, orientation: 'h', font: { size: 10 } },
-    xaxis: { gridcolor: '#2d3143' },
-    yaxis: { gridcolor: '#2d3143', ticksuffix: '%' },
-  }, plotlyConfig);
+    legend: { orientation: 'h', x: 0, y: 1.1, font: { size: 10 } },
+    height: 320,
+  };
 }
 
-function renderDrawdownChart() {
-  const filtered = filterNavByRange(navHistory);
-  if (!filtered.length || !filtered[0].nav) {
-    document.getElementById('chart-drawdown').innerHTML = '<div class="no-data">No history yet.</div>';
-    return;
-  }
-  const dates = filtered.map(d => d.date);
-  let peak = -Infinity;
-  const dd = filtered.map(d => {
-    if (d.nav > peak) peak = d.nav;
-    return ((d.nav / peak) - 1) * 100;
-  });
-
-  Plotly.newPlot('chart-drawdown', [{
-    x: dates, y: dd, type: 'scatter', mode: 'lines',
-    line: { color: '#ef4444', width: 1.5 },
-    fill: 'tozeroy', fillcolor: 'rgba(239,68,68,0.1)',
-    hovertemplate: '%{x}<br>%{y:.2f}%<extra></extra>',
-  }], {
-    ...plotlyLayout,
-    height: 250,
-    xaxis: { gridcolor: '#2d3143' },
-    yaxis: { gridcolor: '#2d3143', ticksuffix: '%', range: [Math.min(...dd) * 1.1, 1] },
-  }, plotlyConfig);
-}
-
-function renderHeatmap() {
-  if (!navHistory.length || !navHistory[0].nav) {
-    document.getElementById('chart-heatmap').innerHTML = '<div class="no-data">No history yet.</div>';
-    return;
-  }
-
-  const monthly = {};
-  const sorted = [...navHistory].sort((a, b) => a.date.localeCompare(b.date));
-  for (let i = 1; i < sorted.length; i++) {
-    const d = new Date(sorted[i].date);
-    const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
-    if (!monthly[key]) monthly[key] = { first: sorted[i - 1].nav, last: sorted[i].nav };
-    else monthly[key].last = sorted[i].nav;
-  }
-
-  const years = [...new Set(Object.keys(monthly).map(k => k.split('-')[0]))].sort();
-  const months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
-  const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-  const z = years.map(y => months.map(m => {
-    const k = y + '-' + m;
-    if (!monthly[k]) return null;
-    return ((monthly[k].last / monthly[k].first) - 1) * 100;
-  }));
-
-  const text = z.map(row => row.map(v => v != null ? v.toFixed(1) + '%' : ''));
-
-  Plotly.newPlot('chart-heatmap', [{
-    type: 'heatmap',
-    x: monthLabels, y: years, z,
-    text, texttemplate: '%{text}',
-    colorscale: [[0, '#ef4444'], [0.5, '#1a1d27'], [1, '#22c55e']],
-    zmid: 0,
-    hoverongaps: false,
-    hovertemplate: '%{y} %{x}: %{z:.1f}%<extra></extra>',
-    showscale: false,
-  }], {
-    ...plotlyLayout,
-    height: Math.max(200, years.length * 40 + 60),
-    margin: { t: 10, b: 40, l: 50, r: 10 },
-    xaxis: { side: 'top' },
-    yaxis: { autorange: 'reversed' },
-  }, plotlyConfig);
-}
-
-// ==================== ACTIONS ====================
-async function doRefresh() {
-  const btn = document.getElementById('btn-refresh');
-  btn.innerHTML = '<span class="spinner"></span>';
-  btn.disabled = true;
-
-  try {
-    try {
-      await fetch(IBKR_URL + '/refresh', { method: 'POST', signal: AbortSignal.timeout(10000) });
-    } catch (e) {}
-
-    await loadManualTrades();
-    await loadBbgPrices();
-    await loadAllPositions();
-    render();
-
-    if (ibkrConnected) {
-      detectClosedPositions();
-      await saveIbkrSnapshot();
-      await saveNavSnapshot();
-      render(); // re-render after saving (closed positions may have changed)
-    }
-  } catch (e) {
-    console.error('Refresh error:', e);
-  }
-
-  btn.textContent = 'Refresh';
-  btn.disabled = false;
-}
-
+// ==================== BLOOMBERG ENRICH ====================
 async function triggerBloombergEnrich() {
   try {
     const r = await fetch(`https://api.github.com/repos/${GH_DASH_REPO}/actions/workflows/update_prices.yml/dispatches`, {
       method: 'POST',
-      headers: {
-        'Authorization': 'token ' + ghToken,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Authorization': `Bearer ${ghToken}`, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' },
       body: JSON.stringify({ ref: 'main' }),
     });
     if (r.ok || r.status === 204) {
-      alert('Bloomberg enrichment triggered! Prices will update in ~1 min (needs BBG + self-hosted runner).');
+      alert('Bloomberg Enrich triggered. Refresh in ~1 min.');
     } else {
-      const txt = await r.text();
-      alert('Failed: ' + r.status + ' \u2014 ' + txt.slice(0, 100));
+      alert(`Failed: ${r.status} — ${await r.text()}`);
     }
   } catch (e) {
-    alert('Error: ' + e.message);
-  }
-}
-
-// ==================== TAB SWITCHING ====================
-function switchTab(tab, btn) {
-  document.querySelectorAll('.top-nav .nav-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('tab-overview').classList.toggle('hidden', tab !== 'overview');
-  document.getElementById('tab-blotter').classList.toggle('hidden', tab !== 'blotter');
-  document.getElementById('tab-analysis').classList.toggle('hidden', tab !== 'analysis');
-
-  if (tab === 'overview') {
-    setTimeout(() => renderAllocationCharts(), 50);
-  } else if (tab === 'analysis') {
-    setTimeout(() => renderAnalysis(), 50);
-  }
-}
-
-function setPositionFilter(f, btn) {
-  positionFilter = f;
-  document.querySelectorAll('#pos-filter .filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderPositionsTable();
-}
-
-function setAnalysisRange(r, btn) {
-  analysisRange = r;
-  document.querySelectorAll('#analysis-range .filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderNavChart();
-  renderPerfChart();
-  renderDrawdownChart();
-}
-
-// ==================== INIT ====================
-async function init() {
-  try {
-    await Promise.all([
-      loadTickerMap(),
-      loadNavHistory(),
-      loadBbgPrices(),
-      loadIbkrSnapshot(),
-    ]);
-    await loadManualTrades();
-    await loadAllPositions();
-    render();
-
-    // Save snapshots if IBKR is live
-    if (ibkrConnected) {
-      detectClosedPositions();
-      await saveIbkrSnapshot();
-      await saveNavSnapshot();
-      render();
-    }
-
-    // Auto-refresh every 5 minutes
-    setInterval(async () => {
-      await loadAllPositions();
-      render();
-    }, 300000);
-  } catch (e) {
-    console.error('Init error:', e);
+    alert('Failed: ' + e.message);
   }
 }
 </script>
+
 </body>
 </html>
