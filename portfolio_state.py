@@ -17,9 +17,34 @@ FIFO matching of buys vs sells. Splits adjust qty & cost basis.
 import json
 import os
 import sys
+import math
 import base64
 from datetime import datetime
 from collections import defaultdict, deque
+
+
+def safe_float(v, default=0.0):
+    """NaN/Inf-safe float coercion. JSON spec doesn't allow NaN/Inf."""
+    if v is None:
+        return default
+    try:
+        f = float(v)
+        if math.isnan(f) or math.isinf(f):
+            return default
+        return f
+    except (ValueError, TypeError):
+        return default
+
+
+def scrub_nan(obj):
+    """Recursively replace NaN/Inf floats with None so json.dumps produces valid JSON."""
+    if isinstance(obj, dict):
+        return {k: scrub_nan(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [scrub_nan(v) for v in obj]
+    if isinstance(obj, float) and (math.isnan(obj) or math.isinf(obj)):
+        return None
+    return obj
 
 try:
     from xbbg import blp
@@ -181,9 +206,9 @@ def fetch_prices(meta, open_lots):
         try:
             row = ref.loc[bbg]
             ccy = str(row.get("crncy") or meta[tk]["ccy"])
-            px = float(row.get("px_last") or 0)
-            prev = float(row.get("prev_close_value_realtime") or 0)
-            ch1d = float(row.get("chg_pct_1d") or 0)
+            px = safe_float(row.get("px_last"))
+            prev = safe_float(row.get("prev_close_value_realtime"))
+            ch1d = safe_float(row.get("chg_pct_1d"))
             # Heal stale prev_close
             if px and abs(ch1d) > 1e-6 and abs(prev - px) < 1e-6:
                 prev = px / (1 + ch1d/100.0)
@@ -191,7 +216,7 @@ def fetch_prices(meta, open_lots):
                 ccy = "GBP"; px /= 100.0; prev /= 100.0
             prices[tk] = {
                 "bbg": bbg, "px_last": px, "prev_close": prev,
-                "chg_pct_1d": ch1d, "chg_pct_ytd": float(row.get("chg_pct_ytd") or 0),
+                "chg_pct_1d": ch1d, "chg_pct_ytd": safe_float(row.get("chg_pct_ytd")),
                 "name": str(row.get("name") or tk),
                 "currency": ccy,
                 "sector": str(row.get("gics_sector_name") or "") if row.get("gics_sector_name") else "",
@@ -446,10 +471,12 @@ def build_state():
         "fx_rates": fx_rates,
     }
 
+    state = scrub_nan(state)
+    recon = scrub_nan(recon)
     with open(STATE_PATH, "w") as f:
-        json.dump(state, f, indent=2, default=str)
+        json.dump(state, f, indent=2, default=str, allow_nan=False)
     with open(RECON_PATH, "w") as f:
-        json.dump(recon, f, indent=2)
+        json.dump(recon, f, indent=2, allow_nan=False)
 
     # Console summary
     print()
