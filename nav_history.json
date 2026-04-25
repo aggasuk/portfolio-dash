@@ -602,92 +602,52 @@
     },
     {
       "date": "2026-04-25",
-      "nav": 2713559.25,
-      "cost": 2610263.6,
-      "daily_pnl": 31254.25,
+      "nav": 904982.66,
+      "cost": 888065.24,
+      "daily_pnl": 16917.42,
       "positions": {
-        "1306": {
-          "qty": 20000,
-          "mkt_val_usd": 49779.2
-        },
-        "1615": {
-          "qty": 7000,
-          "mkt_val_usd": 26777.17
-        },
-        "UST2Y": {
-          "qty": 528000,
-          "mkt_val_usd": 530021.25
-        },
-        "IAU": {
-          "qty": 4637,
-          "mkt_val_usd": 411301.89
-        },
-        "AMZN": {
-          "qty": 1000,
-          "mkt_val_usd": 252290
+        "CORN": {
+          "qty": 3900.0,
+          "mkt_val_usd": 71254.24
         },
         "VOO": {
-          "qty": 330,
+          "qty": 330.0,
           "mkt_val_usd": 216623.61
         },
         "QQQ": {
-          "qty": 310,
+          "qty": 310.0,
           "mkt_val_usd": 205672.61
         },
-        "KWEB": {
-          "qty": 6700,
-          "mkt_val_usd": 196444
-        },
-        "MUFG": {
-          "qty": 7400,
-          "mkt_val_usd": 129093
-        },
-        "BNO": {
-          "qty": 2000,
-          "mkt_val_usd": 105300
-        },
-        "CPER": {
-          "qty": 2600,
-          "mkt_val_usd": 96068.72
-        },
-        "NVDA": {
-          "qty": 459,
-          "mkt_val_usd": 92369.16
-        },
-        "WEAT": {
-          "qty": 3200,
-          "mkt_val_usd": 74240.07
-        },
-        "CORN": {
-          "qty": 3900,
-          "mkt_val_usd": 71254.24
-        },
         "CANE": {
-          "qty": 6900,
+          "qty": 6900.0,
           "mkt_val_usd": 65273.95
         },
-        "EWZ": {
-          "qty": 1500,
-          "mkt_val_usd": 61177.5
+        "BNO": {
+          "qty": 2000.0,
+          "mkt_val_usd": 105300.0
         },
-        "BNO Jul26 60C": {
-          "qty": 100,
-          "mkt_val_usd": 44924.72
-        },
-        "AZN": {
-          "qty": 188,
-          "mkt_val_usd": 36906.03
+        "CPER": {
+          "qty": 2600.0,
+          "mkt_val_usd": 96068.72
         },
         "EMLC": {
-          "qty": 1000,
+          "qty": 1000.0,
           "mkt_val_usd": 25750.21
         },
-        "IGV": {
-          "qty": 252,
-          "mkt_val_usd": 22291.92
+        "BNO    JUL2026 60 C [BNO   260717C00060000 100]": {
+          "qty": 100.0,
+          "mkt_val_usd": 449.25
+        },
+        "WEAT": {
+          "qty": 3200.0,
+          "mkt_val_usd": 74240.07
+        },
+        "IAU": {
+          "qty": 500.0,
+          "mkt_val_usd": 44350.0
         }
       },
-      "spx_close": 0
+      "spx_close": 7165.08
     }
   ]
 }
