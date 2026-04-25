@@ -90,16 +90,21 @@ def replay_to_date(trades, target_date):
 
 
 def fetch_history(bbg_tickers, start, end):
-    """Fetch historical PX_LAST for all tickers in one BDH call."""
+    """Fetch historical PX_LAST for all tickers in one BDH call.
+    Returns a date-sorted, forward-filled dataframe.
+    NOTE: must sort_index before ffill — BDH unions cross-calendar tickers
+    in insertion order (recent dates first, then jumbled), so ffill on the
+    raw frame would propagate TODAY's prices into older NaN cells."""
     if not bbg_tickers:
         return pd.DataFrame()
     print(f"  BDH for {len(bbg_tickers)} tickers, {start} -> {end}...")
     try:
         df = blp.bdh(bbg_tickers, "PX_LAST", start, end)
-        # df columns are MultiIndex (ticker, field) — flatten
         if isinstance(df.columns, pd.MultiIndex):
             df.columns = [c[0] for c in df.columns]
-        return df.ffill()
+        # Drop fully-empty rows (BDH sometimes includes non-trading dates with all-NaN)
+        df = df.sort_index().dropna(how="all").ffill()
+        return df
     except Exception as e:
         print(f"  BDH FAILED: {e}")
         return pd.DataFrame()
@@ -118,7 +123,7 @@ def fetch_quote_currencies(bbg_tickers):
 
 
 def fetch_fx_history(currencies, start, end):
-    """Fetch USD-quoted FX rates daily."""
+    """Fetch USD-quoted FX rates daily — sorted + ffilled."""
     pairs = [f"{c}USD Curncy" for c in currencies if c != "USD"]
     if not pairs:
         return pd.DataFrame()
@@ -126,7 +131,7 @@ def fetch_fx_history(currencies, start, end):
         df = blp.bdh(pairs, "PX_LAST", start, end)
         if isinstance(df.columns, pd.MultiIndex):
             df.columns = [c[0].replace("USD Curncy","") for c in df.columns]
-        return df.ffill()
+        return df.sort_index().dropna(how="all").ffill()
     except Exception as e:
         print(f"  FX BDH FAILED: {e}")
         return pd.DataFrame()
@@ -176,14 +181,11 @@ def main():
                 px_df[bbg] = px_df[bbg] / 100.0
         # Map BBG columns back to internal tickers
         px_df.columns = [bbg_to_tk.get(c, c) for c in px_df.columns]
-        # Sort index — BDH unions cross-calendar dates which arrive unordered
-        px_df = px_df.sort_index().ffill()
+        # Already sorted + ffilled in fetch_history (must be in that order)
 
-    # FX history
+    # FX history (already sorted + ffilled in fetch_fx_history)
     currencies = sorted(set(m["ccy"] for m in tk_meta.values() if m["ccy"] != "USD"))
     fx_df = fetch_fx_history(currencies, bdh_start, bdh_end)
-    if not fx_df.empty:
-        fx_df = fx_df.sort_index().ffill()
 
     # Iterate trading days
     if px_df.empty:
@@ -237,6 +239,16 @@ def main():
             "total_pnl_ytd_usd": round(nav - cost + realized_usd, 2),
             "positions": positions_snap,
         })
+
+    # Drop incomplete leading snapshots: BDH may include Jan 1 with sparse data
+    # (US stocks don't trade Jan 1). Only keep snapshots once NAV has reached at
+    # least 90% of the most-completes day's NAV (i.e. all open tickers priced).
+    if snapshots:
+        max_nav = max(s["nav_securities_usd"] for s in snapshots[:5])
+        threshold = max_nav * 0.5
+        while len(snapshots) > 1 and snapshots[0]["nav_securities_usd"] < threshold:
+            print(f"  Dropping incomplete leading snapshot: {snapshots[0]['date']} (NAV ${snapshots[0]['nav_securities_usd']:,.0f} < threshold ${threshold:,.0f})")
+            snapshots.pop(0)
 
     # Re-baseline YTD P&L so day 1 = 0:
     #   ytd_pnl_clean = (unrealised(t) - unrealised(jan_1)) + realized_ytd(t)
