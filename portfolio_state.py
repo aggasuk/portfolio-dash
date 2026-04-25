@@ -72,6 +72,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 JOURNAL_PATH = os.path.join(SCRIPT_DIR, "trade_journal.json")
 STATE_PATH   = os.path.join(SCRIPT_DIR, "portfolio_state.json")
 RECON_PATH   = os.path.join(SCRIPT_DIR, "reconciliation.json")
+HISTORY_PATH = os.path.join(SCRIPT_DIR, "nav_history.json")
 GH_TOKEN = os.environ.get("GITHUB_TOKEN", os.environ.get("GH_TOKEN", ""))
 TRADES_API = "https://api.github.com/repos/aggasuk/trade-book/contents/portfolio_trades.json"
 IBKR_URL = "http://localhost:8090"
@@ -435,15 +436,34 @@ def build_state():
     daily_total = sum(p["daily_pnl_usd"] for p in open_positions)
     realized_2026 = sum(c["realized_pnl_usd"] for c in closed_positions if c["sell_date"] >= "2026-01-01")
 
+    # YTD P&L = (unrealized_today - unrealized_jan_1) + realized_2026
+    # Read Jan 1 unrealized baseline from nav_history.json (must be regenerated
+    # in same workflow run BEFORE state.py — see workflow yml ordering).
+    ytd_baseline_unrealized = 0.0
+    nav_jan1 = None
+    if os.path.exists(HISTORY_PATH):
+        try:
+            hist = json.load(open(HISTORY_PATH))
+            if hist.get("snapshots"):
+                first = hist["snapshots"][0]
+                ytd_baseline_unrealized = first.get("unrealised_pnl_usd", 0)
+                nav_jan1 = first.get("nav_securities_usd")
+        except Exception as e:
+            print(f"  WARN: couldn't read nav_history baseline: {e}")
+    ytd_pnl = (unreal_total - ytd_baseline_unrealized) + realized_2026
+
     summary = {
         "as_of": today,
         "nav_securities_usd": round(nav_securities, 2),
+        "nav_jan1_usd": round(nav_jan1, 2) if nav_jan1 else None,
         "cost_basis_usd": round(cost_total, 2),
         "unrealised_pnl_usd": round(unreal_total, 2),
         "unrealised_pnl_pct": round(unreal_total / cost_total, 4) if cost_total > 0 else 0,
+        "ytd_unrealised_baseline_usd": round(ytd_baseline_unrealized, 2),
         "daily_pnl_usd": round(daily_total, 2),
         "realized_pnl_2026_usd": round(realized_2026, 2),
-        "ytd_pnl_usd": round(unreal_total + realized_2026, 2),
+        "ytd_pnl_usd": round(ytd_pnl, 2),
+        "ytd_pnl_pct_of_jan1_nav": round(ytd_pnl / nav_jan1, 4) if nav_jan1 else None,
         "open_positions": len(open_positions),
         "closed_positions_2026": sum(1 for c in closed_positions if c["sell_date"] >= "2026-01-01"),
     }
