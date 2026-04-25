@@ -42,9 +42,8 @@
     { "id": "qqq_2026_s2",     "date": "2026-03-09", "side": "sell", "ticker": "QQQ", "bbg": "QQQ US Equity", "qty": 140, "price": 598.66,    "ccy": "USD", "broker": "IBKR" },
 
     { "id": "azn_conv_out",    "date": "2026-01-28", "side": "sell", "ticker": "AZN",    "bbg": "AZN US Equity", "qty": 374, "price": 92.51, "ccy": "USD", "broker": "UBS", "notes": "AZN ADR converted via exchange offer; cost basis preserved into AZN_LN" },
-    { "id": "azn_conv_in",     "date": "2026-01-28", "side": "buy",  "ticker": "AZN_LN", "bbg": "AZN LN Equity", "qty": 187, "price": 184.84, "ccy": "GBP", "broker": "UBS", "notes": "Conversion in @ effective cost. Final 188 GBP shares incl Feb 2 conversion of last 1 ADR" },
-    { "id": "azn_conv_in2",    "date": "2026-02-02", "side": "buy",  "ticker": "AZN_LN", "bbg": "AZN LN Equity", "qty": 1,   "price": 92.51,  "ccy": "USD", "broker": "UBS", "notes": "Final 1-ADR conversion" },
-    { "id": "azn_remaining_residual", "date": "2026-01-28", "side": "sell", "ticker": "AZN", "bbg": "AZN US Equity", "qty": 1, "price": 92.51, "ccy": "USD", "broker": "UBS", "notes": "Final ADR removed Feb 2; balanced on conv_in2" },
+    { "id": "azn_residual_out","date": "2026-02-02", "side": "sell", "ticker": "AZN",    "bbg": "AZN US Equity", "qty": 1,   "price": 92.51, "ccy": "USD", "broker": "UBS", "notes": "Final ADR converted Feb 2" },
+    { "id": "azn_conv_in",     "date": "2026-01-28", "side": "buy",  "ticker": "AZN_LN", "bbg": "AZN LN Equity", "qty": 188, "price": 184.53, "ccy": "USD", "broker": "UBS", "notes": "Cost-basis preservation: 375 ADR × $92.51 = $34,691 → 188 GBP shares = $184.53/share USD effective. Includes Jan 28 (187) + Feb 2 (1) shares." },
 
     { "id": "igv_2026_buy",    "date": "2026-01-26", "side": "buy",  "ticker": "IGV", "bbg": "IGV US Equity", "qty": 252, "price": 98.536032, "ccy": "USD", "broker": "UBS" },
     { "id": "igv_2026_sell",   "date": "2026-04-23", "side": "sell", "ticker": "IGV", "bbg": "IGV US Equity", "qty": 252, "price": 84.11,     "ccy": "USD", "broker": "UBS" },
