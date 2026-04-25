@@ -287,7 +287,10 @@ async function loadAll() {
       state = stateR.value.content;
     } else {
       banner.className = 'conn-banner error';
-      text.textContent = 'Failed to load portfolio_state.json — run Bloomberg Enrich first.';
+      text.textContent = `Failed to load portfolio_state.json: ${stateR.reason && stateR.reason.message || 'unknown error'}`;
+      console.error('[load] state failed:', stateR.reason);
+      console.error('[load] history:', histR);
+      console.error('[load] trades:', tradesR);
       return;
     }
     history = histR.status === 'fulfilled' ? histR.value.content : null;
