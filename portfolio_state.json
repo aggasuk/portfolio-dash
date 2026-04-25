@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-04-25T15:46:54",
+  "last_updated": "2026-04-25T15:52:14",
   "as_of": "2026-04-25",
   "summary": {
     "as_of": "2026-04-25",
@@ -42,7 +42,12 @@
       "by_broker": {
         "UBS": 528000.0
       },
-      "lots_count": 1
+      "lots_count": 1,
+      "jan1_mkt_value_usd": 783485.51,
+      "buys_2026_usd": 0.0,
+      "sells_2026_usd": 251503.91,
+      "ytd_pnl_usd": -1960.35,
+      "ytd_pnl_pct": -0.0025
     },
     {
       "ticker": "IAU",
@@ -68,7 +73,12 @@
         "UBS": 4137.0,
         "IBKR": 500.0
       },
-      "lots_count": 4
+      "lots_count": 4,
+      "jan1_mkt_value_usd": 299975.0,
+      "buys_2026_usd": 114509.84,
+      "sells_2026_usd": 0.0,
+      "ytd_pnl_usd": -2951.09,
+      "ytd_pnl_pct": -0.0098
     },
     {
       "ticker": "AMZN",
@@ -93,7 +103,12 @@
       "by_broker": {
         "UBS": 1000.0
       },
-      "lots_count": 1
+      "lots_count": 1,
+      "jan1_mkt_value_usd": 263990.0,
+      "buys_2026_usd": 0,
+      "sells_2026_usd": 0,
+      "ytd_pnl_usd": 0.0,
+      "ytd_pnl_pct": 0.0
     },
     {
       "ticker": "VOO",
@@ -118,7 +133,12 @@
       "by_broker": {
         "IBKR": 330.0
       },
-      "lots_count": 1
+      "lots_count": 1,
+      "jan1_mkt_value_usd": 216618.6,
+      "buys_2026_usd": 0,
+      "sells_2026_usd": 0,
+      "ytd_pnl_usd": 0.0,
+      "ytd_pnl_pct": 0.0
     },
     {
       "ticker": "QQQ",
@@ -143,7 +163,12 @@
       "by_broker": {
         "IBKR": 310.0
       },
-      "lots_count": 2
+      "lots_count": 2,
+      "jan1_mkt_value_usd": 265552.0,
+      "buys_2026_usd": 62485.0,
+      "sells_2026_usd": 114223.15,
+      "ytd_pnl_usd": -8011.05,
+      "ytd_pnl_pct": -0.0302
     },
     {
       "ticker": "KWEB",
@@ -168,7 +193,12 @@
       "by_broker": {
         "UBS": 6700.0
       },
-      "lots_count": 1
+      "lots_count": 1,
+      "jan1_mkt_value_usd": 193161.0,
+      "buys_2026_usd": 0,
+      "sells_2026_usd": 0,
+      "ytd_pnl_usd": 0.0,
+      "ytd_pnl_pct": 0.0
     },
     {
       "ticker": "MUFG",
@@ -193,7 +223,12 @@
       "by_broker": {
         "UBS": 7400.0
       },
-      "lots_count": 1
+      "lots_count": 1,
+      "jan1_mkt_value_usd": 127946.0,
+      "buys_2026_usd": 0,
+      "sells_2026_usd": 0,
+      "ytd_pnl_usd": 0.0,
+      "ytd_pnl_pct": 0.0
     },
     {
       "ticker": "BNO",
@@ -218,7 +253,12 @@
       "by_broker": {
         "IBKR": 2000.0
       },
-      "lots_count": 4
+      "lots_count": 4,
+      "jan1_mkt_value_usd": 0,
+      "buys_2026_usd": 143063.15,
+      "sells_2026_usd": 43994.5,
+      "ytd_pnl_usd": 6111.35,
+      "ytd_pnl_pct": 0.0427
     },
     {
       "ticker": "CPER",
@@ -243,7 +283,12 @@
       "by_broker": {
         "IBKR": 2600.0
       },
-      "lots_count": 3
+      "lots_count": 3,
+      "jan1_mkt_value_usd": 0,
+      "buys_2026_usd": 93172.97,
+      "sells_2026_usd": 0.0,
+      "ytd_pnl_usd": 2871.03,
+      "ytd_pnl_pct": 0.0308
     },
     {
       "ticker": "NVDA",
@@ -268,7 +313,12 @@
       "by_broker": {
         "UBS": 459.0
       },
-      "lots_count": 3
+      "lots_count": 3,
+      "jan1_mkt_value_usd": 41654.0,
+      "buys_2026_usd": 50031.78,
+      "sells_2026_usd": 0.0,
+      "ytd_pnl_usd": 3910.15,
+      "ytd_pnl_pct": 0.0939
     },
     {
       "ticker": "WEAT",
@@ -293,7 +343,12 @@
       "by_broker": {
         "IBKR": 3200.0
       },
-      "lots_count": 3
+      "lots_count": 3,
+      "jan1_mkt_value_usd": 0,
+      "buys_2026_usd": 73437.13,
+      "sells_2026_usd": 0.0,
+      "ytd_pnl_usd": 770.87,
+      "ytd_pnl_pct": 0.0105
     },
     {
       "ticker": "CORN",
@@ -318,7 +373,12 @@
       "by_broker": {
         "IBKR": 3900.0
       },
-      "lots_count": 3
+      "lots_count": 3,
+      "jan1_mkt_value_usd": 0,
+      "buys_2026_usd": 70746.0,
+      "sells_2026_usd": 0.0,
+      "ytd_pnl_usd": 507.0,
+      "ytd_pnl_pct": 0.0072
     },
     {
       "ticker": "CANE",
@@ -343,7 +403,12 @@
       "by_broker": {
         "IBKR": 6900.0
       },
-      "lots_count": 4
+      "lots_count": 4,
+      "jan1_mkt_value_usd": 0,
+      "buys_2026_usd": 69959.95,
+      "sells_2026_usd": 0.0,
+      "ytd_pnl_usd": -4685.95,
+      "ytd_pnl_pct": -0.067
     },
     {
       "ticker": "EWZ",
@@ -368,7 +433,12 @@
       "by_broker": {
         "UBS": 1500.0
       },
-      "lots_count": 1
+      "lots_count": 1,
+      "jan1_mkt_value_usd": 87868.0,
+      "buys_2026_usd": 0.0,
+      "sells_2026_usd": 23320.5,
+      "ytd_pnl_usd": -4637.5,
+      "ytd_pnl_pct": -0.0528
     },
     {
       "ticker": "1306",
@@ -393,7 +463,12 @@
       "by_broker": {
         "UBS": 20000.0
       },
-      "lots_count": 2
+      "lots_count": 2,
+      "jan1_mkt_value_usd": 0,
+      "buys_2026_usd": 50179.45,
+      "sells_2026_usd": 0.0,
+      "ytd_pnl_usd": -777.97,
+      "ytd_pnl_pct": -0.0155
     },
     {
       "ticker": "BNO_60C_JUL26",
@@ -418,7 +493,12 @@
       "by_broker": {
         "IBKR": 100.0
       },
-      "lots_count": 1
+      "lots_count": 1,
+      "jan1_mkt_value_usd": 0,
+      "buys_2026_usd": 34100.0,
+      "sells_2026_usd": 0.0,
+      "ytd_pnl_usd": 9900.0,
+      "ytd_pnl_pct": 0.2903
     },
     {
       "ticker": "AZN_LN",
@@ -443,7 +523,12 @@
       "by_broker": {
         "UBS": 188.0
       },
-      "lots_count": 2
+      "lots_count": 2,
+      "jan1_mkt_value_usd": 0,
+      "buys_2026_usd": 46865.98,
+      "sells_2026_usd": 0.0,
+      "ytd_pnl_usd": -11361.69,
+      "ytd_pnl_pct": -0.2424
     },
     {
       "ticker": "1615",
@@ -468,7 +553,12 @@
       "by_broker": {
         "UBS": 7000.0
       },
-      "lots_count": 1
+      "lots_count": 1,
+      "jan1_mkt_value_usd": 0,
+      "buys_2026_usd": 24901.12,
+      "sells_2026_usd": 0.0,
+      "ytd_pnl_usd": 1418.94,
+      "ytd_pnl_pct": 0.057
     },
     {
       "ticker": "EMLC",
@@ -493,7 +583,12 @@
       "by_broker": {
         "IBKR": 1000.0
       },
-      "lots_count": 1
+      "lots_count": 1,
+      "jan1_mkt_value_usd": 25740.0,
+      "buys_2026_usd": 0,
+      "sells_2026_usd": 0,
+      "ytd_pnl_usd": 0.0,
+      "ytd_pnl_pct": 0.0
     }
   ],
   "closed_positions": [
@@ -940,7 +1035,7 @@
   },
   "fx_rates": {
     "USD": 1.0,
-    "JPY": 0.006274,
-    "GBP": 1.3532
+    "GBP": 1.3532,
+    "JPY": 0.006274
   }
 }
