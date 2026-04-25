@@ -12,22 +12,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fetch Bloomberg prices
+      - name: Compute portfolio state (FIFO + Bloomberg prices + IBKR reconciliation)
         shell: powershell
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python portfolio_prices.py
+        run: python portfolio_state.py
 
-      - name: Commit updated prices
+      - name: Reconstruct daily NAV history (Bloomberg historical)
+        shell: powershell
+        run: python portfolio_history.py
+
+      - name: Commit refreshed state files
         shell: powershell
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add portfolio_prices.json nav_history.json
+          git add portfolio_state.json reconciliation.json nav_history.json
           git diff --staged --quiet
           if ($LASTEXITCODE -ne 0) {
-            git commit -m "Bloomberg enrichment $(Get-Date -Format 'yyyy-MM-ddTHH:mm')"
+            git commit -m "Bloomberg refresh $(Get-Date -Format 'yyyy-MM-ddTHH:mm')"
             git push
           } else {
-            Write-Host "No price changes to commit"
+            Write-Host "No changes to commit"
           }
