@@ -759,7 +759,11 @@ function getFxToUsd(ccy) {
 // ==================== YTD P&L ====================
 function computeYtdPnl() {
   const currentYear = new Date().getFullYear().toString();
-  const yearStartSnapshot = navHistory.find(s => s.date >= currentYear + '-01-01') || null;
+  // Only treat a snapshot as YTD base if it's from genuinely early in the year
+  // (first 2 weeks). Otherwise we'd mis-anchor "YTD" to whenever tracking started.
+  const yearStart = currentYear + '-01-01';
+  const earlyYearCutoff = currentYear + '-01-15';
+  const yearStartSnapshot = navHistory.find(s => s.date >= yearStart && s.date <= earlyYearCutoff) || null;
 
   for (const pos of allPositions) {
     if (pos.closed) {
@@ -768,10 +772,10 @@ function computeYtdPnl() {
       continue;
     }
 
-    let ytdBase = pos.cost_basis_usd; // default: cost basis if no history
+    // Default YTD base: cost basis (correct for positions opened this year)
+    let ytdBase = pos.cost_basis_usd;
     if (yearStartSnapshot && yearStartSnapshot.positions && yearStartSnapshot.positions[pos.ticker]) {
       const snap = yearStartSnapshot.positions[pos.ticker];
-      // Only use snapshot if quantity matches — otherwise position changed and cost basis is safer
       if (snap.qty === pos.qty) {
         ytdBase = snap.mkt_val_usd || pos.cost_basis_usd;
       }
