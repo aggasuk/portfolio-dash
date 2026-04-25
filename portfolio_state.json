@@ -1,22 +1,22 @@
 {
-  "last_updated": "2026-04-25T18:03:38",
+  "last_updated": "2026-04-25T18:09:29",
   "as_of": "2026-04-25",
   "summary": {
     "as_of": "2026-04-25",
-    "nav_securities_usd": 2697504.16,
+    "nav_securities_usd": 2688237.15,
     "nav_jan1_usd": 2559747.8,
-    "cost_basis_usd": 2576223.02,
-    "unrealised_pnl_usd": 121281.12,
-    "unrealised_pnl_pct": 0.0471,
+    "cost_basis_usd": 2564016.01,
+    "unrealised_pnl_usd": 124221.12,
+    "unrealised_pnl_pct": 0.0484,
     "ytd_unrealised_baseline_usd": 118170.17,
-    "daily_pnl_usd": 21844.77,
+    "daily_pnl_usd": 22200.68,
     "realized_pnl_2026_usd": 77801.06,
-    "ytd_pnl_usd": 80912.01,
-    "ytd_pnl_pct_of_jan1_nav": 0.0316,
+    "ytd_pnl_usd": 83852.01,
+    "ytd_pnl_pct_of_jan1_nav": 0.0328,
     "open_positions": 19,
     "closed_positions_2026": 29,
     "cash_usd": 180954.7,
-    "nav_total_usd": 2878458.86
+    "nav_total_usd": 2869191.85
   },
   "open_positions": [
     {
@@ -501,36 +501,6 @@
       "ytd_pnl_pct": 0.2903
     },
     {
-      "ticker": "AZN_LN",
-      "name": "ASTRAZENECA PLC",
-      "qty": 188.0,
-      "avg_cost": 184.348883,
-      "mkt_price": 139.56,
-      "prev_close": 144.91999950821074,
-      "currency": "GBP",
-      "asset_class": "STK",
-      "type_display": "Equity",
-      "price_factor": 1.0,
-      "mkt_value_usd": 35504.29,
-      "cost_basis_usd": 46898.65,
-      "unrealised_pnl_usd": -11394.36,
-      "unrealised_pnl_pct": -0.243,
-      "daily_pnl_usd": -1363.59,
-      "daily_pnl_pct": -0.037,
-      "chg_pct_ytd": 1.203771,
-      "sector": "Health Care",
-      "country": "GB",
-      "by_broker": {
-        "UBS": 188.0
-      },
-      "lots_count": 2,
-      "jan1_mkt_value_usd": 0,
-      "buys_2026_usd": 46865.98,
-      "sells_2026_usd": 0.0,
-      "ytd_pnl_usd": -11361.69,
-      "ytd_pnl_pct": -0.2424
-    },
-    {
       "ticker": "1615",
       "name": "NEXT FUNDS TOPIX BANKS ETF",
       "qty": 7000.0,
@@ -559,6 +529,36 @@
       "sells_2026_usd": 0.0,
       "ytd_pnl_usd": 1418.94,
       "ytd_pnl_pct": 0.057
+    },
+    {
+      "ticker": "AZN_LN",
+      "name": "ASTRAZENECA PLC",
+      "qty": 188.0,
+      "avg_cost": 184.53,
+      "mkt_price": 139.56,
+      "prev_close": 144.91999950821074,
+      "currency": "USD",
+      "asset_class": "STK",
+      "type_display": "Equity",
+      "price_factor": 1.0,
+      "mkt_value_usd": 26237.28,
+      "cost_basis_usd": 34691.64,
+      "unrealised_pnl_usd": -8454.36,
+      "unrealised_pnl_pct": -0.2437,
+      "daily_pnl_usd": -1007.68,
+      "daily_pnl_pct": -0.037,
+      "chg_pct_ytd": 1.203771,
+      "sector": "Health Care",
+      "country": "GB",
+      "by_broker": {
+        "UBS": 188.0
+      },
+      "lots_count": 1,
+      "jan1_mkt_value_usd": 0,
+      "buys_2026_usd": 34691.64,
+      "sells_2026_usd": 0.0,
+      "ytd_pnl_usd": -8454.36,
+      "ytd_pnl_pct": -0.2437
     },
     {
       "ticker": "EMLC",
@@ -929,6 +929,20 @@
       "asset_class": "STK"
     },
     {
+      "ticker": "AZN",
+      "name": "AZN",
+      "qty_closed": 1.0,
+      "buy_price": 92.51,
+      "sell_price": 92.51,
+      "buy_date": "2026-01-01",
+      "sell_date": "2026-02-02",
+      "currency": "USD",
+      "realized_pnl_local": 0.0,
+      "realized_pnl_usd": 0.0,
+      "broker_sell": "UBS",
+      "asset_class": "STK"
+    },
+    {
       "ticker": "UST_4_25_DEC26",
       "name": "US TREASURY N/B",
       "qty_closed": 250000.0,
@@ -946,20 +960,6 @@
       "ticker": "AZN",
       "name": "AZN",
       "qty_closed": 374.0,
-      "buy_price": 92.51,
-      "sell_price": 92.51,
-      "buy_date": "2026-01-01",
-      "sell_date": "2026-01-28",
-      "currency": "USD",
-      "realized_pnl_local": 0.0,
-      "realized_pnl_usd": 0.0,
-      "broker_sell": "UBS",
-      "asset_class": "STK"
-    },
-    {
-      "ticker": "AZN",
-      "name": "AZN",
-      "qty_closed": 1.0,
       "buy_price": 92.51,
       "sell_price": 92.51,
       "buy_date": "2026-01-01",
@@ -1035,7 +1035,7 @@
   },
   "fx_rates": {
     "USD": 1.0,
-    "JPY": 0.006274,
-    "GBP": 1.3532
+    "GBP": 1.3532,
+    "JPY": 0.006274
   }
 }
