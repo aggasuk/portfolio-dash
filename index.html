@@ -680,11 +680,12 @@ function renderAnalysis() {
     hovertemplate: '%{x|%Y-%m-%d}<br>NAV: $%{y:,.0f}<extra></extra>',
   }], chartLayout('NAV USD'), { displayModeBar: false, responsive: true });
 
-  // YTD P&L (re-baselined to 0 on day 1)
+  // YTD P&L decomposition (re-baselined to 0 on day 1) — three independent lines
   Plotly.newPlot('chart-pnl', [
-    { x: dates, y: unrealClean, type: 'scatter', mode: 'lines', line: { color: '#22c55e' }, name: 'Unrealised Δ', stackgroup: 'pnl' },
-    { x: dates, y: realised,    type: 'scatter', mode: 'lines', line: { color: '#f59e0b' }, name: 'Realised',    stackgroup: 'pnl' },
-    { x: dates, y: cleanYtd,    type: 'scatter', mode: 'lines', line: { color: '#fff', width: 1, dash: 'dot' }, name: 'Total YTD' },
+    { x: dates, y: cleanYtd,    type: 'scatter', mode: 'lines', line: { color: '#6c63ff', width: 2.5 }, name: 'Total YTD',
+      fill: 'tozeroy', fillcolor: 'rgba(108,99,255,0.07)' },
+    { x: dates, y: unrealClean, type: 'scatter', mode: 'lines', line: { color: '#22c55e', width: 1.5 }, name: 'Unrealised Δ from Jan 1' },
+    { x: dates, y: realised,    type: 'scatter', mode: 'lines', line: { color: '#f59e0b', width: 1.5 }, name: 'Realised cum' },
   ], chartLayout('USD (Δ from Jan 1)'), { displayModeBar: false, responsive: true });
 
   // Drawdown
