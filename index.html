@@ -206,8 +206,7 @@
       </div>
       <div class="chart-wrap"><h3>NAV Over Time</h3><div id="chart-nav"></div></div>
       <div class="chart-wrap"><h3>Total YTD P&amp;L (Unrealised + Realised)</h3><div id="chart-pnl"></div></div>
-      <div class="chart-wrap"><h3>Drawdown</h3><div id="chart-drawdown"></div></div>
-      <div class="chart-wrap"><h3>Winners &amp; Losers (Unrealised P&amp;L %)</h3><div id="chart-winloss"></div></div>
+      <div class="chart-wrap"><h3>Winners &amp; Losers (YTD P&amp;L %)</h3><div id="chart-winloss"></div></div>
     </div>
 
   </div>
@@ -351,8 +350,8 @@ function renderOverview() {
     { label: 'Cost Basis', value: fmt$(s.cost_basis_usd) },
     { label: 'Unrealised', value: `<span class="${pnlClass(s.unrealised_pnl_usd)}">${fmt$(s.unrealised_pnl_usd)} (${fmtPct(s.unrealised_pnl_pct)})</span>` },
     { label: 'Realised 2026', value: `<span class="${pnlClass(s.realized_pnl_2026_usd)}">${fmt$(s.realized_pnl_2026_usd)}</span>` },
-    { label: 'YTD P&L', value: `<span class="${pnlClass(s.ytd_pnl_usd)}">${fmt$(s.ytd_pnl_usd)}</span>` },
-    { label: 'Daily P&L', value: `<span class="${pnlClass(s.daily_pnl_usd)}">${fmt$(s.daily_pnl_usd)}</span>` },
+    { label: 'YTD P&L', value: `<span class="${pnlClass(s.ytd_pnl_usd)}">${fmt$(s.ytd_pnl_usd)} (${fmtPct(s.ytd_pnl_pct_of_jan1_nav)})</span>` },
+    { label: 'Daily P&L', value: `<span class="${pnlClass(s.daily_pnl_usd)}">${fmt$(s.daily_pnl_usd)} (${s.nav_securities_usd ? fmtPct(s.daily_pnl_usd / (s.nav_securities_usd - s.daily_pnl_usd)) : '—'})</span>` },
   ];
   document.getElementById('kpi-row').innerHTML = kpis.map(k => `<div class="snap-card"><div class="label">${k.label}</div><div class="value">${k.value}</div></div>`).join('');
 
@@ -689,25 +688,16 @@ function renderAnalysis() {
     { x: dates, y: realised,    type: 'scatter', mode: 'lines', line: { color: '#f59e0b', width: 1.5 }, name: 'Realised cum' },
   ], chartLayout('USD (Δ from Jan 1)'), { displayModeBar: false, responsive: true });
 
-  // Drawdown
-  const peaks = []; let peak = -Infinity;
-  for (const v of navs) { peak = Math.max(peak, v); peaks.push(peak); }
-  const dd = navs.map((v, i) => peaks[i] > 0 ? (v - peaks[i]) / peaks[i] * 100 : 0);
-  Plotly.newPlot('chart-drawdown', [{
-    x: dates, y: dd, type: 'scatter', mode: 'lines', fill: 'tozeroy', line: { color: '#ef4444' }, name: 'DD %',
-    hovertemplate: '%{x|%Y-%m-%d}<br>%{y:.2f}%<extra></extra>',
-  }], chartLayout('% from peak'), { displayModeBar: false, responsive: true });
-
-  // Winners/losers — current open positions sorted by unreal pct
-  const sorted = [...state.open_positions].sort((a, b) => (b.unrealised_pnl_pct || 0) - (a.unrealised_pnl_pct || 0));
+  // Winners/losers — sorted by YTD P&L %
+  const sorted = [...state.open_positions].sort((a, b) => (b.ytd_pnl_pct || 0) - (a.ytd_pnl_pct || 0));
   Plotly.newPlot('chart-winloss', [{
     type: 'bar', orientation: 'h',
-    x: sorted.map(p => (p.unrealised_pnl_pct || 0) * 100),
+    x: sorted.map(p => (p.ytd_pnl_pct || 0) * 100),
     y: sorted.map(p => p.ticker),
-    marker: { color: sorted.map(p => p.unrealised_pnl_pct >= 0 ? '#22c55e' : '#ef4444') },
+    marker: { color: sorted.map(p => (p.ytd_pnl_pct || 0) >= 0 ? '#22c55e' : '#ef4444') },
     hovertemplate: '%{y}: %{x:.2f}%<br>$%{customdata:,.0f}<extra></extra>',
-    customdata: sorted.map(p => p.unrealised_pnl_usd),
-  }], { ...chartLayout('%'), height: Math.max(300, sorted.length * 22) }, { displayModeBar: false, responsive: true });
+    customdata: sorted.map(p => p.ytd_pnl_usd),
+  }], { ...chartLayout('YTD %'), height: Math.max(300, sorted.length * 22), showlegend: false }, { displayModeBar: false, responsive: true });
 }
 
 function chartLayout(yLabel) {
