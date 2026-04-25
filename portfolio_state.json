@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-04-25T15:27:54",
+  "last_updated": "2026-04-25T15:40:19",
   "as_of": "2026-04-25",
   "summary": {
     "as_of": "2026-04-25",
@@ -25,6 +25,7 @@
       "prev_close": 100.36325000000001,
       "currency": "USD",
       "asset_class": "BOND",
+      "type_display": "Bond",
       "price_factor": 0.01,
       "mkt_value_usd": 530021.25,
       "cost_basis_usd": 526704.82,
@@ -33,7 +34,7 @@
       "daily_pnl_usd": 103.29,
       "daily_pnl_pct": 0.0002,
       "chg_pct_ytd": -0.3200309616891315,
-      "sector": "nan",
+      "sector": "Government",
       "country": "US",
       "by_broker": {
         "UBS": 528000.0
@@ -49,6 +50,7 @@
       "prev_close": 88.34000001387561,
       "currency": "USD",
       "asset_class": "STK",
+      "type_display": "Commodity ETF",
       "price_factor": 1.0,
       "mkt_value_usd": 411533.75,
       "cost_basis_usd": 382003.04,
@@ -57,7 +59,7 @@
       "daily_pnl_usd": 1901.17,
       "daily_pnl_pct": 0.0046,
       "chg_pct_ytd": 9.338428,
-      "sector": "nan",
+      "sector": "Commodities",
       "country": "US",
       "by_broker": {
         "UBS": 4137.0,
@@ -74,6 +76,7 @@
       "prev_close": 255.0799994998697,
       "currency": "USD",
       "asset_class": "STK",
+      "type_display": "Equity",
       "price_factor": 1.0,
       "mkt_value_usd": 263990.0,
       "cost_basis_usd": 221360.0,
@@ -98,6 +101,7 @@
       "prev_close": 651.2599999406899,
       "currency": "USD",
       "asset_class": "STK",
+      "type_display": "Equity ETF",
       "price_factor": 1.0,
       "mkt_value_usd": 216618.6,
       "cost_basis_usd": 186850.59,
@@ -106,7 +110,7 @@
       "daily_pnl_usd": 1702.8,
       "daily_pnl_pct": 0.0079,
       "chg_pct_ytd": 4.670482,
-      "sector": "nan",
+      "sector": "Equity",
       "country": "US",
       "by_broker": {
         "IBKR": 330.0
@@ -122,6 +126,7 @@
       "prev_close": 651.4200029782339,
       "currency": "USD",
       "asset_class": "STK",
+      "type_display": "Equity ETF",
       "price_factor": 1.0,
       "mkt_value_usd": 205802.8,
       "cost_basis_usd": 186790.3,
@@ -130,7 +135,7 @@
       "daily_pnl_usd": 3862.6,
       "daily_pnl_pct": 0.0191,
       "chg_pct_ytd": 8.069216,
-      "sector": "nan",
+      "sector": "Equity",
       "country": "US",
       "by_broker": {
         "IBKR": 310.0
@@ -146,6 +151,7 @@
       "prev_close": 28.430000132929724,
       "currency": "USD",
       "asset_class": "STK",
+      "type_display": "Equity ETF",
       "price_factor": 1.0,
       "mkt_value_usd": 193161.0,
       "cost_basis_usd": 267531.0,
@@ -154,7 +160,7 @@
       "daily_pnl_usd": 2680.0,
       "daily_pnl_pct": 0.0141,
       "chg_pct_ytd": -15.33039,
-      "sector": "nan",
+      "sector": "Technology",
       "country": "US",
       "by_broker": {
         "UBS": 6700.0
@@ -170,6 +176,7 @@
       "prev_close": 17.21999999400437,
       "currency": "USD",
       "asset_class": "STK",
+      "type_display": "Equity",
       "price_factor": 1.0,
       "mkt_value_usd": 127946.0,
       "cost_basis_usd": 80142.0,
@@ -194,6 +201,7 @@
       "prev_close": 52.70000002495209,
       "currency": "USD",
       "asset_class": "STK",
+      "type_display": "Commodity ETF",
       "price_factor": 1.0,
       "mkt_value_usd": 105180.0,
       "cost_basis_usd": 101687.15,
@@ -202,7 +210,7 @@
       "daily_pnl_usd": -220.0,
       "daily_pnl_pct": -0.0021,
       "chg_pct_ytd": 85.69915,
-      "sector": "nan",
+      "sector": "Commodities",
       "country": "US",
       "by_broker": {
         "IBKR": 2000.0
@@ -218,6 +226,7 @@
       "prev_close": 36.95999999847918,
       "currency": "USD",
       "asset_class": "STK",
+      "type_display": "Commodity ETF",
       "price_factor": 1.0,
       "mkt_value_usd": 96044.0,
       "cost_basis_usd": 93172.97,
@@ -226,7 +235,7 @@
       "daily_pnl_usd": -52.0,
       "daily_pnl_pct": -0.0005,
       "chg_pct_ytd": 5.663618,
-      "sector": "nan",
+      "sector": "Commodities",
       "country": "US",
       "by_broker": {
         "IBKR": 2600.0
@@ -242,6 +251,7 @@
       "prev_close": 199.64000001111933,
       "currency": "USD",
       "asset_class": "STK",
+      "type_display": "Equity",
       "price_factor": 1.0,
       "mkt_value_usd": 95595.93,
       "cost_basis_usd": 87539.78,
@@ -266,6 +276,7 @@
       "prev_close": 23.409999993064826,
       "currency": "USD",
       "asset_class": "STK",
+      "type_display": "Commodity ETF",
       "price_factor": 1.0,
       "mkt_value_usd": 74208.0,
       "cost_basis_usd": 73437.13,
@@ -274,7 +285,7 @@
       "daily_pnl_usd": -704.0,
       "daily_pnl_pct": -0.0094,
       "chg_pct_ytd": 16.12419,
-      "sector": "nan",
+      "sector": "Commodities",
       "country": "US",
       "by_broker": {
         "IBKR": 3200.0
@@ -290,6 +301,7 @@
       "prev_close": 18.28000000088048,
       "currency": "USD",
       "asset_class": "STK",
+      "type_display": "Commodity ETF",
       "price_factor": 1.0,
       "mkt_value_usd": 71253.0,
       "cost_basis_usd": 70746.0,
@@ -298,7 +310,7 @@
       "daily_pnl_usd": -39.0,
       "daily_pnl_pct": -0.0005,
       "chg_pct_ytd": 3.045688,
-      "sector": "nan",
+      "sector": "Commodities",
       "country": "US",
       "by_broker": {
         "IBKR": 3900.0
@@ -314,6 +326,7 @@
       "prev_close": 9.339999960704864,
       "currency": "USD",
       "asset_class": "STK",
+      "type_display": "Commodity ETF",
       "price_factor": 1.0,
       "mkt_value_usd": 65274.0,
       "cost_basis_usd": 69959.95,
@@ -322,7 +335,7 @@
       "daily_pnl_usd": 828.0,
       "daily_pnl_pct": 0.0128,
       "chg_pct_ytd": -3.024091,
-      "sector": "nan",
+      "sector": "Commodities",
       "country": "US",
       "by_broker": {
         "IBKR": 6900.0
@@ -338,6 +351,7 @@
       "prev_close": 40.08999998222348,
       "currency": "USD",
       "asset_class": "STK",
+      "type_display": "Equity ETF",
       "price_factor": 1.0,
       "mkt_value_usd": 59910.0,
       "cost_basis_usd": 46719.07,
@@ -346,7 +360,7 @@
       "daily_pnl_usd": -225.0,
       "daily_pnl_pct": -0.0037,
       "chg_pct_ytd": 25.71608,
-      "sector": "nan",
+      "sector": "Equity",
       "country": "US",
       "by_broker": {
         "UBS": 1500.0
@@ -362,6 +376,7 @@
       "prev_close": 393.60000001599593,
       "currency": "JPY",
       "asset_class": "STK",
+      "type_display": "Equity ETF",
       "price_factor": 1.0,
       "mkt_value_usd": 49401.48,
       "cost_basis_usd": 50179.45,
@@ -370,7 +385,7 @@
       "daily_pnl_usd": 12.55,
       "daily_pnl_pct": 0.0003,
       "chg_pct_ytd": 10.0028,
-      "sector": "nan",
+      "sector": "Equity",
       "country": "JP",
       "by_broker": {
         "UBS": 20000.0
@@ -386,6 +401,7 @@
       "prev_close": 4.410000001343046,
       "currency": "USD",
       "asset_class": "OPT",
+      "type_display": "Option",
       "price_factor": 100,
       "mkt_value_usd": 44000.0,
       "cost_basis_usd": 34100.0,
@@ -394,7 +410,7 @@
       "daily_pnl_usd": -100.0,
       "daily_pnl_pct": -0.0023,
       "chg_pct_ytd": 0.0,
-      "sector": "nan",
+      "sector": "Derivatives",
       "country": "US",
       "by_broker": {
         "IBKR": 100.0
@@ -410,6 +426,7 @@
       "prev_close": 144.91999950821074,
       "currency": "GBP",
       "asset_class": "STK",
+      "type_display": "Equity",
       "price_factor": 1.0,
       "mkt_value_usd": 35504.29,
       "cost_basis_usd": 46898.65,
@@ -434,6 +451,7 @@
       "prev_close": 599.099999990693,
       "currency": "JPY",
       "asset_class": "STK",
+      "type_display": "Equity ETF",
       "price_factor": 1.0,
       "mkt_value_usd": 26320.06,
       "cost_basis_usd": 24901.12,
@@ -442,7 +460,7 @@
       "daily_pnl_usd": 8.78,
       "daily_pnl_pct": 0.0003,
       "chg_pct_ytd": 13.46081,
-      "sector": "nan",
+      "sector": "Financial",
       "country": "JP",
       "by_broker": {
         "UBS": 7000.0
@@ -458,6 +476,7 @@
       "prev_close": 25.679999989704054,
       "currency": "USD",
       "asset_class": "STK",
+      "type_display": "Bond ETF",
       "price_factor": 1.0,
       "mkt_value_usd": 25740.0,
       "cost_basis_usd": 25500.0,
@@ -466,7 +485,7 @@
       "daily_pnl_usd": 60.0,
       "daily_pnl_pct": 0.0023,
       "chg_pct_ytd": -0.3098362,
-      "sector": "nan",
+      "sector": "Fixed Income",
       "country": "US",
       "by_broker": {
         "IBKR": 1000.0
