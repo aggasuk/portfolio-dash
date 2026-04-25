@@ -13,13 +13,13 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Fetch Bloomberg prices
-        shell: pwsh
+        shell: powershell
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python portfolio_prices.py
 
       - name: Commit updated prices
-        shell: pwsh
+        shell: powershell
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
