@@ -16,8 +16,19 @@ Outputs nav_history.json with daily snapshots.
 import json
 import os
 import sys
+import math
 from datetime import datetime, timedelta
 from collections import defaultdict, deque
+
+
+def scrub_nan(obj):
+    if isinstance(obj, dict):
+        return {k: scrub_nan(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [scrub_nan(v) for v in obj]
+    if isinstance(obj, float) and (math.isnan(obj) or math.isinf(obj)):
+        return None
+    return obj
 
 try:
     from xbbg import blp
@@ -233,8 +244,9 @@ def main():
         "start_date": START_DATE,
         "snapshots": snapshots,
     }
+    output = scrub_nan(output)
     with open(HISTORY_PATH, "w") as f:
-        json.dump(output, f, indent=2)
+        json.dump(output, f, indent=2, allow_nan=False)
     print(f"\n  Wrote {len(snapshots)} daily snapshots to {HISTORY_PATH}")
     if snapshots:
         first, last = snapshots[0], snapshots[-1]
