@@ -23,6 +23,10 @@ from datetime import datetime
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 JOURNAL_PATH = os.path.join(SCRIPT_DIR, "trade_journal.json")
+# Cost-basis reset date: trades on/after this date are appended; earlier trades
+# are already represented by open_* opening-balance entries dated this same day.
+# Including pre-cutoff Flex trades double-counts them on top of the opening balance.
+COST_BASIS_CUTOFF = "2026-01-01"
 
 TOKEN = os.environ.get("IBKR_FLEX_TOKEN")
 QUERY = os.environ.get("IBKR_FLEX_QUERY_ID")
@@ -204,8 +208,11 @@ def main():
     }
 
     appended = 0
-    skipped_id, skipped_comp = 0, 0
+    skipped_id, skipped_comp, skipped_precutoff = 0, 0, 0
     for ft in flex_trades:
+        if (ft.get("date") or "") < COST_BASIS_CUTOFF:
+            skipped_precutoff += 1
+            continue
         if ft["ibkr_trade_id"] in existing_trade_ids:
             skipped_id += 1
             continue
@@ -220,6 +227,7 @@ def main():
     print(f"  Appended: {appended}")
     print(f"  Skipped (matched IBKR trade_id): {skipped_id}")
     print(f"  Skipped (matched ticker/date/qty/price): {skipped_comp}")
+    print(f"  Skipped (pre-cutoff < {COST_BASIS_CUTOFF}): {skipped_precutoff}")
 
     if appended:
         existing.sort(key=lambda t: ((t.get("date") or ""), t.get("id","")))
