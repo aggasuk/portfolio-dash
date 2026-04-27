@@ -3,18 +3,6 @@
   "ibkr_live_match": false,
   "discrepancies": [
     {
-      "ticker": "CPER",
-      "ibkr_live": 2600.0,
-      "journal": 4000.0,
-      "diff": -1400.0
-    },
-    {
-      "ticker": "IAU",
-      "ibkr_live": 500.0,
-      "journal": 1000.0,
-      "diff": -500.0
-    },
-    {
       "ticker": "1615.T",
       "ibkr_live": 0,
       "journal": 6500.0,

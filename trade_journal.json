@@ -557,17 +557,6 @@
       "notes": "Final ADR converted Feb 2"
     },
     {
-      "id": "cper_2026_b1",
-      "date": "2026-02-02",
-      "side": "buy",
-      "ticker": "CPER",
-      "bbg": "CPER US Equity",
-      "qty": 1400,
-      "price": 35.96,
-      "ccy": "USD",
-      "broker": "IBKR"
-    },
-    {
       "id": "ewy_2026_b3_ubs",
       "date": "2026-02-02",
       "side": "buy",
@@ -849,17 +838,6 @@
       "price_factor": 1.0,
       "ibkr_trade_id": "9044512646",
       "ibkr_conid": "474829650"
-    },
-    {
-      "id": "iau_2026_b1_ibkr",
-      "date": "2026-02-23",
-      "side": "buy",
-      "ticker": "IAU",
-      "bbg": "IAU US Equity",
-      "qty": 500,
-      "price": 97.38944,
-      "ccy": "USD",
-      "broker": "IBKR"
     },
     {
       "id": "iau_2026_b2_ubs",
