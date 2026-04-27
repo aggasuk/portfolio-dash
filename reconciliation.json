@@ -3,7 +3,7 @@
   "ibkr_live_match": false,
   "discrepancies": [
     {
-      "ticker": "1615.T",
+      "ticker": "1615",
       "ibkr_live": 0,
       "journal": 6500.0,
       "diff": -6500.0

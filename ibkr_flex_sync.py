@@ -69,6 +69,10 @@ def journal_ticker(asset_cat, symbol, underlying, strike, expiry, put_call):
     if asset_cat == "OPT" and underlying and expiry and strike and put_call:
         d = datetime.strptime(expiry, "%Y%m%d")
         return f"{underlying}_{int(float(strike))}{put_call.upper()}_{d.strftime('%b%y').upper()}"
+    if symbol and "." in symbol:
+        root, suffix = symbol.rsplit(".", 1)
+        if suffix.upper() in {"T", "L", "AS", "DE", "PA", "MI", "MC", "SS", "HK", "TO"}:
+            return root
     return symbol
 
 
