@@ -1,5 +1,66 @@
 {
-  "as_of": "2026-04-25",
-  "ibkr_live_match": true,
-  "discrepancies": []
+  "as_of": "2026-04-27",
+  "ibkr_live_match": false,
+  "discrepancies": [
+    {
+      "ticker": "VOO",
+      "ibkr_live": 330.0,
+      "journal": 510.0,
+      "diff": -180.0
+    },
+    {
+      "ticker": "QQQ",
+      "ibkr_live": 310.0,
+      "journal": 510.0,
+      "diff": -200.0
+    },
+    {
+      "ticker": "CPER",
+      "ibkr_live": 2600.0,
+      "journal": 4000.0,
+      "diff": -1400.0
+    },
+    {
+      "ticker": "IAU",
+      "ibkr_live": 500.0,
+      "journal": 3100.0,
+      "diff": -2600.0
+    },
+    {
+      "ticker": "KWEB",
+      "ibkr_live": 0,
+      "journal": 6700.0,
+      "diff": -6700.0
+    },
+    {
+      "ticker": "AMZN",
+      "ibkr_live": 0,
+      "journal": 1000.0,
+      "diff": -1000.0
+    },
+    {
+      "ticker": "NVDA",
+      "ibkr_live": 0,
+      "journal": 200.0,
+      "diff": -200.0
+    },
+    {
+      "ticker": "REMX",
+      "ibkr_live": 0,
+      "journal": 400.0,
+      "diff": -400.0
+    },
+    {
+      "ticker": "EWZ",
+      "ibkr_live": 0,
+      "journal": 800.0,
+      "diff": -800.0
+    },
+    {
+      "ticker": "1615.T",
+      "ibkr_live": 0,
+      "journal": 6500.0,
+      "diff": -6500.0
+    }
+  ]
 }
