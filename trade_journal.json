@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "description": "Canonical trade journal. Single source of truth for all positions and realized P&L. Convention: ledger starts 2026-01-01 with 'opening' entries reflecting positions held at that date with TRUE cost basis. All subsequent activity recorded as buy/sell. Custody transfers (IBKR<->UBS) are NOT recorded as trades \u00e2\u20ac\u201d broker is informational metadata. Realized P&L is computed FIFO at runtime.",
-  "last_updated": "2026-04-27",
+  "last_updated": "2026-04-28",
   "as_of_open": "2026-01-01",
   "trades": [
     {
@@ -2119,6 +2119,41 @@
       "price": 84.11,
       "ccy": "USD",
       "broker": "UBS"
+    },
+    {
+      "id": "flex_9385521737",
+      "date": "2026-04-27",
+      "side": "buy",
+      "ticker": "USD.SGD",
+      "bbg": "USD.SGD US Equity",
+      "qty": 156876.83,
+      "price": 1.27486,
+      "ccy": "SGD",
+      "broker": "IBKR",
+      "asset_class": "STK",
+      "price_factor": 1.0,
+      "ibkr_trade_id": "9385521737",
+      "ibkr_conid": "37928772"
+    },
+    {
+      "id": "flex_9389699915",
+      "date": "2026-04-27",
+      "side": "sell",
+      "ticker": "BNO_60C_JUL26",
+      "bbg": "BNO US 07/17/26 C60 Equity",
+      "qty": 25.0,
+      "price": 4.75,
+      "ccy": "USD",
+      "broker": "IBKR",
+      "asset_class": "OPT",
+      "price_factor": 100.0,
+      "ibkr_trade_id": "9389699915",
+      "ibkr_conid": "861972058",
+      "underlying": "BNO",
+      "strike": 60.0,
+      "expiry": "2026-07-17",
+      "right": "C",
+      "multiplier": 100.0
     }
   ]
 }

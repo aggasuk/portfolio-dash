@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-28T23:10:20",
+  "last_updated": "2026-04-28T23:16:52",
   "start_date": "2026-01-01",
   "snapshots": [
     {
@@ -7232,11 +7232,11 @@
     },
     {
       "date": "2026-04-27",
-      "nav_securities_usd": 2687906.21,
-      "cost_basis_usd": 2565302.33,
-      "unrealised_pnl_usd": 122603.88,
-      "realized_pnl_ytd_usd": 80445.53,
-      "total_pnl_ytd_usd": 203049.41,
+      "nav_securities_usd": 2676256.21,
+      "cost_basis_usd": 2556777.33,
+      "unrealised_pnl_usd": 119478.88,
+      "realized_pnl_ytd_usd": 83795.53,
+      "total_pnl_ytd_usd": 203274.41,
       "positions": {
         "AMZN": {
           "qty": 1000.0,
@@ -7311,98 +7311,98 @@
           "mkt_val_usd": 64791.0
         },
         "BNO_60C_JUL26": {
-          "qty": 100.0,
-          "mkt_val_usd": 46600.0
+          "qty": 75.0,
+          "mkt_val_usd": 34950.0
         }
       },
-      "ytd_pnl_clean_usd": 84879.24
+      "ytd_pnl_clean_usd": 85104.24
     },
     {
       "date": "2026-04-28",
-      "nav_securities_usd": 2676975.69,
-      "cost_basis_usd": 2565144.77,
-      "unrealised_pnl_usd": 111830.92,
-      "realized_pnl_ytd_usd": 80444.67,
-      "total_pnl_ytd_usd": 192275.59,
+      "nav_securities_usd": 2665965.38,
+      "cost_basis_usd": 2556635.53,
+      "unrealised_pnl_usd": 109329.86,
+      "realized_pnl_ytd_usd": 83794.67,
+      "total_pnl_ytd_usd": 193124.53,
       "positions": {
         "AMZN": {
           "qty": 1000.0,
-          "mkt_val_usd": 259970.0
+          "mkt_val_usd": 260425.0
         },
         "EMLC": {
           "qty": 1000.0,
-          "mkt_val_usd": 25585.0
+          "mkt_val_usd": 25612.8
         },
         "EWZ": {
           "qty": 800.0,
-          "mkt_val_usd": 31404.0
+          "mkt_val_usd": 31504.0
         },
         "IAU": {
           "qty": 4637.0,
-          "mkt_val_usd": 397900.97
+          "mkt_val_usd": 399245.7
         },
         "KWEB": {
           "qty": 6700.0,
-          "mkt_val_usd": 187600.0
+          "mkt_val_usd": 188069.0
         },
         "MUFG": {
           "qty": 7400.0,
-          "mkt_val_usd": 129537.0
+          "mkt_val_usd": 129833.0
         },
         "NVDA": {
           "qty": 459.0,
-          "mkt_val_usd": 95733.63
+          "mkt_val_usd": 96371.69
         },
         "QQQ": {
           "qty": 310.0,
-          "mkt_val_usd": 202761.7
+          "mkt_val_usd": 203310.4
         },
         "UST_4_25_DEC26": {
           "qty": 528000.0,
-          "mkt_val_usd": 529784.06
+          "mkt_val_usd": 529794.38
         },
         "VOO": {
           "qty": 330.0,
-          "mkt_val_usd": 215252.4
+          "mkt_val_usd": 215608.8
         },
         "1615": {
           "qty": 13500.0,
-          "mkt_val_usd": 53495.1
+          "mkt_val_usd": 53503.64
         },
         "AZN_LN": {
           "qty": 188.0,
-          "mkt_val_usd": 26120.72
+          "mkt_val_usd": 26124.48
         },
         "CPER": {
           "qty": 2600.0,
-          "mkt_val_usd": 93977.0
+          "mkt_val_usd": 94198.0
         },
         "1306": {
           "qty": 20000.0,
-          "mkt_val_usd": 50104.0
+          "mkt_val_usd": 50112.0
         },
         "BNO": {
           "qty": 2000.0,
-          "mkt_val_usd": 110140.0
+          "mkt_val_usd": 109500.0
         },
         "CORN": {
           "qty": 3900.0,
-          "mkt_val_usd": 72851.61
+          "mkt_val_usd": 72754.5
         },
         "WEAT": {
           "qty": 3200.0,
-          "mkt_val_usd": 77760.0
+          "mkt_val_usd": 77728.0
         },
         "CANE": {
           "qty": 6900.0,
-          "mkt_val_usd": 65998.5
+          "mkt_val_usd": 65895.0
         },
         "BNO_60C_JUL26": {
-          "qty": 100.0,
-          "mkt_val_usd": 51000.0
+          "qty": 75.0,
+          "mkt_val_usd": 36375.0
         }
       },
-      "ytd_pnl_clean_usd": 74105.42
+      "ytd_pnl_clean_usd": 74954.36
     }
   ]
 }
