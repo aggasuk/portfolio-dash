@@ -1133,36 +1133,6 @@
       "broker": "IBKR"
     },
     {
-      "id": "flex_9172990591",
-      "date": "2026-03-17",
-      "side": "sell",
-      "ticker": "USD.SGD",
-      "bbg": "USD.SGD US Equity",
-      "qty": 23435.32,
-      "price": 1.27662,
-      "ccy": "SGD",
-      "broker": "IBKR",
-      "asset_class": "STK",
-      "price_factor": 1.0,
-      "ibkr_trade_id": "9172990591",
-      "ibkr_conid": "37928772"
-    },
-    {
-      "id": "flex_9172991568",
-      "date": "2026-03-17",
-      "side": "sell",
-      "ticker": "SGD.JPY",
-      "bbg": "SGD.JPY US Equity",
-      "qty": 30512.0,
-      "price": 124.525,
-      "ccy": "JPY",
-      "broker": "IBKR",
-      "asset_class": "STK",
-      "price_factor": 1.0,
-      "ibkr_trade_id": "9172991568",
-      "ibkr_conid": "61664943"
-    },
-    {
       "id": "snow_2026_sell",
       "date": "2026-03-17",
       "side": "sell",
@@ -1300,21 +1270,6 @@
       "price_factor": 1.0,
       "ibkr_trade_id": "9183185008",
       "ibkr_conid": "75961365"
-    },
-    {
-      "id": "flex_9190664484",
-      "date": "2026-03-20",
-      "side": "sell",
-      "ticker": "SGD.JPY",
-      "bbg": "SGD.JPY US Equity",
-      "qty": 0.5647,
-      "price": 123.465,
-      "ccy": "JPY",
-      "broker": "IBKR",
-      "asset_class": "STK",
-      "price_factor": 1.0,
-      "ibkr_trade_id": "9190664484",
-      "ibkr_conid": "61664943"
     },
     {
       "id": "bno_2026_b2",
@@ -2119,21 +2074,6 @@
       "price": 84.11,
       "ccy": "USD",
       "broker": "UBS"
-    },
-    {
-      "id": "flex_9385521737",
-      "date": "2026-04-27",
-      "side": "buy",
-      "ticker": "USD.SGD",
-      "bbg": "USD.SGD US Equity",
-      "qty": 156876.83,
-      "price": 1.27486,
-      "ccy": "SGD",
-      "broker": "IBKR",
-      "asset_class": "STK",
-      "price_factor": 1.0,
-      "ibkr_trade_id": "9385521737",
-      "ibkr_conid": "37928772"
     },
     {
       "id": "flex_9389699915",

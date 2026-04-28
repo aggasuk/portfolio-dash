@@ -7,12 +7,6 @@
       "ibkr_live": 0,
       "journal": 6500.0,
       "diff": -6500.0
-    },
-    {
-      "ticker": "USD.SGD",
-      "ibkr_live": 0,
-      "journal": 156876.83,
-      "diff": -156876.83
     }
   ]
 }

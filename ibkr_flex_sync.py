@@ -128,6 +128,14 @@ def parse_trades(xml_bytes):
         qty = abs(float(a.get("quantity", 0) or 0))
         if qty <= 0:
             continue
+        # Skip FX conversions (IBKR auto-converts wires; symbol is XXX.YYY currency pair).
+        # These come through as fake STK trades but are just cash conversions, not positions.
+        sym_check = (a.get("symbol", "") or "").upper().strip()
+        if len(sym_check) == 7 and sym_check[3] == "." and sym_check[:3].isalpha() and sym_check[4:].isalpha():
+            continue
+        # Also skip explicit CASH/FX asset categories
+        if a.get("assetCategory", "") in ("CASH", "FX", "FOREX"):
+            continue
         price = float(a.get("tradePrice", 0) or 0)
         ccy = a.get("currency", "USD")
         date_raw = a.get("tradeDate", "")
