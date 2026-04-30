@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-04-30",
+  "as_of": "2026-05-01",
   "ibkr_live_match": false,
   "discrepancies": [
     {
@@ -7,6 +7,12 @@
       "ibkr_live": -1200.0,
       "journal": 0,
       "diff": -1200.0
+    },
+    {
+      "ticker": "1615",
+      "ibkr_live": 0,
+      "journal": 6500.0,
+      "diff": -6500.0
     }
   ]
 }
