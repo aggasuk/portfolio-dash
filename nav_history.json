@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-30T09:24:47",
+  "last_updated": "2026-04-30T09:26:35",
   "start_date": "2026-01-01",
   "snapshots": [
     {
@@ -7493,11 +7493,11 @@
     },
     {
       "date": "2026-04-30",
-      "nav_securities_usd": 2691452.72,
-      "cost_basis_usd": 2556273.14,
-      "unrealised_pnl_usd": 135179.58,
+      "nav_securities_usd": 2691373.23,
+      "cost_basis_usd": 2556257.38,
+      "unrealised_pnl_usd": 135115.85,
       "realized_pnl_ytd_usd": 83793.47,
-      "total_pnl_ytd_usd": 218973.05,
+      "total_pnl_ytd_usd": 218909.32,
       "positions": {
         "AMZN": {
           "qty": 1000.0,
@@ -7533,7 +7533,7 @@
         },
         "UST_4_25_DEC26": {
           "qty": 528000.0,
-          "mkt_val_usd": 529722.19
+          "mkt_val_usd": 529742.81
         },
         "VOO": {
           "qty": 330.0,
@@ -7541,7 +7541,7 @@
         },
         "1615": {
           "qty": 13500.0,
-          "mkt_val_usd": 51866.45
+          "mkt_val_usd": 51799.18
         },
         "AZN_LN": {
           "qty": 188.0,
@@ -7553,7 +7553,7 @@
         },
         "1306": {
           "qty": 20000.0,
-          "mkt_val_usd": 49154.12
+          "mkt_val_usd": 49121.28
         },
         "BNO": {
           "qty": 2000.0,
@@ -7576,7 +7576,7 @@
           "mkt_val_usd": 53400.0
         }
       },
-      "ytd_pnl_clean_usd": 100802.88
+      "ytd_pnl_clean_usd": 100739.15
     }
   ]
 }

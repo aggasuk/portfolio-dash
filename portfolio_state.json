@@ -1,22 +1,22 @@
 {
-  "last_updated": "2026-04-30T09:24:53",
+  "last_updated": "2026-04-30T09:26:41",
   "as_of": "2026-04-30",
   "summary": {
     "as_of": "2026-04-30",
-    "nav_securities_usd": 2700476.87,
+    "nav_securities_usd": 2700395.52,
     "nav_jan1_usd": 2559747.8,
     "cost_basis_usd": 2556257.39,
-    "unrealised_pnl_usd": 144219.48,
+    "unrealised_pnl_usd": 144138.12,
     "unrealised_pnl_pct": 0.0564,
     "ytd_unrealised_baseline_usd": 118170.17,
-    "daily_pnl_usd": 18304.86,
+    "daily_pnl_usd": 18220.89,
     "realized_pnl_2026_usd": 83918.68,
-    "ytd_pnl_usd": 109967.99,
-    "ytd_pnl_pct_of_jan1_nav": 0.043,
+    "ytd_pnl_usd": 109886.63,
+    "ytd_pnl_pct_of_jan1_nav": 0.0429,
     "open_positions": 19,
     "closed_positions_2026": 42,
-    "cash_usd": 349703.51,
-    "nav_total_usd": 3050180.38
+    "cash_usd": 349703.54,
+    "nav_total_usd": 3050099.06
   },
   "open_positions": [
     {
@@ -445,19 +445,19 @@
       "name": "NEXT FUNDS TOPIX BANKS ETF",
       "qty": 13500.0,
       "avg_cost": 574.673111,
-      "mkt_price": 615.6,
+      "mkt_price": 614.9,
       "prev_close": 632.7,
       "currency": "JPY",
       "asset_class": "STK",
       "type_display": "Equity ETF",
       "price_factor": 1.0,
-      "mkt_value_usd": 51858.14,
+      "mkt_value_usd": 51799.18,
       "cost_basis_usd": 48410.46,
-      "unrealised_pnl_usd": 3447.68,
-      "unrealised_pnl_pct": 0.0712,
-      "daily_pnl_usd": -1440.5,
-      "daily_pnl_pct": -0.027,
-      "chg_pct_ytd": 16.54676,
+      "unrealised_pnl_usd": 3388.71,
+      "unrealised_pnl_pct": 0.07,
+      "daily_pnl_usd": -1499.47,
+      "daily_pnl_pct": -0.0281,
+      "chg_pct_ytd": 16.41423,
       "sector": "Financials",
       "country": "JP",
       "by_broker": {
@@ -468,27 +468,27 @@
       "jan1_mkt_value_usd": 0,
       "buys_2026_usd": 48410.46,
       "sells_2026_usd": 0.0,
-      "ytd_pnl_usd": 3447.68,
-      "ytd_pnl_pct": 0.0712
+      "ytd_pnl_usd": 3388.72,
+      "ytd_pnl_pct": 0.07
     },
     {
       "ticker": "1306",
       "name": "NEXT FUNDS TOPIX ETF",
       "qty": 20000.0,
       "avg_cost": 399.9,
-      "mkt_price": 393.8,
+      "mkt_price": 393.6,
       "prev_close": 400.0,
       "currency": "JPY",
       "asset_class": "STK",
       "type_display": "Equity ETF",
       "price_factor": 1.0,
-      "mkt_value_usd": 49146.24,
+      "mkt_value_usd": 49121.28,
       "cost_basis_usd": 49907.52,
-      "unrealised_pnl_usd": -761.28,
-      "unrealised_pnl_pct": -0.0153,
-      "daily_pnl_usd": -773.76,
-      "daily_pnl_pct": -0.0155,
-      "chg_pct_ytd": 10.03074,
+      "unrealised_pnl_usd": -786.24,
+      "unrealised_pnl_pct": -0.0158,
+      "daily_pnl_usd": -798.72,
+      "daily_pnl_pct": -0.016,
+      "chg_pct_ytd": 9.974855,
       "sector": "Equity",
       "country": "JP",
       "by_broker": {
@@ -498,25 +498,25 @@
       "jan1_mkt_value_usd": 0,
       "buys_2026_usd": 49907.52,
       "sells_2026_usd": 0.0,
-      "ytd_pnl_usd": -761.28,
-      "ytd_pnl_pct": -0.0153
+      "ytd_pnl_usd": -786.24,
+      "ytd_pnl_pct": -0.0158
     },
     {
       "ticker": "AZN_LN",
       "name": "ASTRAZENECA PLC",
       "qty": 188.0,
-      "avg_cost": 136.851083,
+      "avg_cost": 136.840934,
       "mkt_price": 136.92,
       "prev_close": 139.00000017258253,
       "currency": "GBP",
       "asset_class": "STK",
       "type_display": "Equity",
       "price_factor": 1.0,
-      "mkt_value_usd": 34709.11,
+      "mkt_value_usd": 34711.68,
       "cost_basis_usd": 34691.64,
-      "unrealised_pnl_usd": 17.47,
-      "unrealised_pnl_pct": 0.0005,
-      "daily_pnl_usd": -527.28,
+      "unrealised_pnl_usd": 20.04,
+      "unrealised_pnl_pct": 0.0006,
+      "daily_pnl_usd": -527.32,
       "daily_pnl_pct": -0.015,
       "chg_pct_ytd": -0.7106599,
       "sector": "Health Care",
@@ -528,8 +528,8 @@
       "jan1_mkt_value_usd": 0,
       "buys_2026_usd": 34691.64,
       "sells_2026_usd": 0.0,
-      "ytd_pnl_usd": 17.47,
-      "ytd_pnl_pct": 0.0005
+      "ytd_pnl_usd": 20.04,
+      "ytd_pnl_pct": 0.0006
     },
     {
       "ticker": "EWZ",
@@ -1211,14 +1211,14 @@
         "source": "UBS-271156",
         "currency": "GBP",
         "amount": 299.86,
-        "amount_usd": 404.33
+        "amount_usd": 404.36
       }
     },
-    "total_usd": 349703.51
+    "total_usd": 349703.54
   },
   "fx_rates": {
     "USD": 1.0,
-    "GBP": 1.3484,
-    "JPY": 0.00624
+    "JPY": 0.00624,
+    "GBP": 1.3485
   }
 }
