@@ -7,18 +7,6 @@
       "ibkr_live": -1200.0,
       "journal": 0,
       "diff": -1200.0
-    },
-    {
-      "ticker": "BNO",
-      "ibkr_live": 1500.0,
-      "journal": 2000.0,
-      "diff": -500.0
-    },
-    {
-      "ticker": "BNO_60C_JUL26",
-      "ibkr_live": 0,
-      "journal": 75.0,
-      "diff": -75.0
     }
   ]
 }
