@@ -3,10 +3,22 @@
   "ibkr_live_match": false,
   "discrepancies": [
     {
-      "ticker": "1615",
+      "ticker": "TLT",
+      "ibkr_live": -1200.0,
+      "journal": 0,
+      "diff": -1200.0
+    },
+    {
+      "ticker": "BNO",
+      "ibkr_live": 1500.0,
+      "journal": 2000.0,
+      "diff": -500.0
+    },
+    {
+      "ticker": "BNO_60C_JUL26",
       "ibkr_live": 0,
-      "journal": 6500.0,
-      "diff": -6500.0
+      "journal": 75.0,
+      "diff": -75.0
     }
   ]
 }

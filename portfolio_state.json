@@ -1,22 +1,22 @@
 {
-  "last_updated": "2026-04-30T09:26:41",
+  "last_updated": "2026-04-30T09:30:23",
   "as_of": "2026-04-30",
   "summary": {
     "as_of": "2026-04-30",
-    "nav_securities_usd": 2700395.52,
+    "nav_securities_usd": 2700396.89,
     "nav_jan1_usd": 2559747.8,
-    "cost_basis_usd": 2556257.39,
-    "unrealised_pnl_usd": 144138.12,
+    "cost_basis_usd": 2556241.63,
+    "unrealised_pnl_usd": 144155.26,
     "unrealised_pnl_pct": 0.0564,
     "ytd_unrealised_baseline_usd": 118170.17,
-    "daily_pnl_usd": 18220.89,
+    "daily_pnl_usd": 18246.65,
     "realized_pnl_2026_usd": 83918.68,
-    "ytd_pnl_usd": 109886.63,
+    "ytd_pnl_usd": 109903.77,
     "ytd_pnl_pct_of_jan1_nav": 0.0429,
     "open_positions": 19,
     "closed_positions_2026": 42,
-    "cash_usd": 349703.54,
-    "nav_total_usd": 3050099.06
+    "cash_usd": 530359.6,
+    "nav_total_usd": 3230756.49
   },
   "open_positions": [
     {
@@ -445,19 +445,19 @@
       "name": "NEXT FUNDS TOPIX BANKS ETF",
       "qty": 13500.0,
       "avg_cost": 574.673111,
-      "mkt_price": 614.9,
+      "mkt_price": 615.2,
       "prev_close": 632.7,
       "currency": "JPY",
       "asset_class": "STK",
       "type_display": "Equity ETF",
       "price_factor": 1.0,
-      "mkt_value_usd": 51799.18,
-      "cost_basis_usd": 48410.46,
-      "unrealised_pnl_usd": 3388.71,
-      "unrealised_pnl_pct": 0.07,
-      "daily_pnl_usd": -1499.47,
-      "daily_pnl_pct": -0.0281,
-      "chg_pct_ytd": 16.41423,
+      "mkt_value_usd": 51816.14,
+      "cost_basis_usd": 48402.7,
+      "unrealised_pnl_usd": 3413.44,
+      "unrealised_pnl_pct": 0.0705,
+      "daily_pnl_usd": -1473.96,
+      "daily_pnl_pct": -0.0277,
+      "chg_pct_ytd": 16.47103,
       "sector": "Financials",
       "country": "JP",
       "by_broker": {
@@ -466,10 +466,10 @@
       },
       "lots_count": 6,
       "jan1_mkt_value_usd": 0,
-      "buys_2026_usd": 48410.46,
+      "buys_2026_usd": 48402.7,
       "sells_2026_usd": 0.0,
-      "ytd_pnl_usd": 3388.72,
-      "ytd_pnl_pct": 0.07
+      "ytd_pnl_usd": 3413.44,
+      "ytd_pnl_pct": 0.0705
     },
     {
       "ticker": "1306",
@@ -482,11 +482,11 @@
       "asset_class": "STK",
       "type_display": "Equity ETF",
       "price_factor": 1.0,
-      "mkt_value_usd": 49121.28,
-      "cost_basis_usd": 49907.52,
-      "unrealised_pnl_usd": -786.24,
+      "mkt_value_usd": 49113.41,
+      "cost_basis_usd": 49899.52,
+      "unrealised_pnl_usd": -786.11,
       "unrealised_pnl_pct": -0.0158,
-      "daily_pnl_usd": -798.72,
+      "daily_pnl_usd": -798.59,
       "daily_pnl_pct": -0.016,
       "chg_pct_ytd": 9.974855,
       "sector": "Equity",
@@ -496,27 +496,27 @@
       },
       "lots_count": 2,
       "jan1_mkt_value_usd": 0,
-      "buys_2026_usd": 49907.52,
+      "buys_2026_usd": 49899.52,
       "sells_2026_usd": 0.0,
-      "ytd_pnl_usd": -786.24,
+      "ytd_pnl_usd": -786.11,
       "ytd_pnl_pct": -0.0158
     },
     {
       "ticker": "AZN_LN",
       "name": "ASTRAZENECA PLC",
       "qty": 188.0,
-      "avg_cost": 136.840934,
+      "avg_cost": 136.871384,
       "mkt_price": 136.92,
       "prev_close": 139.00000017258253,
       "currency": "GBP",
       "asset_class": "STK",
       "type_display": "Equity",
       "price_factor": 1.0,
-      "mkt_value_usd": 34711.68,
+      "mkt_value_usd": 34703.96,
       "cost_basis_usd": 34691.64,
-      "unrealised_pnl_usd": 20.04,
-      "unrealised_pnl_pct": 0.0006,
-      "daily_pnl_usd": -527.32,
+      "unrealised_pnl_usd": 12.32,
+      "unrealised_pnl_pct": 0.0004,
+      "daily_pnl_usd": -527.2,
       "daily_pnl_pct": -0.015,
       "chg_pct_ytd": -0.7106599,
       "sector": "Health Care",
@@ -528,8 +528,8 @@
       "jan1_mkt_value_usd": 0,
       "buys_2026_usd": 34691.64,
       "sells_2026_usd": 0.0,
-      "ytd_pnl_usd": 20.04,
-      "ytd_pnl_pct": 0.0006
+      "ytd_pnl_usd": 12.32,
+      "ytd_pnl_pct": 0.0004
     },
     {
       "ticker": "EWZ",
@@ -1186,8 +1186,8 @@
     "by_currency": {
       "IBKR_total": {
         "currency": "SGD",
-        "amount": 23955.01953125,
-        "amount_usd": 18770.26
+        "amount": 255321.921875,
+        "amount_usd": 199426.63
       },
       "UBS-271319_SGD": {
         "source": "UBS-271319",
@@ -1205,20 +1205,20 @@
         "source": "UBS-271156",
         "currency": "JPY",
         "amount": 215852,
-        "amount_usd": 1346.92
+        "amount_usd": 1346.7
       },
       "UBS-271156_GBP": {
         "source": "UBS-271156",
         "currency": "GBP",
         "amount": 299.86,
-        "amount_usd": 404.36
+        "amount_usd": 404.27
       }
     },
-    "total_usd": 349703.54
+    "total_usd": 530359.6
   },
   "fx_rates": {
     "USD": 1.0,
-    "JPY": 0.00624,
-    "GBP": 1.3485
+    "GBP": 1.3482,
+    "JPY": 0.006239
   }
 }
