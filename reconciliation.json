@@ -3,6 +3,12 @@
   "ibkr_live_match": false,
   "discrepancies": [
     {
+      "ticker": "CANE",
+      "ibkr_live": 6900.0,
+      "journal": 9500.0,
+      "diff": -2600.0
+    },
+    {
       "ticker": "TLT",
       "ibkr_live": -1200.0,
       "journal": 0,

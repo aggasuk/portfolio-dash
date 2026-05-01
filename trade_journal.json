@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "description": "Canonical trade journal. Single source of truth for all positions and realized P&L. Convention: ledger starts 2026-01-01 with 'opening' entries reflecting positions held at that date with TRUE cost basis. All subsequent activity recorded as buy/sell. Custody transfers (IBKR<->UBS) are NOT recorded as trades \u00e2\u20ac\u201d broker is informational metadata. Realized P&L is computed FIFO at runtime.",
-  "last_updated": "2026-04-30",
+  "last_updated": "2026-05-01",
   "as_of_open": "2026-01-01",
   "trades": [
     {
@@ -2229,6 +2229,21 @@
       "price_factor": 1.0,
       "ibkr_trade_id": "9406580865",
       "ibkr_conid": "15547841"
+    },
+    {
+      "id": "flex_9412954700",
+      "date": "2026-04-30",
+      "side": "buy",
+      "ticker": "CANE",
+      "bbg": "CANE US Equity",
+      "qty": 2600.0,
+      "price": 9.9,
+      "ccy": "USD",
+      "broker": "IBKR",
+      "asset_class": "STK",
+      "price_factor": 1.0,
+      "ibkr_trade_id": "9412954700",
+      "ibkr_conid": "94440555"
     }
   ]
 }
