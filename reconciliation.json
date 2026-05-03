@@ -9,12 +9,6 @@
       "diff": 100.0
     },
     {
-      "ticker": "TLT",
-      "ibkr_live": -2400.0,
-      "journal": 0,
-      "diff": -2400.0
-    },
-    {
       "ticker": "1615",
       "ibkr_live": 0,
       "journal": 6500.0,
