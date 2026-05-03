@@ -71,10 +71,22 @@ def replay_to_date(trades, target_date):
         if tk not in meta:
             meta[tk] = {"ccy": ccy, "bbg": t.get("bbg"), "price_factor": pf, "asset_class": ac, "multiplier": t.get("multiplier",1)}
         if side in ("buy","open"):
-            lots[tk].append({"qty": qty, "price": px, "ccy": ccy, "price_factor": pf})
+            remaining = qty
+            # Cover existing shorts FIFO first
+            while remaining > 0 and lots[tk] and lots[tk][0]["qty"] < 0:
+                lot = lots[tk][0]
+                cover = min(-lot["qty"], remaining)
+                realized = (lot["price"] - px) * cover * pf
+                realized_by_ccy[ccy] += realized
+                lot["qty"] += cover
+                remaining -= cover
+                if abs(lot["qty"]) <= 1e-9:
+                    lots[tk].popleft()
+            if remaining > 0:
+                lots[tk].append({"qty": remaining, "price": px, "ccy": ccy, "price_factor": pf})
         elif side == "sell":
             remaining = qty
-            while remaining > 0 and lots[tk]:
+            while remaining > 0 and lots[tk] and lots[tk][0]["qty"] > 0:
                 lot = lots[tk][0]
                 take = min(lot["qty"], remaining)
                 realized = (px - lot["price"]) * take * pf
@@ -83,6 +95,9 @@ def replay_to_date(trades, target_date):
                 remaining -= take
                 if lot["qty"] <= 1e-9:
                     lots[tk].popleft()
+            if remaining > 0:
+                # Open/extend short
+                lots[tk].append({"qty": -remaining, "price": px, "ccy": ccy, "price_factor": pf})
         elif side == "split":
             lots[tk].append({"qty": qty, "price": 0.0, "ccy": ccy, "price_factor": pf})
 

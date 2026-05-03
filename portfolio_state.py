@@ -143,14 +143,39 @@ def compute_positions(trades):
             }
 
         if side in ("buy", "open"):
-            lots[tk].append({
-                "qty": qty, "price": px, "ccy": ccy,
-                "date": date, "broker": broker,
-                "price_factor": pf,
-            })
+            remaining = qty
+            # Cover existing short lots FIFO first (lots with qty<0)
+            while remaining > 0 and lots[tk] and lots[tk][0]["qty"] < 0:
+                lot = lots[tk][0]
+                cover = min(-lot["qty"], remaining)
+                realized = (lot["price"] - px) * cover * pf
+                closed[tk].append({
+                    "qty": cover,
+                    "buy_price": px,
+                    "sell_price": lot["price"],
+                    "buy_date": date,
+                    "sell_date": lot["date"],
+                    "realized_local": realized,
+                    "ccy": ccy,
+                    "broker_buy": broker,
+                    "broker_sell": lot["broker"],
+                    "price_factor": pf,
+                    "short": True,
+                })
+                lot["qty"] += cover
+                remaining -= cover
+                if abs(lot["qty"]) <= 1e-9:
+                    lots[tk].popleft()
+            if remaining > 0:
+                lots[tk].append({
+                    "qty": remaining, "price": px, "ccy": ccy,
+                    "date": date, "broker": broker,
+                    "price_factor": pf,
+                })
         elif side == "sell":
             remaining = qty
-            while remaining > 0 and lots[tk]:
+            # Close existing long lots FIFO first
+            while remaining > 0 and lots[tk] and lots[tk][0]["qty"] > 0:
                 lot = lots[tk][0]
                 take = min(lot["qty"], remaining)
                 realized = (px - lot["price"]) * take * pf
@@ -171,8 +196,12 @@ def compute_positions(trades):
                 if lot["qty"] <= 1e-9:
                     lots[tk].popleft()
             if remaining > 0:
-                # over-sell: log as anomaly with negative qty open lot? Skip and warn.
-                print(f"  WARN: over-sell on {tk} at {date}: {remaining} unmatched")
+                # Open or extend short: append negative-qty lot at sell price
+                lots[tk].append({
+                    "qty": -remaining, "price": px, "ccy": ccy,
+                    "date": date, "broker": broker,
+                    "price_factor": pf,
+                })
         elif side == "split":
             # Add the split-issued shares as a 0-cost lot. The cost basis remains
             # the original total; the average will be diluted automatically.
@@ -408,7 +437,9 @@ def build_state():
     # Build open positions array
     open_positions = []
     for tk, lot_q in lots.items():
-        if not lot_q or sum(l["qty"] for l in lot_q) <= 0: continue
+        if not lot_q: continue
+        _net_qty = sum(l["qty"] for l in lot_q)
+        if abs(_net_qty) < 1e-9: continue  # flat — skip; keep shorts (net<0)
         m = meta[tk]
         p = prices.get(tk, {})
         ccy = m["ccy"]
@@ -430,7 +461,7 @@ def build_state():
             lot_ccy = l.get("ccy", ccy)
             lot_fx  = fx_rates.get(lot_ccy, 1.0)
             cost_usd += l["qty"] * l["price"] * pf * lot_fx
-        avg_cost_usd = cost_usd / total_qty if total_qty > 0 else 0
+        avg_cost_usd = cost_usd / total_qty if abs(total_qty) > 1e-9 else 0
         # Display avg_cost in quote ccy (consistent with mkt_price display)
         avg_cost = avg_cost_usd / fx_quote if fx_quote else avg_cost_usd
 
@@ -457,7 +488,7 @@ def build_state():
             "mkt_value_usd": round(mkt_val_usd, 2),
             "cost_basis_usd": round(cost_usd, 2),
             "unrealised_pnl_usd": round(unreal_usd, 2),
-            "unrealised_pnl_pct": round(unreal_usd / cost_usd, 4) if cost_usd > 0 else 0,
+            "unrealised_pnl_pct": round(unreal_usd / abs(cost_usd), 4) if abs(cost_usd) > 1e-9 else 0,
             "daily_pnl_usd": round(daily_pnl_usd, 2),
             "daily_pnl_pct": round((last - prev) / prev, 4) if prev > 0 else 0,
             "chg_pct_ytd": p.get("chg_pct_ytd", 0),
@@ -542,7 +573,7 @@ def build_state():
         p["buys_2026_usd"]      = round(flow["buys_usd"], 2)
         p["sells_2026_usd"]     = round(flow["sells_usd"], 2)
         p["ytd_pnl_usd"]        = round(p["mkt_value_usd"] + flow["sells_usd"] - flow["buys_usd"] - jan1, 2)
-        denom = jan1 if jan1 > 0 else flow["buys_usd"]
+        denom = jan1 if jan1 > 0 else (flow["buys_usd"] or flow["sells_usd"])
         p["ytd_pnl_pct"]        = round(p["ytd_pnl_usd"] / denom, 4) if denom > 0 else 0
 
     summary = {
