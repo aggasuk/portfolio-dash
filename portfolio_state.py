@@ -94,9 +94,13 @@ def load_manual_trades():
     """Pulls aggasuk/trade-book/portfolio_trades.json for ad-hoc UBS entries
     user adds via blotter. Each entry must have: ticker, side, qty, price, date.
     Skip entries already present in journal (by id or by ticker+date+qty+price)."""
-    headers = {"Authorization": f"Bearer {GH_TOKEN}"} if GH_TOKEN else {}
+    if not GH_TOKEN:
+        print("  WARN: GH_TOKEN not set — skipping manual UBS trade-book fetch.")
+        return []
+    headers = {"Authorization": f"Bearer {GH_TOKEN}"}
     data = http_get(TRADES_API, headers)
     if not data or "content" not in data:
+        print(f"  WARN: trade-book fetch failed (token lacks access to aggasuk/trade-book?). Manual UBS trades will be missing.")
         return []
     raw = json.loads(base64.b64decode(data["content"]).decode("utf-8"))
     return raw if isinstance(raw, list) else []

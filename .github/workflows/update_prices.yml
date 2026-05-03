@@ -26,7 +26,7 @@ jobs:
       - name: Compute portfolio state (FIFO + Bloomberg prices + IBKR reconciliation, reads nav_history for YTD baseline)
         shell: powershell
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.TRADE_BOOK_TOKEN }}
         run: python portfolio_state.py
 
       - name: Commit refreshed files (journal + state + history + recon)
