@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "description": "Canonical trade journal. Single source of truth for all positions and realized P&L. Convention: ledger starts 2026-01-01 with 'opening' entries reflecting positions held at that date with TRUE cost basis. All subsequent activity recorded as buy/sell. Custody transfers (IBKR<->UBS) are NOT recorded as trades \u00e2\u20ac\u201d broker is informational metadata. Realized P&L is computed FIFO at runtime.",
-  "last_updated": "2026-05-03",
+  "last_updated": "2026-05-04T23:45:55.712200",
   "as_of_open": "2026-01-01",
   "trades": [
     {
@@ -270,17 +270,6 @@
       "broker": "IBKR"
     },
     {
-      "id": "ewz_2026_sell",
-      "date": "2026-01-06",
-      "side": "sell",
-      "ticker": "EWZ",
-      "bbg": "EWZ US Equity",
-      "qty": 700,
-      "price": 33.315,
-      "ccy": "USD",
-      "broker": "IBKR"
-    },
-    {
       "id": "flex_8777793803",
       "date": "2026-01-06",
       "side": "sell",
@@ -309,17 +298,6 @@
       "price_factor": 1.0,
       "ibkr_trade_id": "8777793902",
       "ibkr_conid": "10753244"
-    },
-    {
-      "id": "fcx_2026_sell",
-      "date": "2026-01-07",
-      "side": "sell",
-      "ticker": "FCX",
-      "bbg": "FCX US Equity",
-      "qty": 1200,
-      "price": 54.2330638,
-      "ccy": "USD",
-      "broker": "IBKR"
     },
     {
       "id": "flex_8783391368",
@@ -622,17 +600,6 @@
       "asset_class": "BOND"
     },
     {
-      "id": "crm_2026_sell",
-      "date": "2026-02-03",
-      "side": "sell",
-      "ticker": "CRM",
-      "bbg": "CRM US Equity",
-      "qty": 30,
-      "price": 198.08095,
-      "ccy": "USD",
-      "broker": "IBKR"
-    },
-    {
       "id": "flex_8938641373",
       "date": "2026-02-03",
       "side": "sell",
@@ -693,21 +660,6 @@
       "ibkr_conid": "445423543"
     },
     {
-      "id": "flex_8938896911",
-      "date": "2026-02-03",
-      "side": "sell",
-      "ticker": "TII 2 1/8 01/15/35",
-      "bbg": null,
-      "qty": 5000.0,
-      "price": 102.316017,
-      "ccy": "USD",
-      "broker": "IBKR",
-      "asset_class": "BOND",
-      "price_factor": 0.01,
-      "ibkr_trade_id": "8938896911",
-      "ibkr_conid": "757576803"
-    },
-    {
       "id": "mos_2026_sell",
       "date": "2026-02-03",
       "side": "sell",
@@ -730,28 +682,6 @@
       "broker": "IBKR",
       "price_factor": 0.01,
       "asset_class": "BOND"
-    },
-    {
-      "id": "u_2026_sell",
-      "date": "2026-02-03",
-      "side": "sell",
-      "ticker": "U",
-      "bbg": "U US Equity",
-      "qty": 191,
-      "price": 25.91,
-      "ccy": "USD",
-      "broker": "IBKR"
-    },
-    {
-      "id": "ewy_2026_s1_ibkr",
-      "date": "2026-02-12",
-      "side": "sell",
-      "ticker": "EWY",
-      "bbg": "EWY US Equity",
-      "qty": 500,
-      "price": 130.175,
-      "ccy": "USD",
-      "broker": "IBKR"
     },
     {
       "id": "ewy_2026_s2_ubs",
@@ -1034,61 +964,6 @@
       "ibkr_conid": "13977"
     },
     {
-      "id": "uso_2026_s1",
-      "date": "2026-03-02",
-      "side": "sell",
-      "ticker": "USO",
-      "bbg": "USO US Equity",
-      "qty": 250,
-      "price": 87.205,
-      "ccy": "USD",
-      "broker": "IBKR"
-    },
-    {
-      "id": "uso_2026_s2",
-      "date": "2026-03-02",
-      "side": "sell",
-      "ticker": "USO",
-      "bbg": "USO US Equity",
-      "qty": 200,
-      "price": 86.9507,
-      "ccy": "USD",
-      "broker": "IBKR"
-    },
-    {
-      "id": "xom_2026_s1",
-      "date": "2026-03-02",
-      "side": "sell",
-      "ticker": "XOM",
-      "bbg": "XOM US Equity",
-      "qty": 100,
-      "price": 155.25,
-      "ccy": "USD",
-      "broker": "IBKR"
-    },
-    {
-      "id": "xom_2026_s2",
-      "date": "2026-03-02",
-      "side": "sell",
-      "ticker": "XOM",
-      "bbg": "XOM US Equity",
-      "qty": 100,
-      "price": 155.54,
-      "ccy": "USD",
-      "broker": "IBKR"
-    },
-    {
-      "id": "xom_2026_s3",
-      "date": "2026-03-02",
-      "side": "sell",
-      "ticker": "XOM",
-      "bbg": "XOM US Equity",
-      "qty": 310,
-      "price": 153.9008,
-      "ccy": "USD",
-      "broker": "IBKR"
-    },
-    {
       "id": "1306_2026_buy",
       "date": "2026-03-03",
       "side": "buy",
@@ -1218,17 +1093,6 @@
       "price": 48.39,
       "ccy": "USD",
       "broker": "UBS"
-    },
-    {
-      "id": "uso_2026_s3",
-      "date": "2026-03-18",
-      "side": "sell",
-      "ticker": "USO",
-      "bbg": "USO US Equity",
-      "qty": 700,
-      "price": 121.115,
-      "ccy": "USD",
-      "broker": "IBKR"
     },
     {
       "id": "bno_2026_s1",
