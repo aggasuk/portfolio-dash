@@ -45,7 +45,7 @@ def bbg_for_stock(symbol, currency):
         s = sfx_map.get(suffix.upper())
         if s:
             return f"{root} {s} Equity"
-    # Numeric (Japanese listings) — assume JT
+    # Numeric (Japanese listings) â€” assume JT
     if sym.isdigit():
         return f"{sym} JT Equity"
     # Default: US listing
@@ -104,7 +104,7 @@ def fetch_flex_xml():
         if x is not None and x.tag == "FlexStatementResponse":
             status = x.findtext("Status") or ""
             if status == "Success":
-                # Old/unexpected — fall through to assume body is data
+                # Old/unexpected â€” fall through to assume body is data
                 break
             print(f"  Pending (attempt {attempt+1}/12)...")
             continue
@@ -211,7 +211,7 @@ def main():
     existing = journal.get("trades", [])
     # Dedupe sets:
     #   (a) by ibkr_trade_id (canonical)
-    #   (b) by composite (ticker, date, side, qty, price) — catches manual entries
+    #   (b) by composite (ticker, date, side, qty, price) â€” catches manual entries
     existing_trade_ids = {t.get("ibkr_trade_id") for t in existing if t.get("ibkr_trade_id")}
     existing_composites = {
         (t.get("ticker"), (t.get("date") or "")[:10], t.get("side"),
@@ -241,6 +241,38 @@ def main():
     print(f"  Skipped (matched ticker/date/qty/price): {skipped_comp}")
     print(f"  Skipped (pre-cutoff < {COST_BASIS_CUTOFF}): {skipped_precutoff}")
 
+    # Defensive check: catch the historical "manual aggregated entry duplicates
+    # flex per-fill rows" pattern (e.g. legacy xom_2026_s3 qty=310 vs four flex_*
+    # rows summing to 310). The composite dedupe above can't catch this because
+    # the qty differs, so warn the user to clean up the manual entry by hand.
+    from collections import defaultdict
+    bucket_flex_qty = defaultdict(float)
+    bucket_manual = defaultdict(list)
+    for t in existing:
+        key = (t.get("ticker"), (t.get("date") or "")[:10], t.get("side"))
+        if not all(key): continue
+        if (t.get("id") or "").startswith("flex_"):
+            bucket_flex_qty[key] += float(t.get("qty", 0) or 0)
+        else:
+            bucket_manual[key].append(t)
+    suspect = []
+    for key, manuals in bucket_manual.items():
+        flex_total = bucket_flex_qty.get(key, 0)
+        if flex_total <= 0: continue
+        for m in manuals:
+            mqty = float(m.get("qty", 0) or 0)
+            # Warn if manual qty is plausibly the aggregate of the flex per-fill rows
+            # (within 0.5% tolerance to allow rounding).
+            if mqty > 0 and abs(mqty - flex_total) / max(mqty, flex_total) < 0.005:
+                suspect.append((m, flex_total, key))
+    if suspect:
+        print()
+        print(f"  ! WARNING: {len(suspect)} manual journal entries appear to duplicate flex per-fill aggregates:")
+        for m, flex_total, key in suspect:
+            tk, dt, sd = key
+            print(f"     id={m.get('id')} {sd} {tk} {dt} qty={m.get('qty'):>8} ~= sum(flex)={flex_total:.2f}")
+        print(f"  Action: review and consider deleting the manual ids above (flex_* rows are authoritative).")
+
     if appended:
         existing.sort(key=lambda t: ((t.get("date") or ""), t.get("id","")))
         journal["trades"] = existing
@@ -249,7 +281,7 @@ def main():
             json.dump(journal, f, indent=2)
         print(f"  Wrote {JOURNAL_PATH}")
     else:
-        print(f"  No new trades — journal unchanged.")
+        print(f"  No new trades â€” journal unchanged.")
 
 
 if __name__ == "__main__":
