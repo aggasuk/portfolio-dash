@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-05-04",
+  "as_of": "2026-05-05",
   "ibkr_live_match": false,
   "discrepancies": [
     {
@@ -13,12 +13,6 @@
       "ibkr_live": 4100.0,
       "journal": 3200.0,
       "diff": 900.0
-    },
-    {
-      "ticker": "USO",
-      "ibkr_live": 0,
-      "journal": 200.0,
-      "diff": -200.0
     },
     {
       "ticker": "1615",
