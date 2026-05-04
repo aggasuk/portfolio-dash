@@ -244,33 +244,51 @@ def main():
     # Defensive check: catch the historical "manual aggregated entry duplicates
     # flex per-fill rows" pattern (e.g. legacy xom_2026_s3 qty=310 vs four flex_*
     # rows summing to 310). The composite dedupe above can't catch this because
-    # the qty differs, so warn the user to clean up the manual entry by hand.
+    # the qty differs.
+    #
+    # To avoid false positives (e.g. a manual entry that matches flex qty by
+    # coincidence but is actually a different fill at a different price — this
+    # bit us with uso_2026_s2 which had qty=200 at $86.95 vs a same-day flex
+    # bucket of 250 at $87.21), require BOTH:
+    #   (1) manual qty ~= sum of flex qtys in the (ticker, date, side) bucket
+    #   (2) manual price ~= weighted-avg flex price in that bucket
+    # Tolerance is 0.5% on each, generous for rounding but tight enough to flag
+    # only genuine aggregated duplicates.
     from collections import defaultdict
     bucket_flex_qty = defaultdict(float)
+    bucket_flex_notional = defaultdict(float)  # sum(qty*price) for weighted avg
     bucket_manual = defaultdict(list)
     for t in existing:
         key = (t.get("ticker"), (t.get("date") or "")[:10], t.get("side"))
         if not all(key): continue
+        q = float(t.get("qty", 0) or 0)
+        p = float(t.get("price", 0) or 0)
         if (t.get("id") or "").startswith("flex_"):
-            bucket_flex_qty[key] += float(t.get("qty", 0) or 0)
+            bucket_flex_qty[key] += q
+            bucket_flex_notional[key] += q * p
         else:
             bucket_manual[key].append(t)
     suspect = []
     for key, manuals in bucket_manual.items():
         flex_total = bucket_flex_qty.get(key, 0)
         if flex_total <= 0: continue
+        flex_wavg_px = bucket_flex_notional[key] / flex_total
         for m in manuals:
             mqty = float(m.get("qty", 0) or 0)
-            # Warn if manual qty is plausibly the aggregate of the flex per-fill rows
-            # (within 0.5% tolerance to allow rounding).
-            if mqty > 0 and abs(mqty - flex_total) / max(mqty, flex_total) < 0.005:
-                suspect.append((m, flex_total, key))
+            mpx  = float(m.get("price", 0) or 0)
+            qty_match = mqty > 0 and abs(mqty - flex_total) / max(mqty, flex_total) < 0.005
+            px_match  = (mpx > 0 and flex_wavg_px > 0 and
+                         abs(mpx - flex_wavg_px) / max(mpx, flex_wavg_px) < 0.005)
+            if qty_match and px_match:
+                suspect.append((m, flex_total, flex_wavg_px, key))
     if suspect:
         print()
-        print(f"  ! WARNING: {len(suspect)} manual journal entries appear to duplicate flex per-fill aggregates:")
-        for m, flex_total, key in suspect:
+        print(f"  ! WARNING: {len(suspect)} manual journal entries appear to duplicate flex per-fill aggregates")
+        print(f"    (qty AND weighted-avg price both match flex bucket within 0.5%):")
+        for m, flex_total, flex_wavg_px, key in suspect:
             tk, dt, sd = key
-            print(f"     id={m.get('id')} {sd} {tk} {dt} qty={m.get('qty'):>8} ~= sum(flex)={flex_total:.2f}")
+            print(f"     id={m.get('id')} {sd} {tk} {dt} qty={m.get('qty')} px={m.get('price')} "
+                  f"~= sum(flex)={flex_total:.2f} @ wavg={flex_wavg_px:.4f}")
         print(f"  Action: review and consider deleting the manual ids above (flex_* rows are authoritative).")
 
     if appended:
