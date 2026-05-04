@@ -15,6 +15,12 @@
       "diff": 900.0
     },
     {
+      "ticker": "USO",
+      "ibkr_live": 0,
+      "journal": 200.0,
+      "diff": -200.0
+    },
+    {
       "ticker": "1615",
       "ibkr_live": 0,
       "journal": 6500.0,
