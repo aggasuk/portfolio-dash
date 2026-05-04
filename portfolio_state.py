@@ -95,7 +95,7 @@ def load_manual_trades():
     user adds via blotter. Each entry must have: ticker, side, qty, price, date.
     Skip entries already present in journal (by id or by ticker+date+qty+price)."""
     if not GH_TOKEN:
-        print("  WARN: GH_TOKEN not set — skipping manual UBS trade-book fetch.")
+        print("  WARN: GH_TOKEN not set â€” skipping manual UBS trade-book fetch.")
         return []
     headers = {"Authorization": f"Bearer {GH_TOKEN}"}
     data = http_get(TRADES_API, headers)
@@ -377,7 +377,7 @@ def fetch_fx(currencies):
 
 
 # =============================================================
-# 5) IBKR LIVE — for cash + reconciliation
+# 5) IBKR LIVE â€” for cash + reconciliation
 # =============================================================
 def fetch_ibkr():
     return http_get(IBKR_URL + "/portfolio")
@@ -439,7 +439,7 @@ def build_state():
     for tk, lot_q in lots.items():
         if not lot_q: continue
         _net_qty = sum(l["qty"] for l in lot_q)
-        if abs(_net_qty) < 1e-9: continue  # flat — skip; keep shorts (net<0)
+        if abs(_net_qty) < 1e-9: continue  # flat â€” skip; keep shorts (net<0)
         m = meta[tk]
         p = prices.get(tk, {})
         ccy = m["ccy"]
@@ -530,7 +530,7 @@ def build_state():
 
     # YTD P&L = (unrealized_today - unrealized_jan_1) + realized_2026
     # Read Jan 1 unrealized baseline from nav_history.json (must be regenerated
-    # in same workflow run BEFORE state.py — see workflow yml ordering).
+    # in same workflow run BEFORE state.py â€” see workflow yml ordering).
     ytd_baseline_unrealized = 0.0
     nav_jan1 = None
     jan1_per_ticker = {}  # ticker -> {qty, mkt_val_usd}
@@ -661,6 +661,21 @@ def build_state():
     summary["cash_usd"] = round(cash["total_usd"], 2)
     summary["nav_total_usd"] = round(nav_securities + cash["total_usd"], 2)
 
+    # Defensive: flag any negative open position that isn't a deliberate short.
+    # Prior bugs caused doubled sells (manual + flex) to silently inflate NAV
+    # negatively; this surfaces them on the dashboard banner instead.
+    KNOWN_SHORTS = {"TLT"}  # add legitimately-shorted tickers here
+    unexpected_negatives = [
+        {
+            "ticker":         p["ticker"],
+            "qty":            p["qty"],
+            "mkt_value_usd":  p["mkt_value_usd"],
+            "by_broker":      p["by_broker"],
+        }
+        for p in open_positions
+        if p["qty"] < 0 and p["ticker"] not in KNOWN_SHORTS
+    ]
+
     state = {
         "last_updated": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
         "as_of": today,
@@ -669,6 +684,10 @@ def build_state():
         "closed_positions": closed_positions,
         "cash": cash,
         "fx_rates": fx_rates,
+        "warnings": {
+            "unexpected_negative_positions": unexpected_negatives,
+            "known_shorts_allowlist":        sorted(KNOWN_SHORTS),
+        },
     }
 
     state = scrub_nan(state)
@@ -696,6 +715,11 @@ def build_state():
             print(f"     {d['ticker']:>20s}  ibkr={d['ibkr_live']:>10.2f}  journal={d['journal']:>10.2f}  diff={d['diff']:+.2f}")
     else:
         print(f"\n  Reconciliation OK - journal matches IBKR live for all tickers")
+    if unexpected_negatives:
+        print(f"\n  ! UNEXPECTED NEGATIVE POSITIONS ({len(unexpected_negatives)}):")
+        for n in unexpected_negatives:
+            print(f"     {n['ticker']:>20s}  qty={n['qty']:>+10.2f}  mkt_val=${n['mkt_value_usd']:>+13,.0f}  brokers={n['by_broker']}")
+        print(f"  (allowlist of intentional shorts: {sorted(KNOWN_SHORTS)})")
     print()
     print(f"  Wrote {STATE_PATH}")
     print(f"  Wrote {RECON_PATH}")
