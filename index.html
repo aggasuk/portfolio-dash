@@ -126,6 +126,7 @@
       <div class="conn-dot"></div>
       <span id="conn-text">Loading...</span>
     </div>
+    <div id="warnings-banner" class="conn-banner offline hidden" style="flex-direction:column; align-items:flex-start;"></div>
 
     <div class="top-nav">
       <button class="nav-btn active" onclick="switchTab('overview',this)">Overview</button>
@@ -310,6 +311,7 @@ async function loadAll() {
     banner.className = 'conn-banner connected';
     text.textContent = `Loaded ${state.open_positions.length} open + ${state.closed_positions.length} closed positions  |  Reconciliation: from journal (single source of truth)`;
 
+    renderWarnings();
     renderOverview();
     renderCash();
     renderClosed();
@@ -320,6 +322,31 @@ async function loadAll() {
     text.textContent = `Load failed: ${e.message}`;
     console.error(e);
   }
+}
+
+// ==================== WARNINGS ====================
+function renderWarnings() {
+  const box = document.getElementById('warnings-banner');
+  if (!box) return;
+  const w = state && state.warnings;
+  const negs = (w && w.unexpected_negative_positions) || [];
+  if (!negs.length) { box.classList.add('hidden'); return; }
+  const allow = (w && w.known_shorts_allowlist) || [];
+  const rows = negs.map(n => {
+    const brokers = Object.entries(n.by_broker || {})
+      .map(([b,q]) => `${b}:${q.toFixed(0)}`).join(', ');
+    return `<div style="font-size:0.74rem; padding:2px 0;">
+      &bull; <b>${n.ticker}</b> qty=${n.qty.toFixed(2)} mkt_val=$${n.mkt_value_usd.toLocaleString(undefined,{maximumFractionDigits:0})} (${brokers})
+    </div>`;
+  }).join('');
+  box.innerHTML = `<div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+      <div class="conn-dot"></div>
+      <span>UNEXPECTED NEGATIVE POSITIONS (${negs.length}) â€” likely duplicate sells in trade_journal.json. Allowlist: ${allow.join(', ') || '(none)'}.</span>
+    </div>
+    ${rows}`;
+  box.className = 'conn-banner error';
+  box.style.flexDirection = 'column';
+  box.style.alignItems = 'flex-start';
 }
 
 // ==================== TAB SWITCH ====================
@@ -333,11 +360,11 @@ function switchTab(name, btn) {
 }
 
 // ==================== FORMATTERS ====================
-const fmt$  = v => (v == null || isNaN(v)) ? '—' : (v < 0 ? '−' : '') + '$' + Math.abs(Math.round(v)).toLocaleString();
-const fmt$2 = v => (v == null || isNaN(v)) ? '—' : (v < 0 ? '−$' : '$') + Math.abs(v).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const fmtPct = v => (v == null || isNaN(v)) ? '—' : (v >= 0 ? '+' : '') + (v * 100).toFixed(2) + '%';
-const fmtQty = v => (v == null || isNaN(v)) ? '—' : Math.round(v).toLocaleString();
-const fmtPx  = (v, p = 4) => (v == null || isNaN(v)) ? '—' : v.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: p });
+const fmt$  = v => (v == null || isNaN(v)) ? 'â€”' : (v < 0 ? 'âˆ’' : '') + '$' + Math.abs(Math.round(v)).toLocaleString();
+const fmt$2 = v => (v == null || isNaN(v)) ? 'â€”' : (v < 0 ? 'âˆ’$' : '$') + Math.abs(v).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmtPct = v => (v == null || isNaN(v)) ? 'â€”' : (v >= 0 ? '+' : '') + (v * 100).toFixed(2) + '%';
+const fmtQty = v => (v == null || isNaN(v)) ? 'â€”' : Math.round(v).toLocaleString();
+const fmtPx  = (v, p = 4) => (v == null || isNaN(v)) ? 'â€”' : v.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: p });
 const pnlClass = v => v > 0 ? 'pnl-pos' : v < 0 ? 'pnl-neg' : 'pnl-zero';
 
 // ==================== OVERVIEW ====================
@@ -351,7 +378,7 @@ function renderOverview() {
     { label: 'Unrealised', value: `<span class="${pnlClass(s.unrealised_pnl_usd)}">${fmt$(s.unrealised_pnl_usd)} (${fmtPct(s.unrealised_pnl_pct)})</span>` },
     { label: 'Realised 2026', value: `<span class="${pnlClass(s.realized_pnl_2026_usd)}">${fmt$(s.realized_pnl_2026_usd)}</span>` },
     { label: 'YTD P&L', value: `<span class="${pnlClass(s.ytd_pnl_usd)}">${fmt$(s.ytd_pnl_usd)} (${fmtPct(s.ytd_pnl_pct_of_jan1_nav)})</span>` },
-    { label: 'Daily P&L', value: `<span class="${pnlClass(s.daily_pnl_usd)}">${fmt$(s.daily_pnl_usd)} (${s.nav_securities_usd ? fmtPct(s.daily_pnl_usd / (s.nav_securities_usd - s.daily_pnl_usd)) : '—'})</span>` },
+    { label: 'Daily P&L', value: `<span class="${pnlClass(s.daily_pnl_usd)}">${fmt$(s.daily_pnl_usd)} (${s.nav_securities_usd ? fmtPct(s.daily_pnl_usd / (s.nav_securities_usd - s.daily_pnl_usd)) : 'â€”'})</span>` },
   ];
   document.getElementById('kpi-row').innerHTML = kpis.map(k => `<div class="snap-card"><div class="label">${k.label}</div><div class="value">${k.value}</div></div>`).join('');
 
@@ -369,13 +396,13 @@ const POS_COLS = [
   { key: 'unrealised_pnl_usd', label: 'Unrl P&L (since cost)', render: p => `<td><span class="${pnlClass(p.unrealised_pnl_usd)}">${fmt$(p.unrealised_pnl_usd)}<br><span class="small-cell ${pnlClass(p.unrealised_pnl_pct)}">${fmtPct(p.unrealised_pnl_pct)}</span></span></td>` },
   { key: 'ytd_pnl_usd',     label: 'YTD P&L',     render: p => `<td><span class="${pnlClass(p.ytd_pnl_usd)}">${fmt$(p.ytd_pnl_usd)}<br><span class="small-cell ${pnlClass(p.ytd_pnl_pct)}">${fmtPct(p.ytd_pnl_pct)}</span></span></td>` },
   { key: 'daily_pnl_usd',   label: 'Daily P&L',   render: p => `<td><span class="${pnlClass(p.daily_pnl_usd)}">${fmt$(p.daily_pnl_usd)}<br><span class="small-cell ${pnlClass(p.daily_pnl_pct)}">${fmtPct(p.daily_pnl_pct)}</span></span></td>` },
-  { key: 'chg_pct_ytd',     label: 'Ticker YTD%',  render: p => `<td><span class="${pnlClass(p.chg_pct_ytd)}">${p.chg_pct_ytd ? p.chg_pct_ytd.toFixed(2) + '%' : '—'}</span></td>` },
-  { key: 'type_display',    label: 'Type',        render: p => `<td>${p.type_display || p.asset_class || '—'}</td>` },
-  { key: 'sector',          label: 'Sector',      render: p => `<td>${p.sector || '—'}</td>` },
+  { key: 'chg_pct_ytd',     label: 'Ticker YTD%',  render: p => `<td><span class="${pnlClass(p.chg_pct_ytd)}">${p.chg_pct_ytd ? p.chg_pct_ytd.toFixed(2) + '%' : 'â€”'}</span></td>` },
+  { key: 'type_display',    label: 'Type',        render: p => `<td>${p.type_display || p.asset_class || 'â€”'}</td>` },
+  { key: 'sector',          label: 'Sector',      render: p => `<td>${p.sector || 'â€”'}</td>` },
 ];
 
 function formatBrokers(by) {
-  if (!by) return '—';
+  if (!by) return 'â€”';
   return Object.entries(by).map(([b, q]) => `${b}: ${fmtQty(q)}`).join('<br>');
 }
 
@@ -386,7 +413,7 @@ function renderPositionsTable() {
     if (typeof va === 'string') return sortAscending ? va.localeCompare(vb) : vb.localeCompare(va);
     return sortAscending ? (va || 0) - (vb || 0) : (vb || 0) - (va || 0);
   });
-  const arrow = c => c === sortColumn ? (sortAscending ? ' ▲' : ' ▼') : '';
+  const arrow = c => c === sortColumn ? (sortAscending ? ' â–²' : ' â–¼') : '';
   const head = POS_COLS.map(c => `<th onclick="sortPositions('${c.key}')">${c.label}${arrow(c.key)}</th>`).join('');
   const rows = positions.map(p => `<tr>${POS_COLS.map(c => c.render(p)).join('')}</tr>`).join('');
   document.getElementById('positions-table-wrap').innerHTML = `<table class="vol-table"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table>`;
@@ -423,7 +450,7 @@ function renderAllocationCharts() {
   drawPie('chart-type', 'drill-type', groupSum('type_display'), 'type_display');
   drawPie('chart-currency', 'drill-currency', groupSum('currency'), 'currency');
   drawPie('chart-sector', 'drill-sector', groupSum('sector'), 'sector');
-  // By broker (positions can span brokers — split by qty share)
+  // By broker (positions can span brokers â€” split by qty share)
   const brokerMap = {};
   for (const p of state.open_positions) {
     const by = p.by_broker || {};
@@ -454,7 +481,7 @@ function showDrill(drillId, key, label) {
   const el = document.getElementById(drillId);
   el.innerHTML = `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-      <strong>${label}</strong> · ${positions.length} positions · ${fmt$(total)}
+      <strong>${label}</strong> Â· ${positions.length} positions Â· ${fmt$(total)}
       <span class="clear" onclick="document.getElementById('${drillId}').innerHTML=''">clear</span>
     </div>
     <table><thead><tr><th>Ticker</th><th>Qty</th><th>Mkt Val</th><th>Unrl P&L</th></tr></thead><tbody>${rows}</tbody></table>`;
@@ -512,7 +539,7 @@ function renderClosed() {
     avg_buy: a.qty_closed ? a.gross_buy_value / a.qty_closed : 0,
     avg_sell: a.qty_closed ? a.gross_sell_value / a.qty_closed : 0,
     pct: a.gross_buy_value ? (a.gross_sell_value - a.gross_buy_value) / a.gross_buy_value : 0,
-    brokers: [...a.brokers].join(', ') || '—',
+    brokers: [...a.brokers].join(', ') || 'â€”',
   })).sort((x, y) => (y.realized_pnl_usd || 0) - (x.realized_pnl_usd || 0));
 
   const winners = aggList.filter(a => a.realized_pnl_usd > 0).length;
@@ -522,16 +549,16 @@ function renderClosed() {
     { label: 'Tickers Traded', value: aggList.length },
     { label: 'Winners', value: winners },
     { label: 'Losers', value: losers },
-    { label: 'Win Rate', value: aggList.length ? Math.round(winners / aggList.length * 100) + '%' : '—' },
+    { label: 'Win Rate', value: aggList.length ? Math.round(winners / aggList.length * 100) + '%' : 'â€”' },
   ].map(k => `<div class="snap-card"><div class="label">${k.label}</div><div class="value">${k.value}</div></div>`).join('');
 
   const rowsHtml = [];
   for (const a of aggList) {
     const expanded = !!closedExpanded[a.ticker];
     rowsHtml.push(`<tr style="cursor:pointer" onclick="toggleClosedRow('${a.ticker}')">
-      <td>${a.lots.length > 1 ? (expanded ? '▼' : '▶') : ''} <span class="ticker-cell">${a.ticker}</span><div class="small-cell">${(a.name || '').slice(0,30)}</div></td>
+      <td>${a.lots.length > 1 ? (expanded ? 'â–¼' : 'â–¶') : ''} <span class="ticker-cell">${a.ticker}</span><div class="small-cell">${(a.name || '').slice(0,30)}</div></td>
       <td>${a.brokers}</td>
-      <td>${a.first_sell === a.last_sell ? a.first_sell : (a.first_sell + ' → ' + a.last_sell)}</td>
+      <td>${a.first_sell === a.last_sell ? a.first_sell : (a.first_sell + ' â†’ ' + a.last_sell)}</td>
       <td>${fmtQty(a.qty_closed)}</td>
       <td>${fmtPx(a.avg_buy)} ${a.currency}</td>
       <td>${fmtPx(a.avg_sell)} ${a.currency}</td>
@@ -542,14 +569,14 @@ function renderClosed() {
     if (expanded && a.lots.length > 1) {
       for (const c of a.lots) {
         rowsHtml.push(`<tr style="background:rgba(108,99,255,0.04)">
-          <td style="padding-left:32px;font-size:0.7rem;color:var(--text-dim)">└ lot</td>
-          <td>${c.broker_sell || '—'}</td>
-          <td>${c.buy_date} → ${c.sell_date}</td>
+          <td style="padding-left:32px;font-size:0.7rem;color:var(--text-dim)">â”” lot</td>
+          <td>${c.broker_sell || 'â€”'}</td>
+          <td>${c.buy_date} â†’ ${c.sell_date}</td>
           <td>${fmtQty(c.qty_closed)}</td>
           <td>${fmtPx(c.buy_price)}</td>
           <td>${fmtPx(c.sell_price)}</td>
           <td><span class="${pnlClass(c.realized_pnl_usd)}">${fmt$(c.realized_pnl_usd)}</span></td>
-          <td><span class="${pnlClass((c.sell_price - c.buy_price))}">${c.buy_price > 0 ? fmtPct((c.sell_price - c.buy_price) / c.buy_price) : '—'}</span></td>
+          <td><span class="${pnlClass((c.sell_price - c.buy_price))}">${c.buy_price > 0 ? fmtPct((c.sell_price - c.buy_price) / c.buy_price) : 'â€”'}</span></td>
           <td></td>
         </tr>`);
       }
@@ -622,7 +649,7 @@ function renderBlotter() {
       <td><span class="ticker-cell">${t.ticker}</span></td>
       <td>${fmtPx(t.price)}</td>
       <td>${t.broker || 'UBS'}</td>
-      <td><button class="header-btn" onclick="deleteTrade(${realIdx})">×</button></td>
+      <td><button class="header-btn" onclick="deleteTrade(${realIdx})">Ã—</button></td>
     </tr>`;
   }).join('');
   document.getElementById('manual-trades-list').innerHTML = `<table class="vol-table"><thead><tr><th>Date</th><th>Side</th><th>Qty</th><th>Ticker</th><th>Price</th><th>Broker</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
@@ -660,7 +687,7 @@ function filteredHistory() {
 
 function renderAnalysis() {
   if (!history) {
-    document.getElementById('chart-nav').innerHTML = '<div class="no-data">No NAV history yet — run Bloomberg Enrich</div>';
+    document.getElementById('chart-nav').innerHTML = '<div class="no-data">No NAV history yet â€” run Bloomberg Enrich</div>';
     return;
   }
   const snaps = filteredHistory();
@@ -680,15 +707,15 @@ function renderAnalysis() {
     hovertemplate: '%{x|%Y-%m-%d}<br>NAV: $%{y:,.0f}<extra></extra>',
   }], chartLayout('NAV USD'), { displayModeBar: false, responsive: true });
 
-  // YTD P&L decomposition (re-baselined to 0 on day 1) — three independent lines
+  // YTD P&L decomposition (re-baselined to 0 on day 1) â€” three independent lines
   Plotly.newPlot('chart-pnl', [
     { x: dates, y: cleanYtd,    type: 'scatter', mode: 'lines', line: { color: '#6c63ff', width: 2.5 }, name: 'Total YTD',
       fill: 'tozeroy', fillcolor: 'rgba(108,99,255,0.07)' },
-    { x: dates, y: unrealClean, type: 'scatter', mode: 'lines', line: { color: '#22c55e', width: 1.5 }, name: 'Unrealised Δ from Jan 1' },
+    { x: dates, y: unrealClean, type: 'scatter', mode: 'lines', line: { color: '#22c55e', width: 1.5 }, name: 'Unrealised Î” from Jan 1' },
     { x: dates, y: realised,    type: 'scatter', mode: 'lines', line: { color: '#f59e0b', width: 1.5 }, name: 'Realised cum' },
-  ], chartLayout('USD (Δ from Jan 1)'), { displayModeBar: false, responsive: true });
+  ], chartLayout('USD (Î” from Jan 1)'), { displayModeBar: false, responsive: true });
 
-  // Winners/losers — sorted by YTD P&L %
+  // Winners/losers â€” sorted by YTD P&L %
   const sorted = [...state.open_positions].sort((a, b) => (b.ytd_pnl_pct || 0) - (a.ytd_pnl_pct || 0));
   Plotly.newPlot('chart-winloss', [{
     type: 'bar', orientation: 'h',
@@ -724,7 +751,7 @@ async function triggerBloombergEnrich() {
     if (r.ok || r.status === 204) {
       alert('Bloomberg Enrich triggered. Refresh in ~1 min.');
     } else {
-      alert(`Failed: ${r.status} — ${await r.text()}`);
+      alert(`Failed: ${r.status} â€” ${await r.text()}`);
     }
   } catch (e) {
     alert('Failed: ' + e.message);
