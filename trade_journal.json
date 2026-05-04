@@ -964,6 +964,19 @@
       "ibkr_conid": "13977"
     },
     {
+      "id": "uso_2026_s2",
+      "date": "2026-03-02",
+      "side": "sell",
+      "ticker": "USO",
+      "bbg": "USO US Equity",
+      "qty": 200,
+      "price": 86.9507,
+      "ccy": "USD",
+      "broker": "IBKR",
+      "asset_class": "STK",
+      "price_factor": 1.0
+    },
+    {
       "id": "1306_2026_buy",
       "date": "2026-03-03",
       "side": "buy",
