@@ -660,21 +660,6 @@
       "ibkr_conid": "445423543"
     },
     {
-      "id": "flex_8938896911",
-      "date": "2026-02-03",
-      "side": "sell",
-      "ticker": "TII 2 1/8 01/15/35",
-      "bbg": null,
-      "qty": 5000.0,
-      "price": 102.316017,
-      "ccy": "USD",
-      "broker": "IBKR",
-      "asset_class": "BOND",
-      "price_factor": 0.01,
-      "ibkr_trade_id": "8938896911",
-      "ibkr_conid": "757576803"
-    },
-    {
       "id": "mos_2026_sell",
       "date": "2026-02-03",
       "side": "sell",
