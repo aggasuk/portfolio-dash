@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-05-05",
+  "as_of": "2026-05-10",
   "ibkr_live_match": false,
   "discrepancies": [
     {
@@ -7,12 +7,6 @@
       "ibkr_live": 100.0,
       "journal": 0,
       "diff": 100.0
-    },
-    {
-      "ticker": "WEAT",
-      "ibkr_live": 4100.0,
-      "journal": 3200.0,
-      "diff": 900.0
     },
     {
       "ticker": "1615",
