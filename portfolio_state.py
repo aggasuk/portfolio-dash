@@ -664,7 +664,7 @@ def build_state():
     # Defensive: flag any negative open position that isn't a deliberate short.
     # Prior bugs caused doubled sells (manual + flex) to silently inflate NAV
     # negatively; this surfaces them on the dashboard banner instead.
-    KNOWN_SHORTS = {"TLT"}  # add legitimately-shorted tickers here
+    KNOWN_SHORTS = {"TLT", "IEF"}  # add legitimately-shorted tickers here
     unexpected_negatives = [
         {
             "ticker":         p["ticker"],
