@@ -1,19 +1,19 @@
 {
-  "last_updated": "2026-05-10T11:28:54",
+  "last_updated": "2026-05-10T11:49:28",
   "as_of": "2026-05-10",
   "summary": {
     "as_of": "2026-05-10",
     "nav_securities_usd": 2320086.13,
     "nav_jan1_usd": 2559747.8,
-    "cost_basis_usd": 2145565.51,
-    "unrealised_pnl_usd": 174520.62,
-    "unrealised_pnl_pct": 0.0813,
+    "cost_basis_usd": 2150681.31,
+    "unrealised_pnl_usd": 169404.82,
+    "unrealised_pnl_pct": 0.0788,
     "ytd_unrealised_baseline_usd": 118170.17,
     "daily_pnl_usd": 10838.68,
     "realized_pnl_2026_usd": 104359.56,
-    "ytd_pnl_usd": 160710.01,
-    "ytd_pnl_pct_of_jan1_nav": 0.0628,
-    "open_positions": 24,
+    "ytd_pnl_usd": 155594.21,
+    "ytd_pnl_pct_of_jan1_nav": 0.0608,
+    "open_positions": 23,
     "closed_positions_2026": 62,
     "cash_usd": 900423.67,
     "nav_total_usd": 3220509.8
@@ -650,36 +650,6 @@
       "sells_2026_usd": 0.0,
       "ytd_pnl_usd": -4900.0,
       "ytd_pnl_pct": -0.1612
-    },
-    {
-      "ticker": "TII 2 1/8 01/15/35",
-      "name": "TII 2 1/8 01/15/35",
-      "qty": -5000.0,
-      "avg_cost": 1.02316,
-      "mkt_price": 0,
-      "prev_close": 0,
-      "currency": "USD",
-      "asset_class": "BOND",
-      "type_display": "BOND",
-      "price_factor": 0.01,
-      "mkt_value_usd": -0.0,
-      "cost_basis_usd": -5115.8,
-      "unrealised_pnl_usd": 5115.8,
-      "unrealised_pnl_pct": 1.0,
-      "daily_pnl_usd": -0.0,
-      "daily_pnl_pct": 0,
-      "chg_pct_ytd": 0,
-      "sector": "",
-      "country": "",
-      "by_broker": {
-        "IBKR": -5000.0
-      },
-      "lots_count": 1,
-      "jan1_mkt_value_usd": 0,
-      "buys_2026_usd": 0.0,
-      "sells_2026_usd": 5115.8,
-      "ytd_pnl_usd": 5115.8,
-      "ytd_pnl_pct": 1.0
     },
     {
       "ticker": "TLT",
@@ -1648,29 +1618,13 @@
   },
   "fx_rates": {
     "USD": 1.0,
-    "JPY": 0.006382,
-    "GBP": 1.3631
+    "GBP": 1.3631,
+    "JPY": 0.006382
   },
   "warnings": {
-    "unexpected_negative_positions": [
-      {
-        "ticker": "TII 2 1/8 01/15/35",
-        "qty": -5000.0,
-        "mkt_value_usd": -0.0,
-        "by_broker": {
-          "IBKR": -5000.0
-        }
-      },
-      {
-        "ticker": "IEF",
-        "qty": -4700.0,
-        "mkt_value_usd": -446312.0,
-        "by_broker": {
-          "IBKR": -4700.0
-        }
-      }
-    ],
+    "unexpected_negative_positions": [],
     "known_shorts_allowlist": [
+      "IEF",
       "TLT"
     ]
   }
