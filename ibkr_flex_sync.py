@@ -209,18 +209,41 @@ def main():
         journal = json.load(f)
 
     existing = journal.get("trades", [])
-    # Dedupe sets:
-    #   (a) by ibkr_trade_id (canonical)
-    #   (b) by composite (ticker, date, side, qty, price) â€” catches manual entries
+    # Dedupe pipeline (in order, first match wins):
+    #   (a) ibkr_trade_id           — canonical IBKR fill ID, exact
+    #   (b) ibkr_conid + fill key   — instrument-stable across ticker spellings
+    #                                  (catches bond/option spelling mismatches IF
+    #                                   both sides recorded a conid)
+    #   (c) ticker + fill key       — legacy composite (manual entries with same
+    #                                  ticker spelling)
+    #   (d) ccy + fill key          — fingerprint dedup (catches bond/option
+    #                                  spelling mismatches even when manual entry
+    #                                  has no conid). 6-decimal price match makes
+    #                                  false positives extremely unlikely; we log
+    #                                  matches as a warning so user can audit.
+    # fill key = (date, side, qty[4dp], price[6dp])
+    def _fkey(t):
+        return ((t.get("date") or "")[:10], t.get("side"),
+                round(float(t.get("qty", 0) or 0), 4),
+                round(float(t.get("price", 0) or 0), 6))
+
     existing_trade_ids = {t.get("ibkr_trade_id") for t in existing if t.get("ibkr_trade_id")}
-    existing_composites = {
-        (t.get("ticker"), (t.get("date") or "")[:10], t.get("side"),
-         round(float(t.get("qty", 0) or 0), 4), round(float(t.get("price", 0) or 0), 6))
-        for t in existing
+    existing_by_conid = {
+        (t.get("ibkr_conid"), *_fkey(t))
+        for t in existing if t.get("ibkr_conid")
     }
+    existing_by_ticker = {
+        (t.get("ticker"), *_fkey(t)) for t in existing
+    }
+    # Map ccy-fingerprint -> existing entry (so we can show what we matched)
+    existing_by_ccy = {}
+    for t in existing:
+        key = (t.get("ccy"), *_fkey(t))
+        existing_by_ccy.setdefault(key, []).append(t)
 
     appended = 0
-    skipped_id, skipped_comp, skipped_precutoff = 0, 0, 0
+    skipped_id = skipped_conid = skipped_comp = skipped_fp = skipped_precutoff = 0
+    fingerprint_matches = []  # (flex_entry, matched_existing_entry)
     for ft in flex_trades:
         if (ft.get("date") or "") < COST_BASIS_CUTOFF:
             skipped_precutoff += 1
@@ -228,18 +251,41 @@ def main():
         if ft["ibkr_trade_id"] in existing_trade_ids:
             skipped_id += 1
             continue
-        comp = (ft["ticker"], ft["date"], ft["side"],
-                round(ft["qty"], 4), round(ft["price"], 6))
-        if comp in existing_composites:
+        fkey = _fkey(ft)
+        # (b) conid + fill key
+        if ft.get("ibkr_conid") and (ft["ibkr_conid"], *fkey) in existing_by_conid:
+            skipped_conid += 1
+            continue
+        # (c) ticker + fill key
+        if (ft["ticker"], *fkey) in existing_by_ticker:
             skipped_comp += 1
+            continue
+        # (d) ccy fingerprint — catches ticker-spelling mismatches
+        ccy_key = (ft.get("ccy"), *fkey)
+        ccy_match = existing_by_ccy.get(ccy_key)
+        if ccy_match:
+            # Same ccy + same date + same side + same qty (4dp) + same price (6dp)
+            # is virtually unique — treat as duplicate but log for audit.
+            skipped_fp += 1
+            fingerprint_matches.append((ft, ccy_match[0]))
             continue
         existing.append(ft)
         appended += 1
 
     print(f"  Appended: {appended}")
     print(f"  Skipped (matched IBKR trade_id): {skipped_id}")
-    print(f"  Skipped (matched ticker/date/qty/price): {skipped_comp}")
+    print(f"  Skipped (matched conid + fill key): {skipped_conid}")
+    print(f"  Skipped (matched ticker + fill key): {skipped_comp}")
+    print(f"  Skipped (matched ccy fingerprint — likely ticker-spelling mismatch): {skipped_fp}")
     print(f"  Skipped (pre-cutoff < {COST_BASIS_CUTOFF}): {skipped_precutoff}")
+    if fingerprint_matches:
+        print()
+        print(f"  ! Fingerprint dedup matched {len(fingerprint_matches)} flex trade(s) to existing journal entries")
+        print(f"    with mismatched ticker spellings — review and consider unifying the ticker names:")
+        for ft, ex in fingerprint_matches:
+            print(f"     flex: id={ft.get('id')}  ticker={ft.get('ticker')!r}  conid={ft.get('ibkr_conid')}")
+            print(f"     jrnl: id={ex.get('id')}  ticker={ex.get('ticker')!r}  conid={ex.get('ibkr_conid') or '(none)'}")
+            print(f"           {ft.get('side')} {ft.get('qty')} @ {ft.get('price')} {ft.get('ccy')} on {ft.get('date')}")
 
     # Defensive check: catch the historical "manual aggregated entry duplicates
     # flex per-fill rows" pattern (e.g. legacy xom_2026_s3 qty=310 vs four flex_*
