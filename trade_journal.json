@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "description": "Canonical trade journal. Single source of truth for all positions and realized P&L. Convention: ledger starts 2026-01-01 with 'opening' entries reflecting positions held at that date with TRUE cost basis. All subsequent activity recorded as buy/sell. Custody transfers (IBKR<->UBS) are NOT recorded as trades \u00e2\u20ac\u201d broker is informational metadata. Realized P&L is computed FIFO at runtime.",
-  "last_updated": "2026-05-10",
+  "last_updated": "2026-05-11",
   "as_of_open": "2026-01-01",
   "trades": [
     {
@@ -2476,6 +2476,30 @@
       "price_factor": 1.0,
       "ibkr_trade_id": "9464021562",
       "ibkr_conid": "15547844"
+    },
+    {
+      "id": "1615_2026_05_11_ubs_a",
+      "date": "2026-05-11",
+      "side": "buy",
+      "ticker": "1615",
+      "bbg": "1615 JT Equity",
+      "qty": 10000,
+      "price": 631.5,
+      "ccy": "JPY",
+      "broker": "UBS",
+      "asset_class": "STK"
+    },
+    {
+      "id": "1615_2026_05_11_ubs_b",
+      "date": "2026-05-11",
+      "side": "buy",
+      "ticker": "1615",
+      "bbg": "1615 JT Equity",
+      "qty": 1400,
+      "price": 627.1,
+      "ccy": "JPY",
+      "broker": "UBS",
+      "asset_class": "STK"
     }
   ]
 }
