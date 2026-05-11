@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-05-10T11:49:22",
+  "last_updated": "2026-05-11T22:39:14",
   "start_date": "2026-01-01",
   "snapshots": [
     {
@@ -8115,6 +8115,97 @@
         }
       },
       "ytd_pnl_clean_usd": 148515.43
+    },
+    {
+      "date": "2026-05-11",
+      "nav_securities_usd": 2931547.16,
+      "cost_basis_usd": 2753197.85,
+      "unrealised_pnl_usd": 178349.31,
+      "realized_pnl_ytd_usd": 107650.67,
+      "total_pnl_ytd_usd": 285999.98,
+      "positions": {
+        "AMZN": {
+          "qty": 1000.0,
+          "mkt_val_usd": 271770.0
+        },
+        "EMLC": {
+          "qty": 1000.0,
+          "mkt_val_usd": 25673.9
+        },
+        "EWZ": {
+          "qty": 1500.0,
+          "mkt_val_usd": 58207.5
+        },
+        "IAU": {
+          "qty": 4637.0,
+          "mkt_val_usd": 412832.11
+        },
+        "KWEB": {
+          "qty": 6700.0,
+          "mkt_val_usd": 199124.0
+        },
+        "MUFG": {
+          "qty": 7400.0,
+          "mkt_val_usd": 135494.0
+        },
+        "NVDA": {
+          "qty": 459.0,
+          "mkt_val_usd": 100748.21
+        },
+        "QQQ": {
+          "qty": 310.0,
+          "mkt_val_usd": 220935.48
+        },
+        "UST_4_25_DEC26": {
+          "qty": 528000.0,
+          "mkt_val_usd": 529763.44
+        },
+        "VOO": {
+          "qty": 330.0,
+          "mkt_val_usd": 224352.15
+        },
+        "1615": {
+          "qty": 24900.0,
+          "mkt_val_usd": 99593.55
+        },
+        "AZN_LN": {
+          "qty": 188.0,
+          "mkt_val_usd": 25598.08
+        },
+        "CPER": {
+          "qty": 2600.0,
+          "mkt_val_usd": 102128.0
+        },
+        "1306": {
+          "qty": 20000.0,
+          "mkt_val_usd": 51848.26
+        },
+        "BNO": {
+          "qty": 2000.0,
+          "mkt_val_usd": 109080.0
+        },
+        "CORN": {
+          "qty": 5200.0,
+          "mkt_val_usd": 97240.0
+        },
+        "WEAT": {
+          "qty": 4100.0,
+          "mkt_val_usd": 97190.5
+        },
+        "CANE": {
+          "qty": 9500.0,
+          "mkt_val_usd": 95380.0
+        },
+        "SHLD": {
+          "qty": 700.0,
+          "mkt_val_usd": 45388.0
+        },
+        "BNO_75C_JUL26": {
+          "qty": 100.0,
+          "mkt_val_usd": 29200.0
+        }
+      },
+      "ytd_pnl_clean_usd": 167829.81
     }
   ]
 }
