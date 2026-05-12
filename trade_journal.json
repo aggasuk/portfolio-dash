@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "description": "Canonical trade journal. Single source of truth for all positions and realized P&L. Convention: ledger starts 2026-01-01 with 'opening' entries reflecting positions held at that date with TRUE cost basis. All subsequent activity recorded as buy/sell. Custody transfers (IBKR<->UBS) are NOT recorded as trades \u00e2\u20ac\u201d broker is informational metadata. Realized P&L is computed FIFO at runtime.",
-  "last_updated": "2026-05-11",
+  "last_updated": "2026-05-12",
   "as_of_open": "2026-01-01",
   "trades": [
     {
@@ -2500,6 +2500,66 @@
       "ccy": "JPY",
       "broker": "UBS",
       "asset_class": "STK"
+    },
+    {
+      "id": "flex_9472021115",
+      "date": "2026-05-11",
+      "side": "buy",
+      "ticker": "SLV",
+      "bbg": "SLV US Equity",
+      "qty": 100.0,
+      "price": 77.16,
+      "ccy": "USD",
+      "broker": "IBKR",
+      "asset_class": "STK",
+      "price_factor": 1.0,
+      "ibkr_trade_id": "9472021115",
+      "ibkr_conid": "39039301"
+    },
+    {
+      "id": "flex_9472027005",
+      "date": "2026-05-11",
+      "side": "buy",
+      "ticker": "SLV",
+      "bbg": "SLV US Equity",
+      "qty": 100.0,
+      "price": 77.1587,
+      "ccy": "USD",
+      "broker": "IBKR",
+      "asset_class": "STK",
+      "price_factor": 1.0,
+      "ibkr_trade_id": "9472027005",
+      "ibkr_conid": "39039301"
+    },
+    {
+      "id": "flex_9472198670",
+      "date": "2026-05-11",
+      "side": "buy",
+      "ticker": "SLV",
+      "bbg": "SLV US Equity",
+      "qty": 100.0,
+      "price": 77.16,
+      "ccy": "USD",
+      "broker": "IBKR",
+      "asset_class": "STK",
+      "price_factor": 1.0,
+      "ibkr_trade_id": "9472198670",
+      "ibkr_conid": "39039301"
+    },
+    {
+      "id": "flex_9472221736",
+      "date": "2026-05-11",
+      "side": "buy",
+      "ticker": "SLV",
+      "bbg": "SLV US Equity",
+      "qty": 400.0,
+      "price": 77.1596,
+      "ccy": "USD",
+      "broker": "IBKR",
+      "asset_class": "STK",
+      "price_factor": 1.0,
+      "ibkr_trade_id": "9472221736",
+      "ibkr_conid": "39039301"
     }
   ]
 }
