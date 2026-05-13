@@ -3,10 +3,34 @@
   "ibkr_live_match": false,
   "discrepancies": [
     {
+      "ticker": "CORN",
+      "ibkr_live": 6400.0,
+      "journal": 5200.0,
+      "diff": 1200.0
+    },
+    {
       "ticker": "BNO_60C_JUL26",
       "ibkr_live": 100.0,
       "journal": 0,
       "diff": 100.0
+    },
+    {
+      "ticker": "EWT",
+      "ibkr_live": 300.0,
+      "journal": 0,
+      "diff": 300.0
+    },
+    {
+      "ticker": "SLV",
+      "ibkr_live": 1000.0,
+      "journal": 700.0,
+      "diff": 300.0
+    },
+    {
+      "ticker": "WEAT",
+      "ibkr_live": 3400.0,
+      "journal": 4100.0,
+      "diff": -700.0
     },
     {
       "ticker": "1615",

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "description": "Canonical trade journal. Single source of truth for all positions and realized P&L. Convention: ledger starts 2026-01-01 with 'opening' entries reflecting positions held at that date with TRUE cost basis. All subsequent activity recorded as buy/sell. Custody transfers (IBKR<->UBS) are NOT recorded as trades \u00e2\u20ac\u201d broker is informational metadata. Realized P&L is computed FIFO at runtime.",
-  "last_updated": "2026-05-12",
+  "last_updated": "2026-05-13",
   "as_of_open": "2026-01-01",
   "trades": [
     {
@@ -2560,6 +2560,36 @@
       "price_factor": 1.0,
       "ibkr_trade_id": "9472221736",
       "ibkr_conid": "39039301"
+    },
+    {
+      "id": "flex_9488816724",
+      "date": "2026-05-12",
+      "side": "buy",
+      "ticker": "EWY",
+      "bbg": "EWY US Equity",
+      "qty": 100.0,
+      "price": 177.64,
+      "ccy": "USD",
+      "broker": "IBKR",
+      "asset_class": "STK",
+      "price_factor": 1.0,
+      "ibkr_trade_id": "9488816724",
+      "ibkr_conid": "10753248"
+    },
+    {
+      "id": "flex_9488816744",
+      "date": "2026-05-12",
+      "side": "buy",
+      "ticker": "EWY",
+      "bbg": "EWY US Equity",
+      "qty": 100.0,
+      "price": 177.64,
+      "ccy": "USD",
+      "broker": "IBKR",
+      "asset_class": "STK",
+      "price_factor": 1.0,
+      "ibkr_trade_id": "9488816744",
+      "ibkr_conid": "10753248"
     }
   ]
 }
