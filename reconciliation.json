@@ -3,6 +3,12 @@
   "ibkr_live_match": false,
   "discrepancies": [
     {
+      "ticker": "EWY",
+      "ibkr_live": 200.0,
+      "journal": 293.0,
+      "diff": -93.0
+    },
+    {
       "ticker": "BNO_60C_JUL26",
       "ibkr_live": 100.0,
       "journal": 0,

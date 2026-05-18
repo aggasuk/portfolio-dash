@@ -1,9 +1,21 @@
 {
   "schema_version": 1,
   "description": "Canonical trade journal. Single source of truth for all positions and realized P&L. Convention: ledger starts 2026-01-01 with 'opening' entries reflecting positions held at that date with TRUE cost basis. All subsequent activity recorded as buy/sell. Custody transfers (IBKR<->UBS) are NOT recorded as trades \u00e2\u20ac\u201d broker is informational metadata. Realized P&L is computed FIFO at runtime.",
-  "last_updated": "2026-05-17",
+  "last_updated": "2026-05-18",
   "as_of_open": "2026-01-01",
   "trades": [
+    {
+      "id": "ewy_2026_b1",
+      "date": "2026-01-01",
+      "side": "open",
+      "ticker": "EWY",
+      "bbg": "EWY US Equity",
+      "qty": 300,
+      "price": 101.395,
+      "ccy": "USD",
+      "broker": "IBKR",
+      "notes": "Carry-in from pre-2026 IBKR position (was incorrectly tagged as 2026-01-02 buy)."
+    },
     {
       "id": "open_amzn",
       "date": "2026-01-01",
@@ -248,16 +260,19 @@
       "notes": "Imputed cost (no IBKR buys in 2025 trade conf \u00e2\u20ac\u201d pre-2025 lots). Will reconcile via XOM Mar 2026 sell realized."
     },
     {
-      "id": "ewy_2026_b1",
-      "date": "2026-01-01",
-      "side": "open",
+      "id": "flex_8761118763",
+      "date": "2026-01-02",
+      "side": "buy",
       "ticker": "EWY",
       "bbg": "EWY US Equity",
-      "qty": 300,
+      "qty": 300.0,
       "price": 101.395,
       "ccy": "USD",
       "broker": "IBKR",
-      "notes": "Carry-in from pre-2026 IBKR position (was incorrectly tagged as 2026-01-02 buy)."
+      "asset_class": "STK",
+      "price_factor": 1.0,
+      "ibkr_trade_id": "8761118763",
+      "ibkr_conid": "10753248"
     },
     {
       "id": "ewy_2026_b2",
