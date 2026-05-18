@@ -249,14 +249,15 @@
     },
     {
       "id": "ewy_2026_b1",
-      "date": "2026-01-02",
-      "side": "buy",
+      "date": "2026-01-01",
+      "side": "open",
       "ticker": "EWY",
       "bbg": "EWY US Equity",
       "qty": 300,
       "price": 101.395,
       "ccy": "USD",
-      "broker": "IBKR"
+      "broker": "IBKR",
+      "notes": "Carry-in from pre-2026 IBKR position (was incorrectly tagged as 2026-01-02 buy)."
     },
     {
       "id": "ewy_2026_b2",

@@ -546,11 +546,31 @@ def build_state():
             print(f"  WARN: couldn't read nav_history baseline: {e}")
     ytd_pnl = (unreal_total - ytd_baseline_unrealized) + realized_2026
 
+    # Defensive: flag mis-tagged carry-in entries. A real 2026 buy whose qty
+    # exactly matches the Jan 1 holding for that ticker is almost certainly a
+    # carry-in that should have been side='open'. Counting it as a 2026 buy
+    # double-subtracts the pre-2026 cost (jan1_mkt already represents it).
+    carry_in_ids = set()
+    for t in journal_trades:
+        if t.get("side") != "buy":
+            continue
+        d = (t.get("date") or "")[:10]
+        if not ("2026-01-01" <= d <= "2026-01-15"):
+            continue
+        tk = t.get("ticker")
+        jan1_qty = float(jan1_per_ticker.get(tk, {}).get("qty", 0) or 0)
+        trade_qty = float(t.get("qty", 0) or 0)
+        if jan1_qty > 0 and abs(trade_qty - jan1_qty) < 0.01:
+            carry_in_ids.add(id(t))
+            print(f"  Filtered carry-in buy: {tk} {d} qty={trade_qty} px={t.get('price')} (matches Jan 1 holding)")
+
     # Per-ticker 2026 cash flows from journal (today's FX for simplicity)
     flows_2026 = defaultdict(lambda: {"buys_usd": 0.0, "sells_usd": 0.0})
     for t in journal_trades:
         d = (t.get("date") or "")[:10]
         if d < "2026-01-01" or t.get("side") not in ("buy", "sell"):
+            continue
+        if id(t) in carry_in_ids:
             continue
         tk = t.get("ticker")
         ccy = t.get("ccy", "USD")
