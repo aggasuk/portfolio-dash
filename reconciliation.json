@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-05-20",
+  "as_of": "2026-05-22",
   "ibkr_live_match": false,
   "discrepancies": [
     {
@@ -15,16 +15,10 @@
       "diff": 100.0
     },
     {
-      "ticker": "TLT",
-      "ibkr_live": 0,
-      "journal": -2400.0,
-      "diff": 2400.0
-    },
-    {
       "ticker": "BNO",
-      "ibkr_live": 2400.0,
-      "journal": 2000.0,
-      "diff": 400.0
+      "ibkr_live": 3300.0,
+      "journal": 2700.0,
+      "diff": 600.0
     },
     {
       "ticker": "1615",
