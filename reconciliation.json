@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-05-22",
+  "as_of": "2026-05-28",
   "ibkr_live_match": false,
   "discrepancies": [
     {
@@ -15,10 +15,16 @@
       "diff": 100.0
     },
     {
-      "ticker": "BNO",
-      "ibkr_live": 3300.0,
-      "journal": 2700.0,
-      "diff": 600.0
+      "ticker": "SLV",
+      "ibkr_live": 500.0,
+      "journal": 1000.0,
+      "diff": -500.0
+    },
+    {
+      "ticker": "IAU",
+      "ibkr_live": 0,
+      "journal": 500.0,
+      "diff": -500.0
     },
     {
       "ticker": "1615",

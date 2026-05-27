@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "description": "Canonical trade journal. Single source of truth for all positions and realized P&L. Convention: ledger starts 2026-01-01 with 'opening' entries reflecting positions held at that date with TRUE cost basis. All subsequent activity recorded as buy/sell. Custody transfers (IBKR<->UBS) are NOT recorded as trades \u00e2\u20ac\u201d broker is informational metadata. Realized P&L is computed FIFO at runtime.",
-  "last_updated": "2026-05-22",
+  "last_updated": "2026-05-28",
   "as_of_open": "2026-01-01",
   "trades": [
     {
@@ -2965,6 +2965,66 @@
       "asset_class": "STK",
       "price_factor": 1.0,
       "ibkr_trade_id": "9539718866",
+      "ibkr_conid": "75961365"
+    },
+    {
+      "id": "flex_9545221812",
+      "date": "2026-05-21",
+      "side": "buy",
+      "ticker": "BNO",
+      "bbg": "BNO US Equity",
+      "qty": 20.0,
+      "price": 56.98,
+      "ccy": "USD",
+      "broker": "IBKR",
+      "asset_class": "STK",
+      "price_factor": 1.0,
+      "ibkr_trade_id": "9545221812",
+      "ibkr_conid": "75961365"
+    },
+    {
+      "id": "flex_9545221813",
+      "date": "2026-05-21",
+      "side": "buy",
+      "ticker": "BNO",
+      "bbg": "BNO US Equity",
+      "qty": 80.0,
+      "price": 56.98,
+      "ccy": "USD",
+      "broker": "IBKR",
+      "asset_class": "STK",
+      "price_factor": 1.0,
+      "ibkr_trade_id": "9545221813",
+      "ibkr_conid": "75961365"
+    },
+    {
+      "id": "flex_9545221814",
+      "date": "2026-05-21",
+      "side": "buy",
+      "ticker": "BNO",
+      "bbg": "BNO US Equity",
+      "qty": 100.0,
+      "price": 56.97,
+      "ccy": "USD",
+      "broker": "IBKR",
+      "asset_class": "STK",
+      "price_factor": 1.0,
+      "ibkr_trade_id": "9545221814",
+      "ibkr_conid": "75961365"
+    },
+    {
+      "id": "flex_9546681394",
+      "date": "2026-05-21",
+      "side": "buy",
+      "ticker": "BNO",
+      "bbg": "BNO US Equity",
+      "qty": 400.0,
+      "price": 56.695,
+      "ccy": "USD",
+      "broker": "IBKR",
+      "asset_class": "STK",
+      "price_factor": 1.0,
+      "ibkr_trade_id": "9546681394",
       "ibkr_conid": "75961365"
     }
   ]
