@@ -122,6 +122,34 @@ def compute_positions(trades):
     closed = defaultdict(list)
     meta = {}
 
+    def _pick_lot(lot_q, broker, want_sign):
+        """Return (idx, lot) of next lot to close. Prefer same-broker FIFO;
+        fall back to oldest matching-sign lot if no broker match exists.
+        want_sign>0 looks for long lots (qty>0); want_sign<0 looks for shorts (qty<0)."""
+        same_idx = -1
+        any_idx = -1
+        for i, lot in enumerate(lot_q):
+            if want_sign > 0 and lot["qty"] <= 0: continue
+            if want_sign < 0 and lot["qty"] >= 0: continue
+            if any_idx == -1: any_idx = i
+            if (lot.get("broker") or "") == (broker or ""):
+                same_idx = i
+                break
+        idx = same_idx if same_idx != -1 else any_idx
+        return idx, (lot_q[idx] if idx != -1 else None)
+
+    def _drop_lot(lot_q, idx):
+        """Remove lot at idx from a deque (slow for non-end indices, but lot counts are tiny)."""
+        if idx == 0:
+            lot_q.popleft()
+        elif idx == len(lot_q) - 1:
+            lot_q.pop()
+        else:
+            tmp = list(lot_q)
+            tmp.pop(idx)
+            lot_q.clear()
+            lot_q.extend(tmp)
+
     for t in sorted_trades:
         tk = t["ticker"]
         side = t.get("side")
@@ -144,9 +172,10 @@ def compute_positions(trades):
 
         if side in ("buy", "open"):
             remaining = qty
-            # Cover existing short lots FIFO first (lots with qty<0)
-            while remaining > 0 and lots[tk] and lots[tk][0]["qty"] < 0:
-                lot = lots[tk][0]
+            # Cover existing short lots FIFO first (lots with qty<0). Prefer same broker.
+            while remaining > 0:
+                idx, lot = _pick_lot(lots[tk], broker, want_sign=-1)
+                if lot is None: break
                 cover = min(-lot["qty"], remaining)
                 realized = (lot["price"] - px) * cover * pf
                 closed[tk].append({
@@ -165,7 +194,7 @@ def compute_positions(trades):
                 lot["qty"] += cover
                 remaining -= cover
                 if abs(lot["qty"]) <= 1e-9:
-                    lots[tk].popleft()
+                    _drop_lot(lots[tk], idx)
             if remaining > 0:
                 lots[tk].append({
                     "qty": remaining, "price": px, "ccy": ccy,
@@ -174,9 +203,10 @@ def compute_positions(trades):
                 })
         elif side == "sell":
             remaining = qty
-            # Close existing long lots FIFO first
-            while remaining > 0 and lots[tk] and lots[tk][0]["qty"] > 0:
-                lot = lots[tk][0]
+            # Close existing long lots FIFO first. Prefer same broker.
+            while remaining > 0:
+                idx, lot = _pick_lot(lots[tk], broker, want_sign=+1)
+                if lot is None: break
                 take = min(lot["qty"], remaining)
                 realized = (px - lot["price"]) * take * pf
                 closed[tk].append({
@@ -194,7 +224,7 @@ def compute_positions(trades):
                 lot["qty"] -= take
                 remaining -= take
                 if lot["qty"] <= 1e-9:
-                    lots[tk].popleft()
+                    _drop_lot(lots[tk], idx)
             if remaining > 0:
                 # Open or extend short: append negative-qty lot at sell price
                 lots[tk].append({
