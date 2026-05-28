@@ -1,30 +1,12 @@
 {
-  "as_of": "2026-05-28",
+  "as_of": "2026-05-29",
   "ibkr_live_match": false,
   "discrepancies": [
     {
       "ticker": "EWY",
       "ibkr_live": 200.0,
-      "journal": 293.0,
-      "diff": -93.0
-    },
-    {
-      "ticker": "BNO_60C_JUL26",
-      "ibkr_live": 100.0,
-      "journal": 0,
-      "diff": 100.0
-    },
-    {
-      "ticker": "SLV",
-      "ibkr_live": 500.0,
-      "journal": 1000.0,
-      "diff": -500.0
-    },
-    {
-      "ticker": "IAU",
-      "ibkr_live": 0,
       "journal": 500.0,
-      "diff": -500.0
+      "diff": -300.0
     },
     {
       "ticker": "1615",
