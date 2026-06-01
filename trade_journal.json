@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "description": "Canonical trade journal. Single source of truth for all positions and realized P&L. Convention: ledger starts 2026-01-01 with 'opening' entries reflecting positions held at that date with TRUE cost basis. All subsequent activity recorded as buy/sell. Custody transfers (IBKR<->UBS) are NOT recorded as trades \u00e2\u20ac\u201d broker is informational metadata. Realized P&L is computed FIFO at runtime.",
-  "last_updated": "2026-05-29",
+  "last_updated": "2026-06-01",
   "as_of_open": "2026-01-01",
   "trades": [
     {
@@ -3149,6 +3149,66 @@
       "price_factor": 1.0,
       "ibkr_trade_id": "9578856569",
       "ibkr_conid": "4215217"
+    },
+    {
+      "id": "flex_9585338214",
+      "date": "2026-05-28",
+      "side": "sell",
+      "ticker": "BNO_75C_JUL26",
+      "bbg": "BNO US 07/17/26 C75 Equity",
+      "qty": 1.0,
+      "price": 0.7,
+      "ccy": "USD",
+      "broker": "IBKR",
+      "asset_class": "OPT",
+      "price_factor": 100.0,
+      "ibkr_trade_id": "9585338214",
+      "ibkr_conid": "867021323",
+      "underlying": "BNO",
+      "strike": 75.0,
+      "expiry": "2026-07-17",
+      "right": "C",
+      "multiplier": 100.0
+    },
+    {
+      "id": "flex_9585390652",
+      "date": "2026-05-28",
+      "side": "sell",
+      "ticker": "BNO_75C_JUL26",
+      "bbg": "BNO US 07/17/26 C75 Equity",
+      "qty": 2.0,
+      "price": 0.7,
+      "ccy": "USD",
+      "broker": "IBKR",
+      "asset_class": "OPT",
+      "price_factor": 100.0,
+      "ibkr_trade_id": "9585390652",
+      "ibkr_conid": "867021323",
+      "underlying": "BNO",
+      "strike": 75.0,
+      "expiry": "2026-07-17",
+      "right": "C",
+      "multiplier": 100.0
+    },
+    {
+      "id": "flex_9585416079",
+      "date": "2026-05-28",
+      "side": "sell",
+      "ticker": "BNO_75C_JUL26",
+      "bbg": "BNO US 07/17/26 C75 Equity",
+      "qty": 97.0,
+      "price": 0.7,
+      "ccy": "USD",
+      "broker": "IBKR",
+      "asset_class": "OPT",
+      "price_factor": 100.0,
+      "ibkr_trade_id": "9585416079",
+      "ibkr_conid": "867021323",
+      "underlying": "BNO",
+      "strike": 75.0,
+      "expiry": "2026-07-17",
+      "right": "C",
+      "multiplier": 100.0
     }
   ]
 }

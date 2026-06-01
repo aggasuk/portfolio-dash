@@ -1,24 +1,24 @@
 {
-  "as_of": "2026-05-29",
+  "as_of": "2026-06-01",
   "ibkr_live_match": false,
   "discrepancies": [
     {
-      "ticker": "EWY",
-      "ibkr_live": 200.0,
-      "journal": 500.0,
-      "diff": -300.0
+      "ticker": "XLE",
+      "ibkr_live": 1400.0,
+      "journal": 900.0,
+      "diff": 500.0
+    },
+    {
+      "ticker": "CPER",
+      "ibkr_live": 1500.0,
+      "journal": 2100.0,
+      "diff": -600.0
     },
     {
       "ticker": "1615",
       "ibkr_live": 0,
       "journal": 6500.0,
       "diff": -6500.0
-    },
-    {
-      "ticker": "BNO_75C_JUL26",
-      "ibkr_live": 0,
-      "journal": 100.0,
-      "diff": -100.0
     }
   ]
 }
